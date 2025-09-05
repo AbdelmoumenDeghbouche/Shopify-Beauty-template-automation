@@ -1,0 +1,201 @@
+<style>
+                    .lumin-section__section .lm-slide-{{block.id}} ul {
+                       {% if block.settings.show_border %}border: 1px solid {{block.settings.border_color}};{% endif %}
+                       padding: var(--lm-slide-padding);
+                       border-radius: {{ block.settings.slide_wrapper_radius }}px;
+                       z-index: 0;
+                   }
+                   .slider-container-{{block.id}} p {
+                       margin: 0;
+                       font-size:{{block.settings.text_size}}px;
+                   }
+                  .lumin-section__section .lm-slide-{{block.id}} h4 {
+                       margin: 0 0 1rem 0;
+                       padding: 0 7rem 0 0;
+                       font-size:{{block.settings.head_size}}px;
+                   }
+                   .lumin-slider-buttons {
+                         gap: 1rem;
+                        /* margin-top: var(--lm-slide-padding);*/
+                         z-index: 1;
+                         position: absolute;
+                         right: calc(5px + var(--lm-slide-padding));
+                         top:calc(5px + var(--lm-slide-padding));
+                     }
+                   .lumin-slider-button {
+                        /* background: rgba(var(--color-button), 0.3) !important;*/
+                         border: 1px solid rgba(var(--color-foreground)) !important;
+                         width: 30px !important;
+                         height: 30px !important;
+                         border-radius: 30px;
+                     }
+                  .slider-container-{{block.id}} {
+                         display: grid;
+                         grid-template-columns:  {{block.settings.slide_img_size}}px; 1fr;
+                         grid-template-rows: 1fr;
+                         gap: 0px 16px;
+                       }
+                   .slider-container-{{block.id}} img {
+                         max-width: {{block.settings.slide_img_size}}px;
+                         width: {{block.settings.slide_img_size}}px;
+                         height: auto;
+                         border-radius: {{block.settings.slide_img_radius}}px;
+
+                     }
+                   .slider-container-{{block.id}} svg {
+                         max-width: {{block.settings.slide_img_size}}px;
+                         width: {{block.settings.slide_img_size}}px;
+                         height: auto;
+                         border-radius: {{block.settings.slide_img_radius}}px;
+
+                     }
+                       .slide-image { grid-area: 1 / 1 / 2 / 3; width: 60px; }
+                       .slide-text { grid-area: 1 / 2 / 2 / 3; }
+                </style>
+                <div class="lumin-section__section"
+                style="position: relative;margin-top:{{ block.settings.padding_top }}px;margin-bottom:{{ block.settings.padding_bottom }}px;"  {{ block.shopify_attributes }}>
+                  <slideshow-component
+                    class="slider-mobile-gutter"
+                    style="--lm-slide-padding: {{ block.settings.slide_padding }}px;"
+                  >
+                    {% liquid
+                      if block.settings.show_slide_2 == false and block.settings.show_slide_3 == false
+                        assign slide_count = 1
+                        assign total_number_of_block = 1
+                      elsif block.settings.show_slide_2 and block.settings.show_slide_3 == false
+                        assign slide_count = 2
+                        assign total_number_of_block = 2
+                      elsif block.settings.show_slide_2 and block.settings.show_slide_3
+                        assign slide_count = 3
+                        assign total_number_of_block = 3
+                      elsif block.settings.show_slide_2 == false and block.settings.show_slide_3
+                        assign slide_count = 2
+                        assign total_number_of_block = 2
+                      endif
+                    %}
+                    {%- assign image_size = block.settings.slide_img_size | times: 2 -%}
+                    {%- assign number_of_block = slide_count -%}
+
+                    <div
+                      id="Slider-{{ block.id }}"
+                      class="grid grid--1-col slider slider--everywhere"
+                      role="list"
+                      {% if number_of_block > 1 %}
+                        aria-label="{{ 'general.slider.name' | t }}"
+                      {% endif %}
+                    >
+                      {%- for i in (1..number_of_block) -%}
+                        <div
+                          id="Slide-{{ block.id }}-{{ forloop.index }}"
+                          class="complementary-slider grid__item slider__slide slideshow__slide lm-slide-{{block.id}} lm-fix"
+                          tabindex="-1"
+                          role="group" style="width: 100%;"
+                          {% if number_of_block > 1 %}
+                            aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+                            aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+                          {% endif %}
+                        >
+                          <ul class="list-unstyled color-{{ block.settings.color_scheme }} gradient" role="list">
+                            {% if i == 1 %}
+                              <li class="slider-container-{{block.id}}">
+                                {% if block.settings.slide_image != blank %}
+                                  <div class="slide-image">
+                                    {{ block.settings.slide_image | image_url: width: image_size | image_tag }}
+                                  </div>
+                                {% endif %}
+                                <div
+                                  class="slide-text"
+                                  style="{% if block.settings.slide_image == blank %}grid-column-start: 1;{% else %}grid-column-start: 2;{% endif %}"
+                                >
+                                  <h4>{{ block.settings.block_heading }}</h4>
+                                  {{ block.settings.text_1 }}
+                                </div>
+                              </li>
+                            {% elsif i == number_of_block and block.settings.show_slide_3 %}
+                              <li class="slider-container-{{block.id}}">
+                                {% if block.settings.slide_image_3 != blank %}
+                                  <div class="slide-image">
+                                    {{ block.settings.slide_image_3 | image_url: width: image_size | image_tag }}
+                                  </div>
+                                {% endif %}
+                                <div
+                                  class="slide-text"
+                                  style="{% if block.settings.slide_image_3 == blank %}grid-column-start: 1;{% else %}grid-column-start: 2;{% endif %}"
+                                >
+                                  <h4>{{ block.settings.block_heading_3 }}</h4>
+                                  {{ block.settings.text_3 }}
+                                </div>
+                              </li>
+                            {% elsif block.settings.show_slide_2 %}
+                              <li class="slider-container-{{block.id}}">
+                                {% if block.settings.slide_image_2 != blank %}
+                                  <div class="slide-image">
+                                    {{ block.settings.slide_image_2 | image_url: width: image_size | image_tag }}
+                                  </div>
+                                {% endif %}
+                                <div
+                                  class="slide-text"
+                                  style="{% if block.settings.slide_image_2 == blank %}grid-column-start: 1;{% else %}grid-column-start: 2;{% endif %}"
+                                >
+                                  <h4>{{ block.settings.block_heading_2 }}</h4>
+                                  {{ block.settings.text_2 }}
+                                </div>
+                              </li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      {%- endfor -%}
+                    </div>
+
+                    {%- if number_of_block > 1 -%}
+                      <div class="slider-buttons no-js-hidden lumin-slider-buttons color-{{ block.settings.color_scheme }} gradient ">
+                        <button
+                          type="button"
+                          class="slider-button slider-button--prev lumin-slider-button"
+                          name="previous"
+                          aria-label="{{ 'general.slider.previous_slide' | t }}"
+                        >
+                          <span class="svg-wrapper">
+                            {{ 'icon-caret.svg' | inline_asset_content }}
+                          </span>
+                        </button>
+
+                        <div class="hidden slider-counter slider-counter--counter {% if block.settings.pagination_style == 'counter' or block.settings.pagination_style == 'numbers' %} caption{% endif %}">
+                          {%- if block.settings.pagination_style == 'counter' -%}
+                            <span class="slider-counter--current">1</span>
+                            <span aria-hidden="true"> / </span>
+                            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+                            <span class="slider-counter--total">{{ total_number_of_block }}</span>
+                          {%- else -%}
+                            <div class="slideshow__control-wrapper">
+                              {%- for i in (1..number_of_block) -%}
+                                <button
+                                  class="slider-counter__link slider-counter__link--{{ block.settings.pagination_style }} link"
+                                  aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+                                  aria-controls="Slider-{{ block.id }}"
+                                >
+                                  {%- if block.settings.pagination_style == 'numbers' -%}
+                                    {{ forloop.index }}
+                                  {%- else -%}
+                                    <span class="dot"></span>
+                                  {%- endif -%}
+                                </button>
+                              {%- endfor -%}
+                            </div>
+                          {%- endif -%}
+                        </div>
+
+                        <button
+                          type="button"
+                          class="slider-button slider-button--next lumin-slider-button"
+                          name="next"
+                          aria-label="{{ 'general.slider.next_slide' | t }}"
+                        >
+                         <span class="svg-wrapper">
+                          {{ 'icon-caret.svg' | inline_asset_content }}
+                         </span>
+                        </button>
+                      </div>
+                    {%- endif -%}
+                  </slideshow-component>
+                </div>

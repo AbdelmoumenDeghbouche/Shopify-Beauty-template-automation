@@ -1,0 +1,23 @@
+{% if settings.enable_wishlist %}
+  <lumin-wishlist-btn
+    class="lumin-wishlist-btn color-{{ settings.lumin_wishlist_color_scheme }}"
+    data-product-url="{{ product.url | split: '?' | first }}"
+  >
+    <button
+      class=""
+      aria-label="{{ 'lumintheme.wishlist.add' | t }}"
+      aria-pressed="false"
+      {% if settings.wishlist_icon_position == 'bottom-left' %}
+        style="left: 0; bottom: 0;"
+      {% elsif settings.wishlist_icon_position == 'bottom-right' %}
+        style="right: 0; bottom: 0;"
+      {% elsif settings.wishlist_icon_position == 'top-left' %}
+        style="left: 0; top: 0;"
+      {% else %}
+        style="right: 0; top: 0;"
+      {% endif %}
+    >
+      {% render 'lumin-svg-icons', icon: 'heart', size: 18, stroke_width: 1.5 %}
+    </button>
+  </lumin-wishlist-btn>
+{% endif %}

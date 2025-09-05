@@ -1,0 +1,251 @@
+
+  {% liquid
+    assign current_variant = product.selected_or_first_available_variant
+  
+    assign qty = block.settings.qty
+    assign discount = block.settings.discount
+    assign fixed_price = block.settings.fixed_price
+    assign current_price = qty | times: product.selected_or_first_available_variant.price
+    assign compare_total = current_price | money
+    
+    if block.settings.discount_type == 'percentage'
+      assign total = 100 | minus: discount | divided_by: 100.0 | times: current_price | money
+    else
+      assign total_cents = current_price | minus: fixed_price
+      assign total = total_cents | money
+    endif
+  
+    for count in (1..qty)
+      unless forloop.last
+        assign current_variant_ids = current_variant_ids | append: current_variant.id | append: ','
+      else
+        assign current_variant_ids = current_variant_ids | append: current_variant.id
+      endunless
+    endfor
+  %} 
+  
+  {%- style -%}
+    #lumin-product-block-qty-break-{{ block.id }} {
+      margin-top: {{ block.settings.mt }}px;
+      margin-bottom: {{ block.settings.mb }}px;
+    }
+    .bs-form-check input + label:before {
+      content: "";
+      position: absolute;
+      top: 2.7rem;
+      transform: translate(-50%, -50%);
+      left: 2rem;
+      width: 1.4rem;
+      height: 1.4rem; 
+      box-shadow: none;
+      border-radius: 50px;
+  }
+  .lumin-qty-bottom {
+      margin: 1.5rem -1rem -1.5rem -3.5rem;
+      background: #212121;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-bottom-left-radius: calc(var(--inputs-radius) - 1px);
+      border-bottom-right-radius: calc(var(--inputs-radius) - 1px);
+      display: flex;
+      gap: 10px;
+      justify-content: start;
+      align-items: center;
+  }
+  .lumin-qty-bottom img, .lumin-qty-bottom svg {
+      height: auto;
+  }
+  .lumin-qty-image img, .lumin-qty-image svg {
+      height: auto;
+  }
+  
+    {% if block.settings.custom_color %}
+    .lumin-product-block-qty-break-{{block.id}} .bs-form-check input + label {
+    background: {{block.settings.uncheck_bg_color}};
+    border-radius: {{ block.settings.border_radius }}px;
+    border: 1px solid {{block.settings.border_color}};
+    color: {{block.settings.text_color}};
+  }
+  .lumin-product-block-qty-break-{{block.id}}  .bs-form-check input:checked + label {
+    background-color: {{block.settings.checked_bg_color}};
+    border: 1px solid {{block.settings.checked_border_color}}; 
+    color: {{block.settings.checked_text_color}};
+  }
+  .lumin-product-block-qty-break-total-{{block.id}} s {
+      opacity: 1;
+      color: {{block.settings.discount_color}};
+  }
+  .lumin-product-block-qty-break-title-{{block.id}}{
+    color: {{block.settings.title_color}};
+  }
+  
+  .lumin-product-block-qty-break-subtitle-{{block.id}} {
+    color: {{block.settings.subtitle_color}};
+    opacity: 1;
+  }
+  .lumin-product-block-qty-break-variant-option-{{block.id}} .lumin-form-select {
+      background-color: rgba(var(--color-background), 1);
+      border: 1px solid rgba(var(--color-foreground), .2);
+      color: rgba(var(--color-foreground), 1);
+      padding: .25rem;
+      width: 100%;
+  }
+  .bs-form-check-{{ block.id }} input + label:before {
+      border: 4px solid {{block.settings.dot_color}};
+      outline: 1px solid {{block.settings.dot_color}};
+  }
+  .bs-form-check-{{ block.id }} input:checked + label:before {
+      content: "";
+      border: 4px solid {{block.settings.dot_check_color}};
+      outline: 1px solid white;
+      box-shadow: 0px 0px 0px 3px rgba({{ block.settings.dot_check_color.red }}, {{ block.settings.dot_check_color.green }}, {{ block.settings.dot_check_color.blue }}, .2);
+   
+  }
+  {% endif %}
+  {%- endstyle -%}
+  
+  <lumin-product-qty-break
+    id="lumin-product-block-qty-break-{{ block.id }}"
+    class="lumin-product-block-qty-break lumin-product-block-qty-break-{{block.id}} color-{{ block.settings.color_scheme }}"
+    data-product-url="{{ product.url }}"
+    data-block-id="{{ block.id }}"
+    data-qty="{{ qty }}"
+    data-discount="{{ discount }}"
+    data-index=""
+    {{ block.shopify_attributes }}
+  >
+    <div class="bs-form-check bs-form-check-{{ block.id }}">
+      <input
+        class="bs-form-check-input"
+        type="radio"
+        name="qty-break-{{ product.id }}"
+        id="lumin-qty-break-{{ block.id }}"
+        value="{{ current_variant_ids }}"
+        {% if block.settings.selected %}
+          checked
+        {% endif %}
+      >
+      <label for="lumin-qty-break-{{ block.id }}" class="bs-form-check-label">
+        {% unless block.settings.badge == blank %}
+          <span
+            class="{{ block.settings.badge_style }}"
+            style="color: {{ block.settings.badge_color }}; font-size: {{ block.settings.badge_size }}px;  background-color: {{ block.settings.badge_bg_color }}; --c: {{ block.settings.badge_bg_color }};"
+            {% if block.settings.badge_style == 'lumin-product-block-qty-break-badge' %}
+              class="lumin-product-block-qty-break-badge lumin-product-block-qty-break-badge-{{block.id}}"
+            {% else %}
+              class="lumin-product-block-qty-break-badge lumin-product-block-qty-break-badge-{{block.id}} lumin-product-block-qty-break-badge-{{block.settings.badge_style}}"
+            {% endif %}
+          >
+            {{ block.settings.badge }}
+          </span>
+        {% endunless %}
+        <div class="lumin-product-block-qty-break-inner">
+          <div class="" style="
+            display: flex;
+            gap: 10px; align-items: center;">
+            <div class="lumin-qty-image">
+            {% assign show_foto = false %}
+          {% if block.settings.qty_show_image %}
+            {% if block.settings.qty_image == null %}
+              {% assign show_foto = true %}
+              {% assign image = product.selected_or_first_available_variant.image | default: product.featured_image %}
+            {% elsif block.settings.qty_image != null %}
+              {% assign show_foto = true %}
+              {% assign image = block.settings.qty_image %}
+            {% endif %}
+          {% endif %}
+          {% if show_foto %}
+            <img
+              src="{{ image.src | image_url: width: 160 }}"
+              alt="Selected Variant Image"
+              width="{{ block.settings.qty_image_width}}px"
+              height="{{ block.settings.qty_image_width | divided_by: image.aspect_ratio | round }}"
+              loading="lazy"
+            >
+           {% endif %}
+           </div>
+            <div>
+              <div class="lumin-product-block-qty-break-title lumin-product-block-qty-break-title-{{block.id}}">
+                {{ block.settings.title }}
+              </div>
+              <div class="lumin-product-block-qty-break-subtitle lumin-product-block-qty-break-subtitle-{{block.id}}">
+                {{ block.settings.subtitle }}
+              </div>
+            </div>
+          </div>
+          <div class="lumin-product-block-qty-break-total lumin-product-block-qty-break-total-{{block.id}} ms-3">
+            {{ total }}
+            {% if discount > 0 %}
+              <s>{{ compare_total }}</s> 
+            {% endif %}
+          </div>
+        </div>
+  
+        <div
+          class="lumin-product-block-qty-break-variants{% if product.has_only_default_variant or block.settings.hide_variant %} hidden{% endif %}"
+          role="list"
+          aria-label="Select variants"
+          {% if product.has_only_default_variant %}
+            hidden
+          {% endif %}
+        >
+          {% for count in (1..qty) %}
+            <div
+              class="lumin-product-block-qty-break-variant"
+              role="listitem"
+            >
+              <div class="lumin-product-block-qty-break-variant-title" aria-hidden="true">#{{ count }}</div>
+              <div
+                class="lumin-product-block-qty-break-variant-options"
+                role="list"
+                aria-label="Variant options"
+              >
+                {% for option in product.options_with_values %}
+                  <div
+                    class="lumin-product-block-qty-break-variant-option"
+                    role="listitem"
+                  >
+                    <select
+                      class="lumin-form-select"
+                      aria-label="{{ option.name }}"
+                    >
+                      {% for value in option.values %}
+                        <option
+                          value="{{ value | escape }}"
+                          {% if value == option.selected_value %}
+                            selected
+                          {% endif %}
+                        >
+                          {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        {%- unless block.settings.bottom_image == blank and block.settings.bottom_text == blank -%}
+          <div  class="lumin-qty-bottom" style="
+            background: {{ block.settings.bg_color_bottom }};
+            color:{{ block.settings.text_color_bottom }} ; font-size:{{ block.settings.bottom_text_size }}px;
+        ">
+        {% if block.settings.bottom_image != blank %}
+        {%- assign image-bottom = block.settings.bottom_image -%}
+          <img
+               src="{{ image-bottom.src | image_url: width: 100 }}"
+             alt="lumin quantity Image"
+             width="{{ block.settings.bottom_image_width}}px"
+             height="{{ block.settings.bottom_image_width | divided_by: image-bottom.aspect_ratio | round }}"
+             loading="lazy"
+           >
+       {% endif %}
+       <span>{{block.settings.bottom_text}}</span>
+      </div>
+        {%- endunless -%} 
+      </label>
+      </div>
+  </lumin-product-qty-break>
+  
+  

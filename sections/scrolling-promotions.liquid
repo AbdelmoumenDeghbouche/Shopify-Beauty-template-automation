@@ -1,0 +1,197 @@
+<div
+  class="infinite-scroll-section"
+  style="background-color: {{ section.settings.background_color }}; background-image: {{ section.settings.background_gradient }}; height: {{ section.settings.height }}px;"
+>
+  <div class="scrolling-wrapper">
+    {% for item in (1..9) %}
+      {% for block in section.blocks %}
+        {% render 'scrolling-block', block: block %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .infinite-scroll-section {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+
+  .scrolling-wrapper {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.spacing }}px;
+    animation: scroll-animation {{ section.settings.scroll_speed | times: 9 }}s linear infinite;
+  }
+
+  .scrolling-block {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .text-block {
+    font-size: 16px;
+  }
+
+  .image-block img {
+    display: block;
+  }
+
+  .button-block a {
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  @keyframes scroll-animation {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "Scrolling Promotions",
+  "disabled_on": {
+    "groups": ["header", "custom.popup"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#000000"
+    },
+    {
+        "type": "color_background",
+        "id": "background_gradient",
+        "label": "Section background gradient"
+      },
+    {
+      "type": "number",
+      "id": "scroll_speed",
+      "label": "Scroll Speed (Seconds)",
+      "default": 20
+    },
+    {
+      "type": "number",
+      "id": "height",
+      "label": "Section Height (px)",
+      "default": 40
+    },
+    {
+      "type": "number",
+      "id": "spacing",
+      "label": "Spacing Between Blocks (px)",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Welcome to our store!"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#ffffff"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "number",
+          "id": "image_width",
+          "label": "Image Width (px)",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "image_radius",
+          "label": "Image Corner Radius (px)",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 0
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Text Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_background",
+          "label": "Button Background Color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "button_radius",
+          "label": "Button Corner Radius (px)",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 4
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling Promotions",
+      "category": "Lumin Sliders",
+        "blocks": [
+        {
+          "type": "text"
+        },
+        {
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

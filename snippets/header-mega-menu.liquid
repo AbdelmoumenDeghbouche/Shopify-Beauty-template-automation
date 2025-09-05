@@ -1,0 +1,582 @@
+{% comment %}
+  Renders a megamenu for the header.
+
+  Usage:
+  {% render 'header-mega-menu' %}
+{% endcomment %}
+<style>
+.curved-borders {max-width:100%; height:auto;}
+.menu-item-with-image {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.menu-item-image {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+.menu-item-image.left {
+  margin-right: 0.5rem;
+}
+.menu-item-image.right {
+  margin-left: 0.5rem;
+}
+.menu-item-image.top {
+  margin-bottom: 0.5rem;
+}
+.menu-item-image.bottom {
+  margin-top: 0.5rem;
+}
+.mega-menu__image-grid {
+  display: grid;
+  grid-template-areas: "image";
+  margin-bottom: 1rem;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  background-color: var(--gradient-background);
+  position: relative;
+}
+.mega-menu__image-grid--standard img {
+  border-radius: var(--border-radius, 14px);
+}
+.mega-menu__image-grid--card {
+  border-radius: var(--border-radius, 14px);
+}
+.mega-menu__image-grid:hover {
+  transform: scale(1.002);
+  opacity: 0.9;
+}
+.mega-menu__image-container {
+  grid-area: image;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.mega-menu__image-container:hover {
+  transform: scale(1.01);
+}
+.mega-menu__badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 0;
+  padding: 4px 8px;
+  border-radius: min(var(--media-radius), 4px);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+.mega-menu__badge:hover {
+  transform: scale(1.05);
+}
+.mega-menu__content-container {
+  grid-area: content;
+  overflow: hidden;
+}
+.mega-menu__custom-content {
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.mega-menu__content-content-overlay {
+  position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.mega-menu__custom-content:hover {
+  transform: translateY(-5px);
+}
+.mega-menu__custom-title {
+  margin: 0;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mega-menu__custom-text {
+  line-height: 1.4;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mega-menu__custom-text p {
+  line-height: 1.2;
+  margin: 5px 0 0 0;
+}
+.mega-menu__list-lumin {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 2rem !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mega-menu__list--2-columns {
+  grid-template-columns: repeat(2, 1fr);
+}
+.mega-menu__list--3-columns {
+  grid-template-columns: repeat(3, 1fr);
+}
+.mega-menu__list--4-columns {
+  grid-template-columns: repeat(4, 1fr);
+}
+.mega-menu__list--5-columns {
+  grid-template-columns: repeat(5, 1fr);
+}
+.mega-menu__list--6-columns {
+  grid-template-columns: repeat(6, 1fr);
+}
+.mega-menu__link {
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+.mega-menu__link:hover {
+  transform: translateX(5px);
+}
+
+.mega-menu__content {
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(-10px);
+  box-shadow: -13px 20px 10px 0 rgba(0, 0, 0, 0.1);
+  border-bottom-right-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+details[open] .mega-menu__content {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mega-menu__image-container a {
+  text-decoration: none;
+}
+</style>
+<nav class="header__inline-menu">
+  <ul class="list-menu list-menu--inline" role="list">
+    {%- for link in section.settings.menu.links -%}
+      <li>
+        {%- assign has_custom_image = false -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'menu_image' and block.settings.menu_name == link.title -%}
+            {%- if block.settings.custom_image or block.settings.custom_image_2 or block.settings.custom_image_3 or block.settings.custom_image_4 or block.settings.custom_image_5 or block.settings.show_image_in_mega_menu -%}
+              {%- assign has_custom_image = true -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        
+        {%- if link.links != blank or has_custom_image -%}
+          <header-menu>
+            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu">
+              <summary
+                id="HeaderMenu-{{ link.handle }}"
+                class="header__menu-item list-menu__item link focus-inset"
+              >
+                <span
+                  {%- if link.child_active %}
+                    class="header__active-menu-item"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </span>
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </summary>
+              <div
+                id="MegaMenu-Content-{{ forloop.index }}"
+                class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup"
+                tabindex="-1"
+              >
+                {%- if has_custom_image -%}
+                  <div class="mega-menu__content-container page-width" style=" padding-inline-start: 2rem;">
+                    {%- for block in section.blocks -%}
+                      <style>
+                    .promotion {
+                     width: calc(25% - 3rem);
+                    }
+                    .mega-menu__list--area-menu-small {
+                      display: grid;
+                      gap: 3rem;
+                      flex: 1 1 25%;
+                      max-width: 25%;
+                      grid-template-columns: repeat(1, minmax(0, 1fr));
+                    }
+                    .mega-menu__list--area-menu-medium {
+                      display: grid;
+                      gap: 3rem;
+                      flex: 1 1 50%;
+                      max-width: 50%;
+                      grid-template-columns: repeat(2, minmax(0, 1fr));
+                    }
+                    .mega-menu__list--area-menu-large {
+                      display: grid;
+                      gap: 3rem;
+                      flex: 1 1 75%;
+                      max-width: 75%;
+                      grid-template-columns: repeat(3, minmax(0, 1fr));
+                    }
+
+                    .mega-menu__list--area-menu-full {
+                      display: grid;
+                      gap: 3rem;
+                      flex: 1 1 100%;
+                      max-width: 100%;
+                      grid-template-columns: repeat(4, minmax(0, 1fr));
+                    }
+                      </style>
+                      {% liquid 
+                        if block.settings.custom_image == blank and block.settings.custom_image_2 == blank
+                          assign has_custom_image = false
+                        endif
+                      %}
+                      {%- if block.settings.show_image_in_mega_menu -%}
+                      <style>
+                        .mega_menu_link_img-{{block.id}} img {
+                          width: {{ block.settings.featured_image_width }}%;
+                          height: auto;
+                          border-radius: {{block.settings.featured_image_border_radius}}px;
+                        }
+                      </style>
+                      {%- endif -%}
+                      {%- if block.type == 'menu_image' and block.settings.menu_name == link.title -%}
+                        {%- assign image_width = 1200 | divided_by: block.settings.columns | times: 4 | round: 0 -%}
+                        <ul class="mega-menu__list mega-menu__list-lumin" role="list">
+                          {%- if link.links != blank -%}
+                          <ul class="mega-menu__list--area-menu-{{block.settings.menu_width}} list-unstyled" role="list" 
+                          grid-area="menu" style="grid-area: menu;">
+                        {%- for childlink in link.links -%}
+                            <li>
+                              {%- if block.settings.show_image_in_mega_menu -%}
+                              <a href="{{ childlink.url }}" class="mega_menu_link_img-{{block.id}}">
+                                {% if childlink.object.featured_image %}
+                                  {{
+                                    childlink.object.featured_image
+                                    | image_url: width: 400, height: auto
+                                    | image_tag: class: 'mega_menu_link_img'
+                                  }}
+                                {% elsif childlink.object.image %}
+                                  {{
+                                    childlink.object.image
+                                    | image_url: width:400, height: auto
+                                    | image_tag: class: 'mega_menu_link_img'
+                                  }}  
+                                {% elsif childlink.object.image == blank and childlink.links != blank %}
+                                  {%- for grandchildlink in childlink.links limit:1 -%}
+                                    {% if grandchildlink.object.featured_image %}
+                                      {{
+                                        grandchildlink.object.featured_image
+                                        | image_url: width: 400, height: auto
+                                        | image_tag: class: 'mega_menu_link_img'
+                                      }}
+                                    {% elsif grandchildlink.object.image %}
+                                      {{
+                                        grandchildlink.object.image
+                                        | image_url: width:400, height: auto
+                                        | image_tag: class: 'mega_menu_link_img'
+                                      }}   
+                                    {% endif %}
+                                  {%- endfor -%}
+                                {% endif %}
+                                </a> <br>
+                              {%- endif -%}
+                              <a
+                                id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                                href="{{ childlink.url }}"
+                                class="mega-menu__link mega-menu__link--level-2{% if childlink.current %} mega-menu__link--active{% endif %}{% if block.settings.heading %} heading{% endif %}"
+                                {% if childlink.current %}
+                                  aria-current="page"
+                                {% endif %}
+                                style="font-size: {{ block.settings.menu_link_size }}px;{% if block.settings.heading_bold %}font-weight: 600;{% else %} font-weight: 400;{% endif %}
+                                color: {{ block.settings.menu_link_color }};"
+                              >
+                                {{ childlink.title | escape }}
+                              </a>
+                              {%- if childlink.links != blank -%}
+                                <ul class="list-unstyled" role="list">
+                                  {%- for grandchildlink in childlink.links -%}
+                                    <li> 
+                                      <a
+                                        id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                        href="{{ grandchildlink.url }}"
+                                        class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                                        {% if grandchildlink.current %}
+                                          aria-current="page"
+                                        {% endif %}
+                                        style="font-size: {{ block.settings.menu_child_link_size }}px;{% if block.settings.menu_child_link_bold %}font-weight: 600;{% else %} font-weight: 400;{% endif %}
+                                        color: {{ block.settings.menu_child_link_color }};"
+                                      >
+                                        {{ grandchildlink.title | escape }}
+                                      </a>
+                                    </li>
+                                  {%- endfor -%}
+                                </ul>
+                              {%- endif -%}
+                            </li>
+                          {%- endfor -%}
+                          </ul>
+                          {%- endif -%}
+                          {%- if block.settings.custom_image -%}
+                          <ul class="list-unstyled promotion" role="list">
+                         <li>
+                              <div class="{% if block.settings.custom_text_overlay == false %}mega-menu__image-grid--card{% else %}mega-menu__image-grid--standard{% endif %} mega-menu__image-grid" 
+                              style="{% if block.settings.custom_text_overlay == false %}background-color: {{ block.settings.background_color }};{% endif %}--border-radius: {{ block.settings.border_radius }}px;">
+                                <div class="mega-menu__image-container">
+                                  {%- if block.settings.badge_text != blank -%}
+                                    <div class="mega-menu__badge" style="background-color: {{ block.settings.badge_background_color }}; color: {{ block.settings.badge_text_color }};">
+                                      {{ block.settings.badge_text }}
+                                    </div>
+                                  {%- endif -%}
+                                  <a href="{% if block.settings.custom_image_link != blank %}{{ block.settings.custom_image_link }}{% else %}{{ link.url }}{% endif %}">
+                                    {{ block.settings.custom_image | image_url: width: image_width | image_tag: class: 'menu-item-image', style: 'width: 100%; height: auto;' }}
+                                  {% unless block.settings.custom_title == blank and block.settings.custom_text == blank %}
+                                  <div class="mega-menu__custom-content{% if block.settings.custom_text_overlay %} mega-menu__content-content-overlay{% endif %}">
+                                    <div>
+                                      {%- if block.settings.custom_title != blank -%}
+                                        <span class="mega-menu__custom-title h3" style="font-size: {{ block.settings.custom_title_size }}px; color: {{ block.settings.title_color_1 }};">{{ block.settings.custom_title }}</span>
+                                      {%- endif -%}
+                                      {%- if block.settings.custom_text != blank -%}
+                                        <div class="mega-menu__custom-text" style="font-size: {{ block.settings.custom_text_size }}px; color: {{ block.settings.text_color_1 }};">{{ block.settings.custom_text }}</div>
+                                      {%- endif -%}
+                                      </div>
+                                      {%- if block.settings.custom_image_link != blank and block.settings.show_promotion_arrow == true -%}
+                                        <span class="svg-wrapper">
+                                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-arrow" viewBox="0 0 14 10"><path fill={{ block.settings.title_color_1 }} fill-rule="evenodd" d="M8.537.808a.5.5 0 0 1 .817-.162l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L11.793 5.5H1a.5.5 0 0 1 0-1h10.793L8.646 1.354a.5.5 0 0 1-.109-.546" clip-rule="evenodd"></path></svg>
+                                        </span>
+                                        {%- endif -%} 
+                                  </div>
+                                  {% endunless %}
+                                  </a>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                          {%- endif -%}
+                          {%- if block.settings.custom_image_2 -%}
+                          <ul class="list-unstyled promotion" role="list">
+                          
+                            <li>
+                              <div class="{% if block.settings.custom_text_overlay_2 == false %}mega-menu__image-grid--card{% else %}mega-menu__image-grid--standard{% endif %} mega-menu__image-grid{% if block.settings.image_position == 'left' %} mega-menu__image-grid--left{% elsif block.settings.image_position == 'right' %} mega-menu__image-grid--right{% endif %}"
+                               style="{% if block.settings.custom_text_overlay_2 == false %}background-color: {{ block.settings.background_color_2 }};{% endif %}--border-radius: {{ block.settings.border_radius }}px;">
+                                <div class="mega-menu__image-container">
+                                  {%- if block.settings.badge_text_2 != blank -%}
+                                    <div class="mega-menu__badge" style="background-color: {{ block.settings.badge_background_color_2 }}; color: {{ block.settings.badge_text_color_2 }};">
+                                      {{ block.settings.badge_text_2 }}
+                                    </div>
+                                  {%- endif -%}
+                                  <a href="{% if block.settings.custom_image_link_2 != blank %}{{ block.settings.custom_image_link_2 }}{% else %}{{ link.url }}{% endif %}">
+                                    {{ block.settings.custom_image_2 | image_url: width: image_width | image_tag: class: 'menu-item-image', style: 'width: 100%; height: auto;' }}
+                                  {% unless block.settings.custom_title_2 == blank and block.settings.custom_text_2 == blank %}
+                                  <div class="mega-menu__custom-content{% if block.settings.custom_text_overlay_2 %} mega-menu__content-content-overlay{% endif %}">
+                                    <div>
+                                      {%- if block.settings.custom_title_2 != blank -%}
+                                        <span class="mega-menu__custom-title h3" style="font-size: {{ block.settings.custom_title_2_size }}px; color: {{ block.settings.title_color_2 }};">{{ block.settings.custom_title_2 }}</span>
+                                      {%- endif -%}
+                                      {%- if block.settings.custom_text_2 != blank -%}
+                                        <div class="mega-menu__custom-text" style="font-size: {{ block.settings.custom_text_2_size }}px; color: {{ block.settings.text_color_2 }};">{{ block.settings.custom_text_2 }}</div>
+                                      {%- endif -%}
+                                      </div>
+                                      {%- if block.settings.custom_image_link_2 != blank and block.settings.show_promotion_arrow == true -%}
+                                        <span class="svg-wrapper">
+                                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-arrow" viewBox="0 0 14 10"><path fill={{ block.settings.title_color_2 }} fill-rule="evenodd" d="M8.537.808a.5.5 0 0 1 .817-.162l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L11.793 5.5H1a.5.5 0 0 1 0-1h10.793L8.646 1.354a.5.5 0 0 1-.109-.546" clip-rule="evenodd"></path></svg>
+                                        </span>
+                                        {%- endif -%} 
+                                  </div>
+                                  {% endunless %}
+                                  </a>
+                                </div>
+                              </div>
+                            </li>
+                          
+                          </ul>
+                        {%- endif -%}
+                        {%- if block.settings.custom_image_3 -%}
+                          <ul class="list-unstyled promotion" role="list">
+                          
+                            <li>
+                              <div class="{% if block.settings.custom_text_overlay_3 == false %}mega-menu__image-grid--card{% else %}mega-menu__image-grid--standard{% endif %} mega-menu__image-grid{% if block.settings.image_position == 'left' %} mega-menu__image-grid--left{% elsif block.settings.image_position == 'right' %} mega-menu__image-grid--right{% endif %}"
+                               style="{% if block.settings.custom_text_overlay_3 == false %}background-color: {{ block.settings.background_color_3 }};{% endif %}--border-radius: {{ block.settings.border_radius }}px;">
+                                <div class="mega-menu__image-container">
+                                  {%- if block.settings.badge_text_3 != blank -%}
+                                    <div class="mega-menu__badge" style="background-color: {{ block.settings.badge_background_color_3 }}; color: {{ block.settings.badge_text_color_3 }};">
+                                      {{ block.settings.badge_text_3 }}
+                                    </div>
+                                  {%- endif -%}
+                                  <a href="{% if block.settings.custom_image_link_3 != blank %}{{ block.settings.custom_image_link_3 }}{% else %}{{ link.url }}{% endif %}">
+                                    {{ block.settings.custom_image_3 | image_url: width: image_width | image_tag: class: 'menu-item-image', style: 'width: 100%; height: auto;' }}
+                                  {% unless block.settings.custom_title_3 == blank and block.settings.custom_text_3 == blank %}
+                                  <div class="mega-menu__custom-content{% if block.settings.custom_text_overlay_3 %} mega-menu__content-content-overlay{% endif %}">
+                                    <div>
+                                      {%- if block.settings.custom_title_3 != blank -%}
+                                      <span class="mega-menu__custom-title h3" style="font-size: {{ block.settings.custom_title_3_size }}px; color: {{ block.settings.title_color_3}};">{{ block.settings.custom_title_3 }}</span>
+                                    {%- endif -%}
+                                    {%- if block.settings.custom_text_3 != blank -%}
+                                      <div class="mega-menu__custom-text" style="font-size: {{ block.settings.custom_text_3_size }}px; color: {{ block.settings.text_color_3}};">{{ block.settings.custom_text_3 }}</div>
+                                    {%- endif -%}
+                                    </div>
+                                    {%- if block.settings.custom_image_link_3 != blank and block.settings.show_promotion_arrow == true -%}
+                                      <span class="svg-wrapper">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-arrow" viewBox="0 0 14 10"><path fill={{ block.settings.title_color_3 }} fill-rule="evenodd" d="M8.537.808a.5.5 0 0 1 .817-.162l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L11.793 5.5H1a.5.5 0 0 1 0-1h10.793L8.646 1.354a.5.5 0 0 1-.109-.546" clip-rule="evenodd"></path></svg>
+                                      </span>
+                                      {%- endif -%} 
+                                  </div>
+                                  {% endunless %}
+                                  </a>
+                                </div>
+                              </div>
+                            </li>
+                          
+                          </ul>
+                        {%- endif -%}
+                        {%- if block.settings.custom_image_4 -%}
+                          <ul class="list-unstyled promotion" role="list">
+                          
+                            <li>
+                              <div class="{% if block.settings.custom_text_overlay_4 == false %}mega-menu__image-grid--card{% else %}mega-menu__image-grid--standard{% endif %} mega-menu__image-grid{% if block.settings.image_position == 'left' %} mega-menu__image-grid--left{% elsif block.settings.image_position == 'right' %} mega-menu__image-grid--right{% endif %}"
+                               style="{% if block.settings.custom_text_overlay_4 == false %}background-color: {{ block.settings.background_color_4 }};{% endif %}--border-radius: {{ block.settings.border_radius }}px;">
+                                <div class="mega-menu__image-container">
+                                  {%- if block.settings.badge_text_4 != blank -%}
+                                    <div class="mega-menu__badge" style="background-color: {{ block.settings.badge_background_color_4 }}; color: {{ block.settings.badge_text_color_4 }};">
+                                      {{ block.settings.badge_text_4 }}
+                                    </div>
+                                  {%- endif -%}
+                                  <a href="{% if block.settings.custom_image_link_4 != blank %}{{ block.settings.custom_image_link_4 }}{% else %}{{ link.url }}{% endif %}">
+                                    {{ block.settings.custom_image_4 | image_url: width: image_width | image_tag: class: 'menu-item-image', style: 'width: 100%; height: auto;' }}
+                                  {% unless block.settings.custom_title_4 == blank and block.settings.custom_text_4 == blank %}
+                                  <div class="mega-menu__custom-content{% if block.settings.custom_text_overlay_4 %} mega-menu__content-content-overlay{% endif %}">
+                                    <div>
+                                    {%- if block.settings.custom_title_4 != blank -%}
+                                      <span class="mega-menu__custom-title h3" style="font-size: {{ block.settings.custom_title_4_size }}px; color: {{ block.settings.title_color_4 }};">{{ block.settings.custom_title_4 }}</span>
+                                    {%- endif -%}
+                                    {%- if block.settings.custom_text_4 != blank -%}
+                                      <div class="mega-menu__custom-text" style="font-size: {{ block.settings.custom_text_4_size }}px; color: {{ block.settings.text_color_4 }};">{{ block.settings.custom_text_4 }}</div>
+                                    {%- endif -%}
+                                    </div>
+                                    {%- if block.settings.custom_image_link_4 != blank and block.settings.show_promotion_arrow == true -%}
+                                      <span class="svg-wrapper">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-arrow" viewBox="0 0 14 10"><path fill={{ block.settings.title_color_4 }} fill-rule="evenodd" d="M8.537.808a.5.5 0 0 1 .817-.162l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L11.793 5.5H1a.5.5 0 0 1 0-1h10.793L8.646 1.354a.5.5 0 0 1-.109-.546" clip-rule="evenodd"></path></svg>
+                                      </span>
+                                      {%- endif -%} 
+                                  </div>
+                                  {% endunless %}
+                                  </a>
+                                </div>
+                              </div>
+                            </li>
+                          
+                          </ul>
+                        {%- endif -%}
+                        {%- if block.settings.custom_image_5 -%}
+                          <ul class="list-unstyled promotion" role="list">
+                          
+                            <li>
+                              <div class="{% if block.settings.custom_text_overlay_5 == false %}mega-menu__image-grid--card{% else %}mega-menu__image-grid--standard{% endif %} mega-menu__image-grid{% if block.settings.image_position == 'left' %} mega-menu__image-grid--left{% elsif block.settings.image_position == 'right' %} mega-menu__image-grid--right{% endif %}"
+                               style="{% if block.settings.custom_text_overlay_5 == false %}background-color: {{ block.settings.background_color_5 }};{% endif %}--border-radius: {{ block.settings.border_radius }}px;">
+                                <div class="mega-menu__image-container">
+                                  {%- if block.settings.badge_text_5 != blank -%}
+                                    <div class="mega-menu__badge" style="background-color: {{ block.settings.badge_background_color_5 }}; color: {{ block.settings.badge_text_color_5 }};">
+                                      {{ block.settings.badge_text_5 }}
+                                    </div>
+                                  {%- endif -%}
+                                  <a href="{% if block.settings.custom_image_link_5 != blank %}{{ block.settings.custom_image_link_5 }}{% else %}{{ link.url }}{% endif %}">
+                                    {{ block.settings.custom_image_5 | image_url: width: image_width | image_tag: class: 'menu-item-image', style: 'width: 100%; height: auto;' }}
+                                  {% unless block.settings.custom_title_5 == blank and block.settings.custom_text_5 == blank %}
+                                  <div class="mega-menu__custom-content{% if block.settings.custom_text_overlay_5 %} mega-menu__content-content-overlay{% endif %}">
+                                    <div>
+                                    {%- if block.settings.custom_title_5 != blank -%}
+                                      <span class="mega-menu__custom-title h3" style="font-size: {{ block.settings.custom_title_5_size }}px; color: {{ block.settings.title_color_5 }};">{{ block.settings.custom_title_5 }}</span>
+                                    {%- endif -%}
+                                    {%- if block.settings.custom_text_5 != blank -%}
+                                      <div class="mega-menu__custom-text" style="font-size: {{ block.settings.custom_text_5_size }}px; color: {{ block.settings.text_color_5 }};">{{ block.settings.custom_text_5 }}</div>
+                                    {%- endif -%}
+                                    </div>
+                                    {%- if block.settings.custom_image_link_5 != blank and block.settings.show_promotion_arrow == true -%}
+                                      <span class="svg-wrapper">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-arrow" viewBox="0 0 14 10"><path fill={{ block.settings.title_color_5 }} fill-rule="evenodd" d="M8.537.808a.5.5 0 0 1 .817-.162l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L11.793 5.5H1a.5.5 0 0 1 0-1h10.793L8.646 1.354a.5.5 0 0 1-.109-.546" clip-rule="evenodd"></path></svg>
+                                      </span>
+                                      {%- endif -%} 
+                                  </div>
+                                  {% endunless %}
+                                  </a>
+                                </div>
+                              </div>
+                            </li> 
+                          </ul>
+                        {%- endif -%}
+                        </ul>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <ul
+                    class="mega-menu__list mega-menu__content-container page-width{% if link.levels == 1 %} mega-menu__list--condensed{% endif %}"
+                    role="list"
+                  >
+                    {%- for childlink in link.links -%}
+                      <li> 
+                        <a
+                          id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                          href="{{ childlink.url }}"
+                          class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+                          {% if childlink.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{ childlink.title | escape }}
+                        </a>
+                        {%- if childlink.links != blank -%}
+                          <ul class="list-unstyled" role="list">
+                            {%- for grandchildlink in childlink.links -%}
+                              <li>
+                                <a
+                                  id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                  href="{{ grandchildlink.url }}"
+                                  class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                                  {% if grandchildlink.current %}
+                                    aria-current="page"
+                                  {% endif %}
+                                >
+                                  {{ grandchildlink.title | escape }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            </details>
+          </header-menu>
+        {%- else -%}
+          <a
+            id="HeaderMenu-{{ link.handle }}"
+            href="{{ link.url }}"
+            class="header__menu-item list-menu__item link link--text focus-inset"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+          >
+            <span class="menu-item-with-image">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'menu_image' and block.settings.menu_name == link.title -%}
+                  {%- if block.settings.custom_image -%}
+                    {{ block.settings.custom_image | image_url: width: block.settings.image_width | image_tag: class: 'menu-item-image ' | append: block.settings.image_position }}
+                  {%- elsif link.object.featured_image -%}
+                    {{ link.object.featured_image | image_url: width: block.settings.image_width | image_tag: class: 'menu-item-image ' | append: block.settings.image_position }}
+                  {%- elsif link.object.image -%}
+                    {{ link.object.image | image_url: width: block.settings.image_width | image_tag: class: 'menu-item-image ' | append: block.settings.image_position }}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              <span
+                {%- if link.current %}
+                  class="header__active-menu-item"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+              </span>
+            </span>
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>

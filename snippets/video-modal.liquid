@@ -1,0 +1,127 @@
+{% comment %}
+  Renders a video modal.
+
+  Accepts:
+  - video_url: {Object} Youtube or vimeo url shopify object
+  - cover_image: {Object} Image object
+  - id: {String} Can be block id or section id Assign an id if there's multiple video modal's on the page
+  - description: {String} A description for the aria-label on the modal button, iframe etc
+  - color_scheme {String} Optional override of the background of the modal content
+
+  Usage:
+
+{% endcomment %}
+
+<div class="video-modal">
+  <noscript>
+    <a
+      href="{{ video_url }}"
+      class="video-modal__fallback-link"
+    >
+      <div
+        class="media media--transparent ratio"
+        {% if cover_image != blank %}
+          style="--ratio-percent: {{ 1 | divided_by: cover_image.aspect_ratio | times: 100 }}%"
+        {% else %}
+          style="--ratio-percent: 100%"
+        {% endif %}
+      >
+        {%- if cover_image != blank -%}
+          {%- capture sizes -%}
+            (min-width: 750px) calc(100vw - 100px)
+            , calc(100vw - 30px)
+          {%- endcapture -%}
+          {{
+            cover_image
+            | image_url: width: 3000
+            | image_tag: sizes: sizes, widths: '550, 720, 990, 1100, 1500, 2200, 3000'
+          }}
+        {%- else -%}
+          {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+        {%- endif -%}
+      </div>
+    </a>
+  </noscript>
+  <modal-opener class="no-js-hidden" data-modal="#PopupModal-{{ id }}">
+    <div class="deferred-media">
+      <button
+        class="deferred-media__poster full-unstyled-link"
+        type="button"
+        aria-label="{{ description | escape }}"
+        aria-haspopup="dialog"
+        data-media-id="{{ video_url.id }}"
+      >
+        <div
+          class="media media--transparent ratio"
+          {% if cover_image != blank %}
+            style="--ratio-percent: {{ 1 | divided_by: cover_image.aspect_ratio | times: 100 }}%"
+          {% else %}
+            style="--ratio-percent: 100%"
+          {% endif %}
+        >
+          <span class="deferred-media__poster-button motion-reduce">
+            {{- 'icon-play.svg' | inline_asset_content -}}
+          </span>
+
+          {%- if cover_image != blank -%}
+            {%- capture sizes -%}
+              (min-width: 750px) calc(100vw - 100px)
+              , calc(100vw - 30px)
+            {%- endcapture -%}
+            {{
+              cover_image
+              | image_url: width: 3000
+              | image_tag: sizes: sizes, widths: '550, 720, 990, 1100, 1500, 2200, 3000'
+            }}
+          {%- else -%}
+            {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+          {%- endif -%}
+        </div>
+      </button>
+    </div>
+  </modal-opener>
+  <modal-dialog
+    id="PopupModal-{{ id }}"
+    class="modal-video modal-video-{{ id }} media-modal color-{{ settings.color_schemes | first }}"
+  >
+    <div
+      class="modal-video__content"
+      role="dialog"
+      aria-label="{{ description | escape }}"
+      aria-modal="true"
+      tabindex="-1"
+    >
+      <button
+        id="ModalClose-{{ id }}"
+        type="button"
+        class="modal-video__toggle"
+        aria-label="{{ 'accessibility.close' | t }}"
+      >
+        {{- 'icon-close.svg' | inline_asset_content -}}
+      </button>
+      <div class="modal-video__content-info">
+        <deferred-media class="modal-video__video template-popup">
+          <template>
+            {%- if video_url.type == 'youtube' -%}
+              <iframe
+                src="https://www.youtube.com/embed/{{ video_url.id }}?enablejsapi=1"
+                class="js-youtube aspect-ratio-default"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                title="{{ description | escape }}"
+              ></iframe>
+            {%- else -%}
+              <iframe
+                src="https://player.vimeo.com/video/{{ video_url.id }}"
+                class="js-vimeo aspect-ratio-default"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                title="{{ description | escape }}"
+              ></iframe>
+            {%- endif -%}
+          </template>
+        </deferred-media>
+      </div>
+    </div>
+  </modal-dialog>
+</div>

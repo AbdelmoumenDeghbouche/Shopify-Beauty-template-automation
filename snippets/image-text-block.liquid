@@ -1,0 +1,101 @@
+{% assign margin_right = 15 | append: 'px' %}
+{% assign margin_left = 15 | append: 'px' %}
+{% assign image_width_percent = block.settings.image_width_percent | default: 30 %}
+{% assign text_width_percent = 100 | minus: image_width_percent %}
+{% assign image_width_percent_mobile = block.settings.image_width_percent_mobile | default: 30 %}
+{% assign text_width_percent_mobile = 100 | minus: image_width_percent_mobile %}
+<style>
+  .qa-feature-{{ block.id }} {
+    margin: {{block.settings.padding_top}}px 0px {{block.settings.padding_bottom}}px 0px;
+    width: {{ block.settings.block_width }}%;
+    max-width: {{ block.settings.block_width }}%;
+    display: flex;
+    align-items: center;
+    {% if block.settings.layout == 'text_first' %}
+    flex-direction: row-reverse;
+    {% endif %}
+  }
+  .qa-feature-{{ block.id }} h4 {
+        font-size: {{block.settings.heading_size}}px;
+        margin: 0px;
+    }
+  .qa-feature-{{ block.id }} p {
+        margin: 0px;
+        font-size: {{block.settings.text_size}}px;
+    }
+  .qa-feature-{{ block.id }} img {
+        width: 50px !important;
+        height: auto;
+        {% if block.settings.layout == 'image_first' %}
+        margin-right: {{margin_right}};
+        {% else %}
+        margin-left: {{margin_left}};
+        {% endif %}
+        border: none;
+        border-radius:  {{block.settings.image_border_radius}}px;
+        flex-shrink: 0;
+        flex-basis: {{image_width_percent}}% !important;
+    }
+  .qa-feature-{{ block.id }} svg {
+        width: 50px !important;
+        height: auto;
+        {% if block.settings.layout == 'image_first' %}
+        margin-right: {{margin_right}};
+        {% else %}
+        margin-left: {{margin_left}};
+        {% endif %}
+        border: none;
+        border-radius:  {{block.settings.image_border_radius}}px;
+        flex-shrink: 0;
+        flex-basis: {{image_width_percent}}% !important;
+    }
+  .qa-feature-{{ block.id }} .text-content {
+        flex-basis: {{text_width_percent}}% !important;
+        min-width: 0;
+    }
+  @media screen and (max-width: 749px) {
+    .qa-feature-{{ block.id }} {
+      width: {{ block.settings.block_width_mobile }}% !important;
+      max-width: {{ block.settings.block_width_mobile }}% !important;
+    }
+    .qa-feature-{{ block.id }} img {
+      flex-basis: {{image_width_percent_mobile}}% !important;
+    }
+    .qa-feature-{{ block.id }} svg {
+      flex-basis: {{image_width_percent_mobile}}% !important;
+    }
+    .qa-feature-{{ block.id }} .text-content {
+      flex-basis: {{text_width_percent_mobile}}% !important;
+    }
+  }
+</style>
+{% assign image_size = block.settings.image_width_percent | times: 10 | append: 'x' %}
+<div class="qa-feature-{{ block.id }}" {{ block.shopify_attributes }}>
+  {%- if block.settings.icon != blank -%}
+    <img src="{{ block.settings.icon | img_url: image_size }}" width="50" height="50">
+  {%- else -%}
+    {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+  {%- endif -%}
+  <div class="text-content" style="text-align: left;">
+    <h4>
+      {{
+        block.settings.heading
+        | replace: '[', '<span class="lumin-text__fancy1">'
+        | replace: ']', '</span>'
+        | replace: '!-', '<span class="lumin-text__fancyalt">'
+        | replace: '-!', '</span>'
+        | replace: '((', '<span class="lumin-text__fancy2">'
+        | replace: '))', '</span>'
+      }}
+    </h4>
+    {{
+      block.settings.text
+      | replace: '[', '<span class="lumin-text__fancy1">'
+      | replace: ']', '</span>'
+      | replace: '!-', '<span class="lumin-text__fancyalt">'
+      | replace: '-!', '</span>'
+      | replace: '((', '<span class="lumin-text__fancy2">'
+      | replace: '))', '</span>'
+    }}
+  </div>
+</div>

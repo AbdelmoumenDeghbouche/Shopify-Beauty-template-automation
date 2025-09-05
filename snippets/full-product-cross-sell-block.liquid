@@ -1,0 +1,162 @@
+{%- liquid
+    assign product = section.settings.product
+  -%}
+{% liquid 
+  assign metafield_namespace = block.settings.metafield | split: '.' | first
+  assign metafield_key = block.settings.metafield | split: '.' | last
+  assign metafield_value = product.metafields[metafield_namespace][metafield_key].value
+
+  assign product_handles = product.handle |  append: ','
+  assign total_price = 0
+  assign total_compare_price = 0
+
+  for product in metafield_value
+    assign product_handles = product_handles | append: product.handle
+    unless forloop.last
+      assign product_handles = product_handles |  append: ','
+    endunless
+  endfor
+
+  assign product_handles = product_handles | split: ','
+%}
+
+{% style %}
+  .img-fluid {
+    border-radius: {{ block.settings.img_border_radius }}px;
+}
+.lumin-product-cross-sells {
+    border-radius: {{ block.settings.container_border_radius }}px;
+}
+{% endstyle %}
+
+{% if metafield_value.count > 0 %}
+  <lumin-cross-sells  
+    id="lumin-product-cross-sells-{{ section.id }}"
+    class="lumin-product-cross-sells color-{{ block.settings.color_scheme }}"
+    {{ block.shopify_attributes }}>
+    <div class="lumin-product-cross-sells-header">
+      {% unless block.settings.title == blank %}
+        <h2 class="title {{ block.settings.title_font_size }} {{ block.settings.title_text_style }}">
+          {{ block.settings.title }}
+        </h2>
+      {% endunless %}
+      {% unless block.settings.description == blank %}
+        <div class="description rte {{ block.settings.description_font_size }}">
+          {{ block.settings.description }}
+        </div>
+      {% endunless %}
+    </div>
+    <div class="lumin-product-cross-sells-inner">
+      <div 
+        class="lumin-product-cross-sells-list" 
+        role="list">
+        {% for handle in product_handles %}
+          {% liquid
+            assign product = all_products[handle] 
+            assign total_price = total_price | plus: product.first_available_variant.price
+            assign total_compare_price = total_compare_price | plus: product.first_available_variant.compare_at_price
+          %}
+          <div 
+            class="lumin-product-cross-sells-item" 
+            data-cross-sells-list-item
+            data-is-selected="true"
+            role="listitem">
+            <a href="{{ product.url }}">
+              <div class="img-wrapper">
+                {% render 'lumin-image-url' img: product.featured_image, ratio: block.settings.img_ratio, class: 'd-block' %}
+              </div>
+            </a>
+            <div class="">
+              <h3 class="title h5 underline-linlumin-hover">
+                <a href="{{ product.url }}" class="full-unstyled-link" tabindex="-1">
+                  {{ product.title }}
+                </a>
+              </h3>
+              {% if product.has_only_default_variant %}
+                {% render 'price', product: product %}
+                <input 
+                  type="hidden" 
+                  name="variant-id" 
+                  value="{{ product.first_available_variant.id }}"
+                  data-price="{{ product.first_available_variant.price }}"
+                  data-compare-at-price="{{ product.first_available_variant.compare_at_price }}">
+              {% else %}
+                <div class="select">
+                  <select 
+                    class="select__select"
+                    name="variant-id" 
+                    aria-label="{{ 'cross_sells.select_variant' | t }}">
+                    {% unless product.available %}
+                      <option>
+                        {{ 'products.product.sold_out' | t }}
+                      </option>
+                    {% endunless %}
+                    {% for variant in product.variants %}
+                      <option 
+                        value="{{ variant.id }}" 
+                        data-price="{{ variant.price }}"
+                        data-compare-at-price="{{ variant.compare_at_price }}"
+                        data-variant-image="{%- if variant.image -%}{%- render 'lumin-image-url', img: variant.image, ratio: block.settings.img_ratio, only_src: true -%}{%- endif -%}"
+                        {% unless variant.available %}disabled{% endunless %}>
+                        {{ variant.title }} - {{ variant.price | money }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  <span class="svg-wrapper">
+                    {{- 'icon-caret.svg' | inline_asset_content -}}
+                  </span>
+                </div>
+              {% endif %}
+              <div class="bs-form-check fs-sm">
+                <input 
+                  id="cross-sells-selector-{{ product.id }}"
+                  class="bs-form-check-input" 
+                  type="checkbox" 
+                  value="{{ product.first_available_variant.id }}"
+                  {% unless product.available %}disabled{% endunless %}
+                  {% if product.available %}checked{% endif %}>
+                <label class="form-check-label" for="cross-sells-selector-{{ product.id }}">
+                  {% if product.available == false %}
+                    {{ 'cross_sells.sold_out' | t }}
+                  {% elsif forloop.first %}
+                    {{ 'cross_sells.current_product' | t }}
+                  {% else %}
+                    {{ 'cross_sells.select_this' | t }}
+                  {% endif %}
+                </label>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="lumin-product-cross-sells-footer" data-cross-sells-footer>
+        <p class="lumin-product-cross-sells-total-price fs-md" role="alert" aria-atomic="true">
+          {{ 'cross_sells.total_price' | t }}:
+          <s class="" {% if total_compare_price <= total_price %}hidden{% endif %}>
+            <span class="visually-hidden">
+              {{ 'products.product.price.regular_price' | t }} 
+            </span>
+            <span data-total-compare-price>
+              {{ total_compare_price | money }}
+            </span>
+          </s>
+          <b data-total-price>
+            {{ total_price | money }}
+          </b>
+        </p>
+        <p class="lumin-product-cross-sells-total-savings fs-sm" {% if total_compare_price <= total_price %}hidden{% endif %}>
+          {{ 'cross_sells.total_savings' | t }}:
+          <span data-total-savings>
+            {{ total_compare_price | minus: total_price | money }}
+          </span>
+        </p>
+        <button 
+          class="button {{ block.settings.btn_style }}"
+          {% if total_price == 0 %}disabled{% endif %}>
+          <span>{{ 'cross_sells.add_selected_to_cart' | t }}</span>
+          {%- render 'loading-spinner' -%}
+        </button>
+      </div>
+    </div>
+  </lumin-cross-sells>
+{% endif %}

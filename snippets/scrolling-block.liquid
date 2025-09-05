@@ -1,0 +1,25 @@
+{% if block.type == 'text' %}
+  <div 
+    class="scrolling-block text-block" 
+    style="color: {{ block.settings.text_color }};"
+  >
+    {{ block.settings.text }}
+  </div>
+{% elsif block.type == 'image' %}
+  <div class="scrolling-block image-block">
+    <img 
+      src="{{ block.settings.image | img_url: 'master' }}" 
+      alt="Scrolling Image" 
+      style="width: {{ block.settings.image_width }}px; height: auto; border-radius: {{ block.settings.image_radius }}px;"
+    />
+  </div>
+{% elsif block.type == 'button' %}
+  <div class="scrolling-block button-block">
+    <a 
+      href="{{ block.settings.button_link }}" 
+      style="color: {{ block.settings.button_color }}; background-color: {{ block.settings.button_background }}; border-radius: {{ block.settings.button_radius }}px; padding: 8px 16px; text-decoration: none;line-height: 1;"
+    >
+      {{ block.settings.button_text }}
+    </a>
+  </div>
+{% endif %}

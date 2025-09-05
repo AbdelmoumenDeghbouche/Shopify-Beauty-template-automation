@@ -1,0 +1,272 @@
+<style>
+  /* Existing styles Starts */
+  .scrolled-past-header .header__heading-logo-wrapper.mobile {
+    display: block !important;
+  }
+
+  .scrolled-past-header .header-wrapper {
+    background: var(--gradient-background) !important;
+  }
+
+  .scrolled-past-header .header__menu-item,
+  .scrolled-past-header .header__active-menu-item,
+  .scrolled-past-header .list-menu__item,
+  .scrolled-past-header .header__icon.link,
+  .header__active-menu-item,
+  .scrolled-past-header .disclosure__button,
+  .scrolled-past-header .header-localization:not(.menu-drawer__localization):not(.announcement-bar-localization) .localization-form__select,
+  .scrolled-past-header .header__heading-link .h2 {
+    color: rgba(var(--color-foreground), .85) !important;
+  }
+
+  .scrolled-past-header .header__heading-logo-wrapper.desktop {
+    display: none;
+  }
+
+    /* Hide image on desktop */
+  @media (min-width: 768px) {
+    .header__heading-logo-wrapper.mobile {
+      display: none;
+    }
+  }
+
+  /* Hide image on mobile */
+  @media (max-width: 767px) {
+    .header__heading-logo-wrapper.mobile {
+      display: none;
+    }
+  }
+@media only screen and (min-width: 990px) {
+    {% if template == 'index' %}
+    {% if section.settings.enable_transparent-header %}
+    .header-wrapper {
+     /* background: transparent !important;
+      position: absolute !important;*/
+      width: 100% !important;
+      top: 0px;
+
+      /*  NEW LINE OF CODE STARTS */
+      overflow: hidden;
+      /*  NEW LINE OF CODE ENDS*/
+    }
+
+.header-wrapper:hover .header__heading-logo-wrapper.mobile{
+    display: block !important;
+  }
+  .header-wrapper:hover .header__heading-logo-wrapper.desktop{
+    display: none !important;
+  }
+
+      
+        .header-wrapper:hover .header__icon.link,
+    .header-wrapper:hover .header__active-menu-item,
+    .header-wrapper:hover .list-menu__item,
+    .header-wrapper:hover details[open]>.header__submenu,
+    .header-wrapper:hover .disclosure__button,
+    .header-wrapper:hover .header__heading-link .h2 {
+      color: {{ section.settings.color-hover-text }} !important;
+    }
+     
+{% if section.settings.color-transparent %}
+@media only screen and (min-width: 600px) {
+    .list-menu__item {
+  color: {{ section.settings.color-transparent }};
+      background: transparent;
+    }
+}
+  .js .header-localization:not(.menu-drawer__localization) .localization-form__select:not(.announcement-bar-localization) {
+    color: {{ section.settings.color-transparent }};
+  }
+  .header__icon.link,.header__active-menu-item{
+  color: {{ section.settings.color-transparent }} !important;
+    }
+    {% if settings.logo != blank  %}
+    .header__heading-link .h2 {
+      color: {{ section.settings.color-transparent }} !important;
+    }
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+    details[open]>.header__submenu .list-menu__item {
+      background-color: #fff;
+      color: #000 !important;
+    }
+
+    {% if section.settings.color-transparent %}
+    @media only screen and (min-width: 600px) {
+      .list-menu__item {
+        color: {{ section.settings.color-transparent }};
+        background: transparent;
+      }
+    }
+
+      .js .header-localization:not(.menu-drawer__localization) .localization-form__select:not(.announcement-bar-localization) {
+    color: {{ section.settings.color-transparent }};
+  }
+    .header__icon.link, .header__active-menu-item{
+      color: {{ section.settings.color-transparent }} !important;
+    }
+        
+    .header__heading-link .h2 {
+      color: {{ section.settings.color-transparent }} !important;
+    }
+    {% endif %}
+    {% endif %}
+  }
+/* Existing Code Ends */
+
+/* ------------------------------------------------------------------------------------------------- */
+{% if section.settings.enable_hover_animation %}
+  
+  /* NEW CODE STARTS HERE  */
+  .header-wrapper {
+    transition: background 0.3s ease, position 0.3s ease;
+    position: static;
+    background: initial;
+  }
+  {% else %}
+  .header-wrapper {
+    transition: background 0.3s ease, position 0.3s ease;
+    position: static;
+    background: transparent;
+  }
+{% endif %}
+{% if section.settings.enable_hover_animation %}
+  
+  .scrolled-past-header .header-wrapper {
+    background: var(--gradient-background) !important;
+   /* position: fixed;
+    top: 0; */
+    width: 100%;
+  }
+ 
+      
+    .header-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: {{ section.settings.color-hover-background }} !important;
+      z-index: -1;
+      transition: top 0.5s ease;
+    }
+
+    .header-wrapper:hover::before {
+      top: 0;
+    }
+
+  .header-wrapper {
+  overflow: visible !important;
+  }
+
+  /* Mobile-specific styles for transparent header */
+  @media screen and (max-width: 750px) {
+    .header-wrapper {
+      background: transparent !important;
+     /* position: absolute !important; */ 
+    }
+    .header-wrapper::before {
+          background-color: transparent !important;
+}
+    .header__icon.link {
+      color: {{ section.settings.color-transparent }} !important;
+    }
+    {% if settings.logo == blank  %}
+    .header__heading-link .h2 {
+      color: {{ section.settings.color-transparent }} !important;
+    }
+    {% endif %}
+  }
+  /* NEW CODE ENDS */
+  {% endif %}
+</style>
+
+<a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset logo-transparent">
+      {%- if settings.logo-transparent != blank and settings.logo == blank -%}
+        <div class="header__heading-logo-wrapper desktop">
+          {%- assign logo_alt = settings.logo-transparent.alt | default: shop.name | escape -%}
+          {%- assign logo_height = settings.logo_width | divided_by: settings.logo-transparent.aspect_ratio -%}
+          {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+          {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+          {{ settings.logo-transparent | image_url: width: 600 | image_tag:
+            class: 'header__heading-logo motion-reduce',
+            widths: widths,
+            height: logo_height,
+            width: settings.logo_width,
+            alt: logo_alt,
+            sizes: sizes,
+            preload: true
+          }}
+        </div>
+      <div class="header__heading-logo-wrapper mobile">
+           <span class="h2">{{ shop.name }}</span>
+        </div>
+        {%- elsif settings.logo-transparent == blank and settings.logo != blank -%}
+          <div class="header__heading-logo-wrapper desktop">
+           {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+          {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+          {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+          {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+          {{ settings.logo | image_url: width: 600 | image_tag:
+            class: 'header__heading-logo motion-reduce',
+            widths: widths,
+            height: logo_height,
+            width: settings.logo_width,
+            alt: logo_alt,
+            sizes: sizes,
+            preload: true
+          }}
+        </div>
+        <div class="header__heading-logo-wrapper mobile">
+          {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+          {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+          {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+          {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+          {{ settings.logo | image_url: width: 600 | image_tag:
+            class: 'header__heading-logo motion-reduce',
+            widths: widths,
+            height: logo_height,
+            width: settings.logo_width,
+            alt: logo_alt,
+            sizes: sizes,
+            preload: true
+          }}
+        </div>
+        {%- elsif settings.logo-transparent != blank and settings.logo != blank -%}
+         <div class="header__heading-logo-wrapper desktop">
+          {%- assign logo_alt = settings.logo-transparent.alt | default: shop.name | escape -%}
+          {%- assign logo_height = settings.logo_width | divided_by: settings.logo-transparent.aspect_ratio -%}
+          {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+          {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+          {{ settings.logo-transparent | image_url: width: 600 | image_tag:
+            class: 'header__heading-logo motion-reduce',
+            widths: widths,
+            height: logo_height,
+            width: settings.logo_width,
+            alt: logo_alt,
+            sizes: sizes,
+            preload: true
+          }}
+        </div>
+        <div class="header__heading-logo-wrapper mobile">
+          {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+          {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+          {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+          {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+          {{ settings.logo | image_url: width: 600 | image_tag:
+            class: 'header__heading-logo motion-reduce',
+            widths: widths,
+            height: logo_height,
+            width: settings.logo_width,
+            alt: logo_alt,
+            sizes: sizes,
+            preload: true
+          }}
+        </div>
+      {%- else -%}
+        <span class="h2">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>

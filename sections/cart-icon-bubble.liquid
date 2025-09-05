@@ -1,0 +1,39 @@
+{% if cart == empty %}
+  {% if settings.cart_icon_custom != blank %}
+    <span class="svg-wrapper">{{ settings.cart_icon_custom | image_url: width: settings.custom_cart_icon | image_tag }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-bag' %}
+    <span class="svg-wrapper">{{ 'icon-cart-bag.svg' | inline_asset_content }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-bag-2' %}
+    <span class="svg-wrapper">{{ 'icon-cart-bag-2.svg' | inline_asset_content }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-bag-3' %}
+    <span class="svg-wrapper">{{ 'icon-cart-bag-3.svg' | inline_asset_content }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-2' %}
+    <span class="svg-wrapper">{{ 'icon-cart-2.svg' | inline_asset_content }}</span>
+  {% else %}
+    <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+  {% endif %}
+{% else %}
+  {% if settings.cart_icon_custom != blank %}
+    <span class="svg-wrapper">{{ settings.cart_icon_custom | image_url: width: settings.custom_cart_icon | image_tag }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-bag' %}
+    <span class="svg-wrapper">{{ 'icon-cart-bag.svg' | inline_asset_content }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-bag-2' %}
+    <span class="svg-wrapper">{{ 'icon-cart-bag-2.svg' | inline_asset_content }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-bag-3' %}
+    <span class="svg-wrapper">{{ 'icon-cart-bag-3.svg' | inline_asset_content }}</span>
+  {% elsif settings.cart_icon == 'icon-cart-2' %}
+    <span class="svg-wrapper">{{ 'icon-cart-2.svg' | inline_asset_content }}</span>
+  {% else %}
+    <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+  {% endif %}
+{% endif %}
+
+<span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+{%- if cart != empty -%}
+  <div class="cart-count-bubble">
+    {%- if cart.item_count < 100 -%}
+      <span aria-hidden="true">{{ cart.item_count }}</span>
+    {%- endif -%}
+    <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+  </div>
+{%- endif -%}

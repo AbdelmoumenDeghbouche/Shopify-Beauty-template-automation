@@ -1,0 +1,310 @@
+{% assign lumin_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .lumin-image-block-{{ lumin_id }} {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .lumin-image-wrapper-{{ lumin_id }} {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .lumin-image-{{ lumin_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: {{ block.settings.object_fit }};
+    {% if block.settings.aspect_ratio != 'auto' %}
+      aspect-ratio: {{ block.settings.aspect_ratio | replace: ':', '/' }};
+    {% endif %}
+  }
+
+  .lumin-image-placeholder-{{ lumin_id }} {
+    width: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    {% if block.settings.aspect_ratio != 'auto' %}
+      aspect-ratio: {{ block.settings.aspect_ratio | replace: ':', '/' }};
+    {% else %}
+      min-height: 300px;
+    {% endif %}
+  }
+
+  .lumin-image-placeholder-{{ lumin_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+    opacity: 0.3;
+  }
+
+  .lumin-image-overlay-{{ lumin_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: {{ block.settings.overlay_vertical_alignment }};
+    align-items: {{ block.settings.overlay_horizontal_alignment }};
+    padding: {{ block.settings.overlay_padding }}px;
+    {% assign opacity_decimal = block.settings.overlay_opacity | divided_by: 100.0 %}
+    {% assign start_color = block.settings.overlay_color_start | color_modify: 'alpha', opacity_decimal %}
+    {% assign end_color = block.settings.overlay_color_end | color_modify: 'alpha', opacity_decimal %}
+    background: linear-gradient(
+      {{ block.settings.overlay_gradient_direction }}deg,
+      {{ start_color }},
+      {{ end_color }}
+    );}
+
+  .lumin-image-overlay-title-{{ lumin_id }} {
+    color: {{ block.settings.overlay_text_color }};
+    font-size: {{ block.settings.overlay_title_size }}px;
+    font-weight: 600;
+    margin: 0 0 {{ block.settings.overlay_title_spacing }}px 0;
+    text-align: {{ block.settings.overlay_text_alignment }};
+    line-height: 1.2;
+  }
+
+  .lumin-image-overlay-text-{{ lumin_id }} {
+    color: {{ block.settings.overlay_text_color }};
+    font-size: {{ block.settings.overlay_text_size }}px;
+    margin: 0;
+    text-align: {{ block.settings.overlay_text_alignment }};
+    line-height: 1.2;
+  }
+  .lumin-image-overlay-text-{{ lumin_id }} p{
+    margin: 0;
+  }
+
+  .lumin-image-content-{{ lumin_id }} {
+    margin-top: {{ block.settings.content_spacing }}px;
+  }
+
+  .lumin-image-title-{{ lumin_id }} {
+    color: {{ block.settings.title_color }};
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 600;
+    margin: 0 0 {{ block.settings.title_spacing }}px 0;
+    text-align: {{ block.settings.content_alignment }};
+    line-height: 1.2;
+  }
+
+  .lumin-image-text-{{ lumin_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    margin: 0 0 {{ block.settings.text_spacing }}px 0;
+    text-align: {{ block.settings.content_alignment }};
+    line-height: 1.2;
+  }
+  .lumin-image-text-{{ lumin_id }} p{
+    margin: 0;
+  }
+
+  .lumin-image-caption-{{ lumin_id }} {
+    color: {{ block.settings.caption_color }};
+    font-size: {{ block.settings.caption_size }}px;
+    margin: 0;
+    text-align: {{ block.settings.content_alignment }};
+    line-height: 1.4;
+  }
+
+  {% if block.settings.enable_lightbox %}
+    .lumin-image-wrapper-{{ lumin_id }} {
+      cursor: pointer;
+    }
+
+    .lumin-image-wrapper-{{ lumin_id }}:hover .lumin-image-{{ lumin_id }} {
+      transform: scale(1.02);
+      transition: transform 0.3s ease;
+    }
+
+    .lumin-lightbox-{{ lumin_id }} {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lumin-lightbox-{{ lumin_id }}.active {
+      display: flex;
+    }
+
+    .lumin-lightbox-image-{{ lumin_id }} {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .lumin-lightbox-close-{{ lumin_id }} {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      padding: 10px;
+      line-height: 1;
+    }
+
+    .lumin-lightbox-close-{{ lumin_id }}:hover {
+      opacity: 0.7;
+    }
+  {% endif %}
+
+  @media screen and (max-width: 749px) {
+    .lumin-image-overlay-title-{{ lumin_id }} {
+      font-size: {{ block.settings.overlay_title_size | times: 0.8 }}px;
+    }
+
+    .lumin-image-overlay-text-{{ lumin_id }} {
+      font-size: {{ block.settings.overlay_text_size | times: 0.9 }}px;
+    }
+
+    .lumin-image-title-{{ lumin_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .lumin-image-text-{{ lumin_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+
+    .lumin-image-caption-{{ lumin_id }} {
+      font-size: {{ block.settings.caption_size | times: 0.9 }}px;
+    }
+
+    .lumin-image-overlay-{{ lumin_id }} {
+      padding: {{ block.settings.overlay_padding | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<image-block-{{ lumin_id }}
+  class="lumin-image-block-{{ lumin_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="lumin-image-wrapper-{{ lumin_id }}" {% if block.settings.enable_lightbox %}data-lightbox-trigger{% endif %}>
+    {% if block.settings.image %}
+      <img
+        src="{{ block.settings.image | image_url: width: 2000 }}"
+        alt="{{ block.settings.image.alt | escape }}"
+        loading="lazy"
+        width="{{ block.settings.image.width }}"
+        height="{{ block.settings.image.height }}"
+        class="lumin-image-{{ lumin_id }}"
+      >
+    {% else %}
+      <div class="lumin-image-placeholder-{{ lumin_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_overlay and block.settings.image %}
+      <div class="lumin-image-overlay-{{ lumin_id }}">
+        {% if block.settings.overlay_title != blank %}
+          <h3 class="lumin-image-overlay-title-{{ lumin_id }}">{{ block.settings.overlay_title }}</h3>
+        {% endif %}
+        {% if block.settings.overlay_text != blank %}
+          <div class="lumin-image-overlay-text-{{ lumin_id }}">{{ block.settings.overlay_text }}</div>
+        {% endif %}</div>
+    {% endif %}
+  </div>
+
+  {% unless block.settings.show_overlay %}
+    {% if block.settings.show_title and block.settings.title != blank or block.settings.show_text and block.settings.text != blank or block.settings.caption != blank %}
+      <div class="lumin-image-content-{{ lumin_id }}">
+        {% if block.settings.show_title and block.settings.title != blank %}
+          <h3 class="lumin-image-title-{{ lumin_id }}">{{ block.settings.title }}</h3>
+        {% endif %}
+        {% if block.settings.show_text and block.settings.text != blank %}
+          <div class="lumin-image-text-{{ lumin_id }}">{{ block.settings.text }}</div>
+        {% endif %}
+        {% if block.settings.caption != blank %}
+          <div class="lumin-image-caption-{{ lumin_id }}">{{ block.settings.caption }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endunless %}
+
+  {% if block.settings.enable_lightbox and block.settings.image %}
+    <div class="lumin-lightbox-{{ lumin_id }}" data-lightbox>
+      <button class="lumin-lightbox-close-{{ lumin_id }}" data-lightbox-close aria-label="Close lightbox">&times;</button>
+      <img
+        src="{{ block.settings.image | image_url: width: 2000 }}"
+        alt="{{ block.settings.image.alt | escape }}"
+        class="lumin-lightbox-image-{{ lumin_id }}"
+      >
+    </div>
+  {% endif %}
+</image-block-{{ lumin_id }}>
+
+{% if block.settings.enable_lightbox %}
+  <script>
+    (function() {
+      class ImageBlock{{ lumin_id }} extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.lightboxTrigger = this.querySelector('[data-lightbox-trigger]');
+          this.lightbox = this.querySelector('[data-lightbox]');
+          this.lightboxClose = this.querySelector('[data-lightbox-close]');
+
+          if (this.lightboxTrigger && this.lightbox) {
+            this.setupEventListeners();
+          }
+        }
+
+        setupEventListeners() {
+          this.lightboxTrigger.addEventListener('click', () => {
+            this.openLightbox();
+          });
+
+          this.lightboxClose.addEventListener('click', () => {
+            this.closeLightbox();
+          });
+
+          this.lightbox.addEventListener('click', (event) => {
+            if (event.target === this.lightbox) {
+              this.closeLightbox();
+            }
+          });document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && this.lightbox.classList.contains('active')) {
+              this.closeLightbox();
+            }
+          });
+        }
+
+        openLightbox() {
+          this.lightbox.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+
+        closeLightbox() {
+          this.lightbox.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      }
+
+      customElements.define('image-block-{{ lumin_id }}', ImageBlock{{ lumin_id }});
+    })();
+  </script>
+{% endif %}

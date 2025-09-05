@@ -1,0 +1,168 @@
+{% if settings.enable_cart_upsell_product %}
+<style>
+    .cart-drawer-upsell-list form {
+      justify-content: {{ settings.title_text_align }};
+  }
+  .cart-drawer-upsell-list-item-left img {
+    border-top-left-radius:{{ settings.upsell_border_radius }}px;
+     {% if settings.list_style_cart_drawer == 'scroll' %}
+    border-top-right-radius:{{ settings.upsell_border_radius }}px;
+    {% else %}
+    border-bottom-left-radius:{{ settings.upsell_border_radius }}px;
+    {% endif %}
+  }
+    .cart-drawer-upsell-list[data-list-style-cart-drawer="scroll"] {
+    {% if settings.upsell_product_per_page == 'one' %}
+    grid-auto-columns: minmax(80%, 1fr);
+      {% elsif settings.upsell_product_per_page == 'two' %}
+    grid-auto-columns: minmax(80%, 1fr);
+        {% else %}
+    grid-auto-columns: minmax(80%, 1fr);
+          {% endif %}
+  }
+  .cart-drawer-upsell-list[data-list-style-cart-drawer="stack"]
+    .cart-drawer-upsell-list-item {
+   {% if settings.upsell_product_per_page == 'one' %}
+    width:95%;
+      {% elsif settings.upsell_product_per_page == 'two' %}
+    width: 46%;
+        {% else %}
+    width: 30%;
+        {% endif %}
+  }
+  {% if settings.list_style_cart_drawer == 'stack' %}
+  .lumin-wrapper{
+  flex-direction: column;
+}
+    .cart-drawer-upsell-list-item .cart-item__name {
+    -webkit-line-clamp: 2;
+}
+  {% endif %}}
+</style>
+
+<div id="cart-drawer-upsell-wrapper">
+  <div
+    id="cart-drawer-upsell"
+    class="gradient color-{{ settings.upsell_main_color_scheme }}"
+    style="padding: 1rem 0 1rem 2rem;border-top:.1rem solid rgba(var(--color-foreground), .06);"
+    {% if request.page_type == 'cart' and settings.show_empty_cart == false and cart.item_count == 0 %}
+      hidden
+    {% endif %}
+  >
+    <h3
+      class="cart-drawer-upsell-title"
+      style="text-align: {{ settings.title_text_align }}"
+    >
+      <span>
+        {{ settings.title }}
+      </span>
+    </h3>
+    <ul
+      class="cart-drawer-upsell-list"
+      data-list-style-cart-drawer="{{ settings.list_style_cart_drawer }}"
+      data-list-style-cart-page="{{ settings.list_style_cart_page }}"
+    >
+      {% for product in settings.collection.products limit: settings.limit %}
+        {% liquid
+          assign is_in_cart = false
+          for line_item in cart.items
+            if line_item.product.id == product.id
+              assign is_in_cart = true
+            endif
+          endfor
+        %}
+        {% if is_in_cart == false and product.available %}
+          <li
+            class="cart-drawer-upsell-list-item gradient color-{{ settings.upsell_color_scheme }}"
+            style="border-radius:{{ settings.upsell_border_radius }}px;{% if settings.upsell_border %} border: {{ settings.upsell_border_width }}px solid {{ settings.Upsell_border_color }};{% endif %}"
+          >
+            <div class="cart-drawer-upsell-list-item-left">
+              <a href="{{ product.url }}" tabindex="-1">
+                <img
+                  src="{{ product.featured_image | image_url: width: 300 }}"
+                  class="cart-item__image"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  width="150"
+                  height="{{ 150 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                  loading="lazy"
+                >
+              </a>
+            </div>
+            <div class="cart-drawer-upsell-list-item-right">
+              <a
+                href="{{ product.url }}"
+                class="cart-item__name h4 break"
+                style="text-align: {{ settings.product_text_align }}"
+              >
+                {{ product.title }}
+              </a>
+              <product-form data-section-id="{{ id }}">
+                {%- form 'product', product, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                  <div class="lumin-wrapper" style="justify-items: {{ settings.product_text_align }};">
+                    {% if product.has_only_default_variant %}
+                      <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
+                      <div class="product-option">
+                        {% if product.compare_at_price > product.price %}
+                          <span class="visually-hidden visually-hidden--inline">
+                            {{ 'products.product.price.regular_price' | t }}
+                          </span>
+                          <s>
+                            {{ product.compare_at_price | money }}
+                          </s>
+                        {% endif %}
+                        {{ product.price | money }}
+                      </div>
+                    {% else %}
+                      <div class="field-wrapper">
+                        <div class="select">
+                          <select
+                            id="cart-drawer-upsell-selector-{{ forloop.index }}"
+                            name="id"
+                            class="select__select"
+                            aria-label="Select variant"
+                            onchange="onChangeKsUpsellVariantSelector(this, event)"
+                          >
+                            {% for variant in product.variants %}
+                              <option
+                                value="{{ variant.id }}"
+                                data-variant-img="{% if variant.image %}{{ variant.image | image_url: width: 300 }}{% endif %}"
+                                {% if variant.available == false %}
+                                  disabled
+                                {% endif %}
+                              >
+                                {{ variant.title }} -
+                                {% if variant.available == false %}
+                                  {{ 'products.product.sold_out' | t }}
+                                {% else %}
+                                  {{ variant.price | money }}
+                                {% endif %}
+                              </option>
+                            {% endfor %}
+                          </select>
+                          <!-- {% render 'icon-caret' %} -->
+                        </div>
+                      </div>
+                    {% endif %}
+                    <button
+                      type="submit"
+                      name="add"
+                      class="{% if settings.upsell_btn_style == 'link' %}link{% else %}button button--{{ settings.upsell_btn_style }}{% endif %}"
+                    >
+                      {% if settings.upsell_btn_text != blank %}
+                        {{ settings.upsell_btn_text }}
+                      {% else %}
+                        <span>{{ 'products.product.add_to_cart' | t }}</span>
+                      {% endif %}
+                      {%- render 'loading-spinner' -%}
+                    </button>
+                  </div>
+                {% endform %}
+              </product-form>
+            </div>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endif %}

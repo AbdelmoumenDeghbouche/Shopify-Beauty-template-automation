@@ -1,0 +1,76 @@
+/* Variant option styles */
+:root {
+  --variant-swatch-border-width: max(0.1rem, var(--variant-pills-border-width));
+}
+
+input[type="radio"] + .swatch-input__label.lumin-variant-image {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 0px solid rgb(0 0 0 / var(--variant-pills-border-opacity));
+}
+input[type="radio"] + .swatch-input__label.lumin-variant-image:not(.swatch-image) {
+    box-shadow: 0 0 0 1px rgba(var(--color-background)), inset 0 0 1px rgba(var(--color-foreground), 0.1), inset 1px 3px 0 rgba(var(--color-foreground), 0.15);
+  }
+
+/* Style for checked/selected variant image */
+input[type="radio"]:checked + .swatch-input__label.lumin-variant-image {
+    border: 2px solid rgba(var(--color-background));
+    box-shadow: 0 0 0 1px rgba(var(--color-background)),inset 0 0 1px rgba(var(--color-foreground),.1),inset 1px 3px rgba(var(--color-foreground),.15)
+    transform: scale(1.05);
+    outline: max(2px, var(--variant-swatch-border-width)) solid rgba(var(--color-foreground));
+}
+
+/* Style for checked/selected color swatch */
+input[type="radio"]:checked + .swatch-input__label[data-color] {
+    border: 2px solid rgba(var(--color-background));
+    box-shadow: 0 0 0 1px rgba(var(--color-background)),inset 0 0 1px rgba(var(--color-foreground),.1),inset 1px 3px rgba(var(--color-foreground),.15)
+    transform: scale(1.05);
+    outline: max(2px, var(--variant-swatch-border-width)) solid rgba(var(--color-foreground));
+}
+input[type="radio"]:checked + .swatch-input__label.lumin-variant-image:before {
+    box-shadow: none;
+}
+
+/* Hover effects */
+.swatch-input__label:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 1px rgba(var(--color-foreground));
+}
+.swatch-input__label:hover::before {
+    box-shadow: none !important;
+  }
+
+/* Disabled state */
+input[type="radio"].disabled + .swatch-input__label {
+  opacity: 0.5;
+  border: 0px solid rgba(var(--color-foreground));
+}
+input[type="radio"].disabled + .swatch-input__label:before {
+    box-shadow: none;
+    background: linear-gradient(to bottom right, transparent calc(50% - .7px), rgb(var(--color-foreground)) calc(50% - .7px) calc(50% + .7px), transparent calc(50% + .7px));
+}
+input[type="radio"].disabled + .swatch-input__label:after {
+    --diagonal--size: calc(var(--swatch-input--size) * 1.414);
+    --crossed-line--size: 0rem;
+    content: '';
+    position: absolute;
+    bottom: calc(var(--crossed-line--size) * -0.5);
+    left: 0;
+    width: var(--diagonal--size);
+    height: var(--crossed-line--size);
+    background-color: rgb(var(--color-foreground));
+    transform: rotate(-45deg);
+    transform-origin: left;
+}
+
+/* Ensure proper sizing and alignment */
+.swatch-input__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem;
+  border: 1px solid rgba(var(--color-foreground));
+  border-radius: var(--border-radius);
+  overflow: hidden;
+} 

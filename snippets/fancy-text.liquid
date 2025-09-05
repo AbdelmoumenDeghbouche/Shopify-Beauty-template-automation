@@ -1,0 +1,18 @@
+{% if block.settings.outline_all %}
+  <span class="scrolling-outlinel">{{ block.settings.text }}</span>
+{% else %}
+  {% if block.settings.outline_text != blank %}
+    {% assign outline_parts = block.settings.outline_text | split: ',' %}
+    {% assign return_text = block.settings.text %}
+    {% for item in outline_parts %}
+      {% if return_text contains item %}
+        {% assign span_tag = '<span class="scrolling-outlinel">' | append: item %}
+        {% assign span_tag = span_tag | append: '</span>' %}
+        {% assign return_text = return_text | replace: item, span_tag %}
+      {% endif %}
+    {% endfor %}
+    {{return_text }}
+  {% else %}
+    {{ block.settings.text}}
+  {% endif %}
+{% endif %}

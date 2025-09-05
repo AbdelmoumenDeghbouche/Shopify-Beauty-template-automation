@@ -1,0 +1,448 @@
+{{ 'component-quantity-breaks.css' | asset_url | stylesheet_tag }}
+{% assign product_form_id = product_form_id %}
+        <div class="quantity-breaks-container">
+            <h3 class='quantity-breaks__title'>
+                <span></span>
+                <span>{{ block.settings.headline }}</span>
+                <span></span>
+            </h3>
+            {% if block.settings.option_1_quantity != 0 %}
+            <input id="quantity1" aria-label="Quantity" type="radio" name="quantity" value="{{ block.settings.option_1_quantity }}" form="{{ product_form_id }}" {% if block.settings.preselected == 'option_1' %} checked{% endif %} {% if product.has_only_default_variant == false and block.settings.option_1_quantity != 1 %}onchange="resetIdInputValue()"{% endif %}>
+            <label for="quantity1" class="quantity-break" data-quantity="{{ block.settings.option_1_quantity }}">
+                {% if block.settings.display_badge == "option_1" %}
+                  <p class='quantity-break__badge'>
+                    {{ block.settings.badge_text }}
+                  </p>
+                {% endif %}
+                <div class='quantity-break__content'>
+                    <div class='quantity-break__left'>
+                        <span class='quantity-break__label'>
+                            <span class='quantity-break__label-text'>
+                              {%- if block.settings.option_1_label != blank -%}
+                                  {{ block.settings.option_1_label }}
+                              {%- else -%}
+                                  Buy {{ block.settings.option_1_quantity }}
+                              {%- endif -%}
+                            </span>
+                            {% if block.settings.option_1_benefit != blank %}
+                              <span class='quantity-break__benefit'>{{ block.settings.option_1_benefit }}</span>
+                            {% endif %}
+                        </span> 
+                        {% if block.settings.option_1_caption != blank %}
+                            <span class="quantity-break__caption">
+                              {% if block.settings.option_1_caption contains "[" and block.settings.option_1_caption contains "]" %}
+                                {% liquid
+                                  assign option_1_caption_number_start = block.settings.option_1_caption | split: "[" | last
+                                  assign option_1_caption_number = option_1_caption_number_start | split: "]" | first | times: 1
+                                  assign option_1_caption_start = block.settings.option_1_caption | split: "[" | first
+                                  assign option_1_caption_end =  block.settings.option_1_caption | split: "]"
+                                %}
+                                {{ option_1_caption_start }}<span>{{ option_1_caption_number | times: 100 | money }}</span>{{ option_1_caption_end[1] }}
+                              {% else %}
+                                {{ block.settings.option_1_caption }}
+                              {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class='quantity-break__right' id="option-1-price-{{ section.id }}">
+                        <span class='quantity-break__price'>
+                            {% assign price = product.selected_or_first_available_variant.price %}
+              
+                            {% if block.settings.option_1_discount_type == 'none' %}
+                              {{ price | times: block.settings.option_1_quantity | money }}
+                            {% elsif block.settings.option_1_discount_type == 'percentage' %}
+                              {% assign option_1_percentage_left = 100 | minus: block.settings.option_1_percentage_off %}
+                              {{ price | times: block.settings.option_1_quantity | times: option_1_percentage_left | divided_by: 100.00 | money }}
+                            {% else %}
+                              {% assign option_1_fixed_amount_off = block.settings.option_1_fixed_amount_off | times: 100.00 %}
+                              {{ price | times: block.settings.option_1_quantity | minus: option_1_fixed_amount_off | money }}
+                            {% endif %}
+                        </span>
+                        {%- unless block.settings.option_1_discount_type == 'none' and product.selected_or_first_available_variant.compare_at_price == blank -%}
+                            <span class='quantity-break__compare-price'>
+                                {% if product.selected_or_first_available_variant.compare_at_price != blank %}
+                                  {{ product.selected_or_first_available_variant.compare_at_price | times: block.settings.option_1_quantity | money }}
+                                {% else %}
+                                  {{ product.selected_or_first_available_variant.price | times: block.settings.option_1_quantity | money }}
+                                {% endif %}
+                            </span>
+                        {%- endunless -%}
+                    </div>
+                </div>
+                {% if product.has_only_default_variant == false and block.settings.option_1_quantity != 1 and block.settings.enable_variant_selectors %}
+                    <div class='quantity-break__variants' id="option-1-variant-{{ section.id }}">
+                      {% for selectorItem in (1..block.settings.option_1_quantity) %}
+                        <div class='quantity-break__selector-item'>
+                          <span class='quantity-break__selector-item__number'>#{{ selectorItem }}</span>
+                          <div class='select select--small'>
+                            <select
+                              class="quantity-break__variant-select select__select variant-dropdown"
+                              name="id"
+                              aria-label="Select variant"
+                              onchange="quantityBreakVariantChange(event, {{ block.settings.option_1_quantity }}, {{ forloop.index }})"
+                            >
+                              {% for variant in product.variants %}
+                                <option
+                                  value="{{ variant.id }}"
+                                  data-compare-price="{{ variant.compare_at_price }}"
+                                  data-price="{{ variant.price }}"
+                                  {% if product.selected_or_first_available_variant.id == variant.id %}
+                                    selected
+                                  {% endif %}
+                                  {% unless variant.available %}
+                                    disabled
+                                  {% endunless %}
+                                >
+                                  {{ variant.title }}
+                                </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                {% endif %}
+            </label>
+        {% endif %}
+        {% if block.settings.option_2_quantity != 0 %}
+            <input id="quantity2" aria-label="Quantity" type="radio" name="quantity" value="{{ block.settings.option_2_quantity }}" form="{{ product_form_id }}" {% if block.settings.preselected == 'option_2' %} checked{% endif %} {% if product.has_only_default_variant == false and block.settings.option_2_quantity != 1 %}onchange="resetIdInputValue()"{% endif %}>
+            <label for="quantity2" class="quantity-break" data-quantity="{{ block.settings.option_2_quantity }}">
+                {% if block.settings.display_badge == "option_2" %}
+                  <p class='quantity-break__badge'>
+                    {{ block.settings.badge_text }}
+                  </p>
+                {% endif %}
+                <div class='quantity-break__content'>
+                    <div class='quantity-break__left'>
+                        <span class='quantity-break__label'>
+                            <span class='quantity-break__label-text'>
+                              {%- if block.settings.option_2_label != blank -%}
+                                  {{ block.settings.option_2_label }}
+                              {%- else -%}
+                                  Buy {{ block.settings.option_2_quantity }}
+                              {%- endif -%}
+                            </span>
+                            {% if block.settings.option_2_benefit != blank %}
+                              <span class='quantity-break__benefit'>{{ block.settings.option_2_benefit }}</span>
+                            {% endif %}
+                        </span> 
+                        {% if block.settings.option_2_caption != blank %}
+                            <span class="quantity-break__caption">
+                              {% if block.settings.option_2_caption contains "[" and block.settings.option_2_caption contains "]" %}
+                                {% liquid
+                                  assign option_2_caption_number_start = block.settings.option_2_caption | split: "[" | last
+                                  assign option_2_caption_number = option_2_caption_number_start | split: "]" | first | times: 1
+                                  assign option_2_caption_start = block.settings.option_2_caption | split: "[" | first
+                                  assign option_2_caption_end =  block.settings.option_2_caption | split: "]"
+                                %}
+                                {{ option_2_caption_start }}<span>{{ option_2_caption_number | times: 100 | money }}</span>{{ option_2_caption_end[1] }}
+                              {% else %}
+                                {{ block.settings.option_2_caption }}
+                              {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class='quantity-break__right' id="option-2-price-{{ section.id }}">
+                        <span class='quantity-break__price'>
+                            {% assign price = product.selected_or_first_available_variant.price %}
+              
+                            {% if block.settings.option_2_discount_type == 'none' %}
+                              {{ price | times: block.settings.option_2_quantity | money }}
+                            {% elsif block.settings.option_2_discount_type == 'percentage' %}
+                              {% assign option_2_percentage_left = 100 | minus: block.settings.option_2_percentage_off %}
+                              {{ price | times: block.settings.option_2_quantity | times: option_2_percentage_left | divided_by: 100.00 | money }}
+                            {% else %}
+                              {% assign option_2_fixed_amount_off = block.settings.option_2_fixed_amount_off | times: 100.00 %}
+                              {{ price | times: block.settings.option_2_quantity | minus: option_2_fixed_amount_off | money }}
+                            {% endif %}
+                        </span>
+                        {%- unless block.settings.option_2_discount_type == 'none' and product.selected_or_first_available_variant.compare_at_price == blank -%}
+                            <span class='quantity-break__compare-price'>
+                                {% if product.selected_or_first_available_variant.compare_at_price != blank %}
+                                  {{ product.selected_or_first_available_variant.compare_at_price | times: block.settings.option_2_quantity | money }}
+                                {% else %}
+                                  {{ product.selected_or_first_available_variant.price | times: block.settings.option_2_quantity | money }}
+                                {% endif %}
+                            </span>
+                        {%- endunless -%}
+                    </div>
+                </div>
+                {% if product.has_only_default_variant == false and block.settings.option_2_quantity != 1 and block.settings.enable_variant_selectors %}
+                    <div class='quantity-break__variants' id="option-2-variant-{{ section.id }}">
+                      {% for selectorItem in (1..block.settings.option_2_quantity) %}
+                        <div class='quantity-break__selector-item'>
+                          <span class='quantity-break__selector-item__number'>#{{ selectorItem }}</span>
+                          <div class='select select--small'>
+                            <select
+                              class="quantity-break__variant-select select__select variant-dropdown"
+                              name="id"
+                              aria-label="Select variant"
+                              onchange="quantityBreakVariantChange(event, {{ block.settings.option_2_quantity }}, {{ forloop.index }})"
+                            >
+                              {% for variant in product.variants %}
+                                <option
+                                  value="{{ variant.id }}"
+                                  data-compare-price="{{ variant.compare_at_price }}"
+                                  data-price="{{ variant.price }}"
+                                  {% if product.selected_or_first_available_variant.id == variant.id %}
+                                    selected
+                                  {% endif %}
+                                  {% unless variant.available %}
+                                    disabled
+                                  {% endunless %}
+                                >
+                                  {{ variant.title }}
+                                </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                {% endif %}
+            </label>
+        {% endif %}
+        {% if block.settings.option_3_quantity != 0 %}
+            <input id="quantity3" aria-label="Quantity" type="radio" name="quantity" value="{{ block.settings.option_3_quantity }}" form="{{ product_form_id }}" {% if block.settings.preselected == 'option_3' %} checked{% endif %} {% if product.has_only_default_variant == false and block.settings.option_3_quantity != 1 %}onchange="resetIdInputValue()"{% endif %}>
+            <label for="quantity3" class="quantity-break" data-quantity="{{ block.settings.option_3_quantity }}">
+                {% if block.settings.display_badge == "option_3" %}
+                  <p class='quantity-break__badge'>
+                    {{ block.settings.badge_text }}
+                  </p>
+                {% endif %}
+                <div class='quantity-break__content'>
+                    <div class='quantity-break__left'>
+                        <span class='quantity-break__label'>
+                            <span class='quantity-break__label-text'>
+                              {%- if block.settings.option_3_label != blank -%}
+                                  {{ block.settings.option_3_label }}
+                              {%- else -%}
+                                  Buy {{ block.settings.option_3_quantity }}
+                              {%- endif -%}
+                            </span>
+                            {% if block.settings.option_3_benefit != blank %}
+                              <span class='quantity-break__benefit'>{{ block.settings.option_3_benefit }}</span>
+                            {% endif %}
+                        </span> 
+                        {% if block.settings.option_3_caption != blank %}
+                            <span class="quantity-break__caption">
+                              {% if block.settings.option_3_caption contains "[" and block.settings.option_3_caption contains "]" %}
+                                {% liquid
+                                  assign option_3_caption_number_start = block.settings.option_3_caption | split: "[" | last
+                                  assign option_3_caption_number = option_3_caption_number_start | split: "]" | first | times: 1
+                                  assign option_3_caption_start = block.settings.option_3_caption | split: "[" | first
+                                  assign option_3_caption_end =  block.settings.option_3_caption | split: "]"
+                                %}
+                                {{ option_3_caption_start }}<span>{{ option_3_caption_number | times: 100 | money }}</span>{{ option_3_caption_end[1] }}
+                              {% else %}
+                                {{ block.settings.option_3_caption }}
+                              {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class='quantity-break__right' id="option-3-price-{{ section.id }}">
+                        <span class='quantity-break__price'>
+                            {% assign price = product.selected_or_first_available_variant.price %}
+              
+                            {% if block.settings.option_3_discount_type == 'none' %}
+                              {{ price | times: block.settings.option_3_quantity | money }}
+                            {% elsif block.settings.option_3_discount_type == 'percentage' %}
+                              {% assign option_3_percentage_left = 100 | minus: block.settings.option_3_percentage_off %}
+                              {{ price | times: block.settings.option_3_quantity | times: option_3_percentage_left | divided_by: 100.00 | money }}
+                            {% else %}
+                              {% assign option_3_fixed_amount_off = block.settings.option_3_fixed_amount_off | times: 100.00 %}
+                              {{ price | times: block.settings.option_3_quantity | minus: option_3_fixed_amount_off | money }}
+                            {% endif %}
+                        </span>
+                        {%- unless block.settings.option_3_discount_type == 'none' and product.selected_or_first_available_variant.compare_at_price == blank -%}
+                            <span class='quantity-break__compare-price'>
+                                {% if product.selected_or_first_available_variant.compare_at_price != blank %}
+                                  {{ product.selected_or_first_available_variant.compare_at_price | times: block.settings.option_3_quantity | money }}
+                                {% else %}
+                                  {{ product.selected_or_first_available_variant.price | times: block.settings.option_3_quantity | money }}
+                                {% endif %}
+                            </span>
+                        {%- endunless -%}
+                    </div>
+                </div>
+                {% if product.has_only_default_variant == false and block.settings.option_3_quantity != 1 and block.settings.enable_variant_selectors %}
+                    <div class='quantity-break__variants' id="option-3-variant-{{ section.id }}">
+                      {% for selectorItem in (1..block.settings.option_3_quantity) %}
+                        <div class='quantity-break__selector-item'>
+                          <span class='quantity-break__selector-item__number'>#{{ selectorItem }}</span>
+                          <div class='select select--small'>
+                            <select
+                              class="quantity-break__variant-select select__select variant-dropdown"
+                              name="id"
+                              aria-label="Select variant"
+                              onchange="quantityBreakVariantChange(event, {{ block.settings.option_3_quantity }}, {{ forloop.index }})"
+                            >
+                              {% for variant in product.variants %}
+                                <option
+                                  value="{{ variant.id }}"
+                                  data-compare-price="{{ variant.compare_at_price }}"
+                                  data-price="{{ variant.price }}"
+                                  {% if product.selected_or_first_available_variant.id == variant.id %}
+                                    selected
+                                  {% endif %}
+                                  {% unless variant.available %}
+                                    disabled
+                                  {% endunless %}
+                                >
+                                  {{ variant.title }}
+                                </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                {% endif %}
+            </label>
+        {% endif %}
+        {% if block.settings.option_4_quantity != 0 %}
+            <input id="quantity4" aria-label="Quantity" type="radio" name="quantity" value="{{ block.settings.option_4_quantity }}" form="{{ product_form_id }}" {% if block.settings.preselected == 'option_4' %} checked{% endif %} {% if product.has_only_default_variant == false and block.settings.option_4_quantity != 1 %}onchange="resetIdInputValue()"{% endif %}>
+            <label for="quantity4" class="quantity-break" data-quantity="{{ block.settings.option_4_quantity }}">
+                {% if block.settings.display_badge == "option_4" %}
+                  <p class='quantity-break__badge'>
+                    {{ block.settings.badge_text }}
+                  </p>
+                {% endif %}
+                <div class='quantity-break__content'>
+                    <div class='quantity-break__left'>
+                        <span class='quantity-break__label'>
+                            <span class='quantity-break__label-text'>
+                              {%- if block.settings.option_4_label != blank -%}
+                                  {{ block.settings.option_4_label }}
+                              {%- else -%}
+                                  Buy {{ block.settings.option_4_quantity }}
+                              {%- endif -%}
+                            </span>
+                            {% if block.settings.option_4_benefit != blank %}
+                              <span class='quantity-break__benefit'>{{ block.settings.option_4_benefit }}</span>
+                            {% endif %}
+                        </span> 
+                        {% if block.settings.option_4_caption != blank %}
+                            <span class="quantity-break__caption">
+                              {% if block.settings.option_4_caption contains "[" and block.settings.option_4_caption contains "]" %}
+                                {% liquid
+                                  assign option_4_caption_number_start = block.settings.option_4_caption | split: "[" | last
+                                  assign option_4_caption_number = option_4_caption_number_start | split: "]" | first | times: 1
+                                  assign option_4_caption_start = block.settings.option_4_caption | split: "[" | first
+                                  assign option_4_caption_end =  block.settings.option_4_caption | split: "]"
+                                %}
+                                {{ option_4_caption_start }}<span>{{ option_4_caption_number | times: 100 | money }}</span>{{ option_4_caption_end[1] }}
+                              {% else %}
+                                {{ block.settings.option_4_caption }}
+                              {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class='quantity-break__right' id="option-4-price-{{ section.id }}">
+                        <span class='quantity-break__price'>
+                            {% assign price = product.selected_or_first_available_variant.price %}
+              
+                            {% if block.settings.option_4_discount_type == 'none' %}
+                              {{ price | times: block.settings.option_4_quantity | money }}
+                            {% elsif block.settings.option_4_discount_type == 'percentage' %}
+                              {% assign option_4_percentage_left = 100 | minus: block.settings.option_4_percentage_off %}
+                              {{ price | times: block.settings.option_4_quantity | times: option_4_percentage_left | divided_by: 100.00 | money }}
+                            {% else %}
+                              {% assign option_4_fixed_amount_off = block.settings.option_4_fixed_amount_off | times: 100.00 %}
+                              {{ price | times: block.settings.option_4_quantity | minus: option_4_fixed_amount_off | money }}
+                            {% endif %}
+                        </span>
+                        {%- unless block.settings.option_4_discount_type == 'none' and product.selected_or_first_available_variant.compare_at_price == blank -%}
+                            <span class='quantity-break__compare-price'>
+                                {% if product.selected_or_first_available_variant.compare_at_price != blank %}
+                                  {{ product.selected_or_first_available_variant.compare_at_price | times: block.settings.option_4_quantity | money }}
+                                {% else %}
+                                  {{ product.selected_or_first_available_variant.price | times: block.settings.option_4_quantity | money }}
+                                {% endif %}
+                            </span>
+                        {%- endunless -%}
+                    </div>
+                </div>
+                {% if product.has_only_default_variant == false and block.settings.option_4_quantity != 1 and block.settings.enable_variant_selectors %}
+                    <div class='quantity-break__variants' id="option-4-variant-{{ section.id }}">
+                      {% for selectorItem in (1..block.settings.option_4_quantity) %}
+                        <div class='quantity-break__selector-item'>
+                          <span class='quantity-break__selector-item__number'>#{{ selectorItem }}</span>
+                          <div class='select select--small'>
+                            <select
+                              class="quantity-break__variant-select select__select variant-dropdown"
+                              name="id"
+                              aria-label="Select variant"
+                              onchange="quantityBreakVariantChange(event, {{ block.settings.option_4_quantity }}, {{ forloop.index }})"
+                            >
+                              {% for variant in product.variants %}
+                                <option
+                                  value="{{ variant.id }}"
+                                  data-compare-price="{{ variant.compare_at_price }}"
+                                  data-price="{{ variant.price }}"
+                                  {% if product.selected_or_first_available_variant.id == variant.id %}
+                                    selected
+                                  {% endif %}
+                                  {% unless variant.available %}
+                                    disabled
+                                  {% endunless %}
+                                >
+                                  {{ variant.title }}
+                                </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                {% endif %}
+            </label>
+        {% endif %}
+    </div>
+        
+            <script>
+                        function quantityBreakVariantChange(e, quantity, selectIndex) {
+                          const productForm = document.querySelector('product-form');
+                          const formIdInput = productForm.querySelector('input[name=id]');
+                          const formIdInputValue = formIdInput.value;
+                          var formIdInputArrayValue = [];
+                          if (formIdInputValue.includes(',')) {
+                              formIdInputArrayValue = formIdInputValue.split(',');
+                          } else {
+                              for (var i =0; i<parseInt(quantity); i++) {
+                                  formIdInputArrayValue = [...formIdInputArrayValue, formIdInputValue];
+                              }
+                          }
+                          formIdInputArrayValue[selectIndex - 1] = e.target.value;
+                          const formIdInputNewValue = formIdInputArrayValue.join();
+                          formIdInput.value = formIdInputNewValue;
+                
+                          const formMultipleVariantIds = productForm.querySelector('.product-form__multiple-variant-ids');
+                          formMultipleVariantIds.innerHTML = '';
+                          for (var i=0; i<formIdInputArrayValue.length; i++) {
+                              const currentItem = formIdInputArrayValue[i];
+                              formMultipleVariantIds.innerHTML += `<input type="hidden" name="items[${i}][quantity]" value="1"><input type="hidden" name="items[${i}][id]" value="${currentItem}">`
+                          }
+                        }
+    
+                        function resetIdInputValue() {
+                          const productForm = document.querySelector('product-form');
+                          const formIdInput = productForm.querySelector('input[name=id]');
+                          const selectedVariantId = formIdInput.dataset.selectedId;
+                          formIdInput.value = selectedVariantId;
+                          const formMultipleVariantIds = productForm.querySelector('.product-form__multiple-variant-ids');
+                          if (formMultipleVariantIds) formMultipleVariantIds.innerHTML = '';
+  
+                          const variantSelects = document.querySelectorAll('.quantity-break__variant-select');
+                          variantSelects.forEach(select => {
+                            select.querySelectorAll('option').forEach(option => {
+                              option.removeAttribute('selected');
+                              if (option.value === selectedVariantId) {
+                                option.setAttribute("selected", "");
+                              }
+                            }) 
+                          })
+                        }
+                      </script>
+      
+    

@@ -1,0 +1,36 @@
+<div class="text-block" style="text-align: {{ block.settings.align }};" {{ block.shopify_attributes }}>
+  <div class="rte">
+    {{ block.settings.text }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Text",
+  "class": "text-block",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Add your text here.</p>"
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    { "name": "Text" }
+  ]
+}
+{% endschema %}
+
+

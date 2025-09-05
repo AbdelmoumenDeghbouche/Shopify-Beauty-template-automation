@@ -1,0 +1,14 @@
+{% if settings.enable_wishlist %}
+  <lumin-wishlist-btn
+    class="lumin-wishlist-btn"
+    data-product-url="{{ product.url | split: '?' | first }}"
+  >
+    <button
+      class="button button--full-width"
+      aria-pressed="false"
+    >
+      {% render 'lumin-svg-icons', icon: 'heart', size: 18, stroke_width: 1.5 %}
+      {{ 'lumintheme.wishlist.add' | t }}
+    </button>
+  </lumin-wishlist-btn>
+{% endif %}

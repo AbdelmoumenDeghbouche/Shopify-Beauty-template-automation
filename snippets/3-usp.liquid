@@ -1,0 +1,66 @@
+<div style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px;" {{ block.shopify_attributes }}>
+  <div class="tablet-container">
+    {% unless block.settings.usp_1_icon == "none" and block.settings.usp_1_text == blank %}
+  <div class="tablet">
+    {% render 'icon-accordion', icon: block.settings.usp_1_icon %}
+    <span>{{ block.settings.usp_1_text }}</span>
+  </div>
+  {% endunless %}
+
+  {% unless block.settings.usp_2_icon == "none" and block.settings.usp_2_text == blank %}
+  <div class="tablet">
+    {% render 'icon-accordion', icon: block.settings.usp_2_icon %}
+    <span>{{ block.settings.usp_2_text }}</span>
+  </div>
+  {% endunless %}
+
+  {% unless block.settings.usp_3_icon == "none" and block.settings.usp_3_text == blank %}
+  <div class="tablet">
+    {% render 'icon-accordion', icon: block.settings.usp_3_icon %}
+    <span>{{ block.settings.usp_3_text }}</span>
+  </div>
+  {% endunless %}
+</div>
+</div>
+
+<style>
+  .tablet-container {
+    width: 100%;
+    display: flex;
+    grid-template-columns: auto auto auto;
+    padding: 10px 5px;
+    background-color: {{ block.settings.background_color }};
+    border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .tablet {
+    width: 100%;
+    font-size: {{ block.settings.font_size_mobile }}px;
+    line-height: 1.1;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    gap: {{ block.settings.font_size_mobile | divided_by: 2.5 }}px;
+    align-items: center;
+    color: {{ block.settings.text_color }};
+  }
+
+  .tablet .svg-wrapper {
+    width: {{ block.settings.font_size_mobile | plus: 4 }}px;
+    height: {{ block.settings.font_size_mobile | plus: 4 }}px;
+    fill: {{ block.settings.text_color }};
+  }
+  
+
+  @media screen and (min-width: 750px) {
+    .tablet {
+      font-size: {{ block.settings.font_size_desktop }}px;
+      gap: {{ block.settings.font_size_desktop | divided_by: 2.5 }}px;
+    }
+    .tablet .svg-wrapper {
+      width: {{ block.settings.font_size_desktop | plus: 4 }}px;
+      height: {{ block.settings.font_size_desktop | plus: 4 }}px;
+    }
+  }
+</style>

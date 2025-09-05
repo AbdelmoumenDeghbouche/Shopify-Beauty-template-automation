@@ -1,0 +1,88 @@
+{% comment %}
+  Divider Section
+{% endcomment %}
+
+<style>
+  .custom-divider-{{ section.id }} {
+    width: {{ section.settings.divider_width }}%;
+    border-top: {{ section.settings.divider_thickness }}px {{ section.settings.divider_style }} {{ section.settings.divider_color }};
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+
+<div class="custom-divider-{{ section.id }}" style="display: block;"></div>
+
+{% schema %}
+{
+  "name": "Line Divider",
+  "tag": "section",
+  "class": "custom-divider",
+  "disabled_on": {
+    "groups": ["custom.popup"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Divider Width (%)",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "label": "Divider Thickness (px)",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "divider_style",
+      "label": "Divider Style",
+      "options": [
+        { "value": "solid", "label": "Solid" },
+        { "value": "dashed", "label": "Dashed" },
+        { "value": "dotted", "label": "Dotted" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top Margin (px)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom Margin (px)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Line Divider",
+      "category": "Layout"
+    }
+  ]
+}
+{% endschema %}

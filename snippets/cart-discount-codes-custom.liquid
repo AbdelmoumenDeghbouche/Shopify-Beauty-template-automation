@@ -1,0 +1,168 @@
+{% if settings.enable_cart_discounts %}
+  {% assign discount_codes = '' %}
+
+  {% for discount_application in cart.cart_level_discount_applications %}
+    {% unless discount_codes == '' %}
+      {% assign discount_codes = discount_codes | append: ',' %}
+    {% endunless %}
+    {% assign discount_codes = discount_codes | append: discount_application.title %}
+  {% endfor %}
+
+  {% for item in cart.items %}
+    {% for allocation in item.line_level_discount_allocations %}
+      {% unless discount_codes contains allocation.discount_application.title %}
+        {% unless discount_codes == '' %}
+          {% assign discount_codes = discount_codes | append: ',' %}
+        {% endunless %}
+        {% assign discount_codes = discount_codes | append: allocation.discount_application.title %}
+      {% endunless %}
+    {% endfor %}
+  {% endfor %}
+
+  <div id="discount-code-container">
+    {% if settings.enable_cart_discount_message and settings.cart_discount_message != blank %}
+      <div class="cart-discount-note">
+        {{ settings.cart_discount_message }}
+      </div>
+    {% endif %}
+
+    <div id="discount-error-message"></div>
+
+    <form id="discount-form" onsubmit="return false;">
+      <input
+        type="text"
+        id="discount-input"
+        placeholder="{{ settings.cart_discount_input_placeholder | escape }}"
+        aria-label="Discount code"
+      >
+      <button type="button" id="apply-discount-btn">
+        {{ settings.cart_discount_apply_btn_text | escape }}
+      </button>
+    </form>
+
+    <div id="applied-discounts">
+      {% if discount_codes != '' %}
+        {% assign codes_array = discount_codes | split: ',' %}
+        {% for code in codes_array %}
+          <span class="discount-pill" data-code="{{ code | escape }}">
+            <span class="svg-wrapper discount-icon">
+              {{ 'icon-price-tag.svg' | inline_asset_content }}
+            </span>
+            {{ code }}
+            <button
+              type="button"
+              class="remove-discount"
+              aria-label="Remove discount code {{ code }}"
+            >
+              <span class="svg-wrapper">
+                {{ 'icon-close.svg' | inline_asset_content }}
+              </span>
+            </button>
+          </span>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <style>
+    #discount-code-container {
+      margin: 1rem 0;
+    }
+
+    #discount-form {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    #discount-input {
+      color: var(--discount-input-text-color);
+      background-color: var(--discount-input-bg-color);
+      flex: 1;
+      min-width: 150px;
+      padding: var(--discount-input-padding-vertical) 1rem;
+      border: 1px solid var(--discount-input-border-color);
+      border-radius: {{ settings.cart_discount_input_radius }}px;
+      font-size: var(--discount-input-font-size);
+      --focused-base-box-shadow: none;
+      --focused-base-outline-offset: 0;
+      --focused-base-outline: 0;
+    }
+    #discount-input::placeholder {
+      color: var(--discount-input-placeholder-color);
+    }
+
+    #apply-discount-btn {
+      padding: var(--discount-input-padding-vertical) 2rem;
+      background-color: var(--discount-button-bg-color);
+      color: var(--discount-button-text-color);
+      cursor: pointer;
+      border: none;
+      border-radius: {{ settings.cart_discount_input_radius }}px;
+      font-size: var(--discount-button-font-size);
+      font-weight: {{ settings.type_button_font_weight }};
+    }
+    #apply-discount-btn:hover {
+      filter: brightness(0.9);
+    }
+
+    #applied-discounts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .discount-pill {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--discount-pill-bg);
+      color: var(--discount-pill-text);
+      font-size: var(--discount-pill-font-size);
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .discount-pill svg {
+      width: var(--discount-pill-font-size);
+      height: var(--discount-pill-font-size);
+      color: var(--discount-pill-text);
+      fill: var(--discount-pill-text);
+    }
+    .discount-pill .discount-icon {
+      margin-right: 0.5rem;
+    }
+    .discount-pill .remove-discount {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      margin-left: 1rem;
+      outline: none;
+      padding: 0;
+    }
+    .discount-pill .remove-discount:hover {
+      opacity: 0.7;
+    }
+    .discount-pill .svg-wrapper {
+      width: 12px;
+      height: 12px;
+    }
+    .discount-pill .remove-discount .svg-wrapper svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .cart-discount-note {
+      color: var(--cart-discount-note-text-color);
+      font-size: var(--cart-discount-note-font-size);
+    }
+
+    #discount-error-message {
+      color: var(--cart-discount-error-text-color);
+      font-size: var(--cart-discount-error-font-size);
+      margin: 0.5rem 0;
+      display: none;
+    }
+  </style>
+{% endif %}

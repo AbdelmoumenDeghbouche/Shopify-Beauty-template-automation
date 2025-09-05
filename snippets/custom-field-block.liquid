@@ -1,0 +1,330 @@
+<style>
+  .block-{{ block.id }}-padding {
+    padding-top: {{ block.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ block.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .block-{{ block.id }}-padding {
+      padding-top: {{ block.settings.padding_top }}px;
+      padding-bottom: {{ block.settings.padding_bottom }}px;
+    }
+  }
+  .error-message {
+          color: red;
+          margin-top: 0;
+      }
+            .form__label-{{block.id}} {
+            font-weight: {{block.settings.font_style}};
+            font-size: {{block.settings.font_size}}px;
+        }
+</style>
+
+{% if block.settings.field_style == 'text' %}
+  <style>
+    .custom.form__label {
+      margin-bottom: 0.6rem; 
+    }
+    .field.custom {
+      margin-top: 0;
+    }
+    .custom .field__input {
+      padding-top: 0.8rem;
+    }
+  </style>
+  <div class="block-{{ block.id }}-padding" {{ block.shopify_attributes }}>
+    <label
+      class="form__label form__label-{{block.id}} custom{% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}"
+      for="your-text--{{ block.id }}"
+    >
+      {{- block.settings.text_lable -}}
+    </label>
+    <div class="field custom" style="max-width: 70rem;">
+      <input
+        class="field__input"
+        form="{{ product_form_id }}"
+        type="text"
+        id="your-text--{{ block.id }}"
+        name="properties[{{ block.settings.checkbox_pro | default: product.title | truncatewords: 3 }}]"
+        maxlength="50"
+        {% if block.settings.checkbox_required %}
+          required
+        {% endif %}
+      >
+    </div>
+  </div>
+
+  <p id="errorMessage--{{ block.id }}" class="error-message" style="display: none;">This field is required.</p>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const textInput = document.getElementById('your-text--{{ block.id }}');
+      const errorMessage = document.getElementById('errorMessage--{{ block.id }}');
+
+      const submitButtons = document.querySelectorAll('.product-form__submit');
+
+      // Apply to all add to cart buttons on the page
+      submitButtons.forEach((submitButton) => {
+        submitButton.addEventListener('click', function (event) {
+          // Only proceed with the check if the text input is required
+          if (textInput.required && textInput.value.trim() === '') {
+            event.preventDefault(); // Prevent form submission
+            errorMessage.style.display = 'block'; // Show error message
+
+            // Scroll to the text input smoothly
+            textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            errorMessage.style.display = 'none'; // Hide error message if filled
+          }
+        });
+      });
+    });
+  </script>
+
+{% elsif block.settings.field_style == 'file' %}
+  <style>
+    .file-upload-container {
+      display: flex;
+      gap: 10px;
+    }
+    .file-upload-container p {
+      margin: 0;
+    }
+    .file-upload-container button {
+      height: 30px;
+      min-height: 3rem;
+      background: rgba(var(--color-foreground), 0.05);
+      color: rgba(var(--color-foreground));
+    }
+  </style>
+  <div class="product-form__input">
+    <label
+      class="form__label form__label-{{block.id}} {% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}"
+      for="your-text--{{ block.id }}"
+    >
+      {{- block.settings.text_lable -}}
+    </label>
+    <div class="file-upload-container">
+      <input
+        id="your-text--{{ block.id }}"
+        form="{{ product_form_id }}"
+        name="properties[{{ block.settings.checkbox_pro | default: product.title | truncatewords: 3 }}]"
+        style="display: none;"
+        type="file"
+        {% if block.settings.checkbox_required %}
+          required
+        {% endif %}
+      >
+      <button id="button-your-text--{{ block.id }}" class="button" type="button">Upload File</button>
+      <p id="fileName-your-text--{{ block.id }}" class="file-name">No file chosen</p>
+    </div>
+  </div>
+
+  <p id="errorMessage--{{ block.id }}" class="error-message" style="display: none;">This field is required.</p>
+
+  <script>
+    // Handle the file upload button click
+    document.getElementById('button-your-text--{{ block.id }}').addEventListener('click', function () {
+      document.getElementById('your-text--{{ block.id }}').click();
+    });
+
+    // Update file name display when a file is chosen
+    document.getElementById('your-text--{{ block.id }}').addEventListener('change', function () {
+      const files = this.files;
+      let fileName;
+
+      if (files.length === 0) {
+        fileName = 'No file chosen';
+        document.getElementById('errorMessage--{{ block.id }}').style.display = 'none'; // Hide error message if no file
+      } else {
+        fileName = files.length === 1 ? files[0].name : files.length + ' files';
+        document.getElementById('errorMessage--{{ block.id }}').style.display = 'none'; // Hide error message when a file is selected
+      }
+
+      document.getElementById('fileName-your-text--{{ block.id }}').textContent = fileName;
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const submitButtons = document.querySelectorAll('.product-form__submit');
+
+      // Apply to all add to cart buttons on the page
+      submitButtons.forEach((submitButton) => {
+        submitButton.addEventListener('click', function (event) {
+          const fileInput = document.getElementById('your-text--{{ block.id }}');
+
+          // Check if file input is required and no file is selected
+          if (fileInput.required && fileInput.files.length === 0) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('errorMessage--{{ block.id }}').style.display = 'block'; // Show error message
+
+            // Scroll to the file input smoothly
+            document
+              .getElementById('fileName-your-text--{{ block.id }}')
+              .scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      });
+    });
+
+    // Remove novalidate attribute if necessary
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('form[novalidate]');
+      if (form) {
+        form.removeAttribute('novalidate');
+      }
+    });
+  </script>
+
+{% elsif block.settings.field_style == 'checkbox' %}
+  <style>
+    .custom-checkbox:hover.custom-checkbox:after,
+    .custom-checkbox:after {
+      box-shadow: none;
+    }
+    .custom-checkbox {
+      align-items: center;
+    }
+  </style>
+
+  <div
+    class="block-{{ block.id }}-padding field custom-checkbox"
+    style="display: flex;"
+    {{ block.shopify_attributes }}
+  >
+    <input
+      type="checkbox"
+      name="properties[{{ block.settings.checkbox_pro | default: product.title | truncatewords: 3 }}]"
+      form="{{ product_form_id }}"
+      value="Yes"
+      id="your-text--{{ block.id }}"
+      {% if block.settings.checkbox_required %}
+        required
+      {% endif %}
+    >
+    <label
+      style="margin-left: 5px; margin-bottom: 0;"
+      class="form__label form__label-{{block.id}}{% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}"
+      for="your-text--{{ block.id }}"
+    >
+      {{- block.settings.text_lable -}}
+    </label>
+  </div>
+
+  <p id="errorMessage--{{ block.id }}" class="error-message" style="display: none;">This is a required field.</p>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkbox = document.getElementById('your-text--{{ block.id }}');
+      const errorMessage = document.getElementById('errorMessage--{{ block.id }}');
+
+      // Listen for changes on the checkbox
+      checkbox.addEventListener('change', function () {
+        if (checkbox.checked) {
+          errorMessage.style.display = 'none'; // Hide error message
+        }
+      });
+
+      const submitButtons = document.querySelectorAll('.product-form__submit');
+
+      // Apply to all add to cart buttons on the page
+      submitButtons.forEach((submitButton) => {
+        submitButton.addEventListener('click', function (event) {
+          if (checkbox.required && !checkbox.checked) {
+            event.preventDefault(); // Prevent form submission
+            errorMessage.style.display = 'block'; // Show error message
+
+            // Scroll to the checkbox smoothly
+            checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      });
+    });
+
+    // Remove novalidate attribute if necessary
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('form[novalidate]');
+      if (form) {
+        form.removeAttribute('novalidate');
+      }
+    });
+  </script>
+
+{% elsif block.settings.field_style == 'dropdown' %}
+  <div
+    class="block-{{ block.id }}-padding product-form__input product-form__input--dropdown"
+    {{ block.shopify_attributes }}
+  >
+    <label
+      class="form__label form__label-{{block.id}}{% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}"
+      for="your-text--{{ block.id }}"
+    >
+      {{- block.settings.text_lable -}}
+    </label>
+    <div class="select">
+      <select
+        class="select__select"
+        your-text--{{ block.id }}
+        name="properties[{{ block.settings.checkbox_pro | default: product.title | truncatewords: 3 }}]"
+        form="{{ product_form_id }}"
+      >
+        <option value="" hidden selected>Please select</option>
+        <option value="{{ block.settings.custom_option_1 }}">
+          {{ block.settings.custom_option_1 }}
+        </option>
+        {% if block.settings.custom_option_2 != blank %}
+          <option value="{{ block.settings.custom_option_2 }}">
+            {{ block.settings.custom_option_2 }}
+          </option>
+        {% endif %}
+        {% if block.settings.custom_option_3 != blank %}
+          <option value="{{ block.settings.custom_option_3 }}">
+            {{ block.settings.custom_option_3 }}
+          </option>
+        {% endif %}
+        {% if block.settings.custom_option_4 != blank %}
+          <option value="{{ block.settings.custom_option_4 }}">
+            {{ block.settings.custom_option_4 }}
+          </option>
+        {% endif %}
+      </select>
+      <svg aria-hidden="true" focusable="false" class="icon icon-caret" viewBox="0 0 10 6">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+        d="M9.354.646a.5.5 0 00-.708 0L5 4.293 1.354.646a.5.5 0 00-.708.708l4 4a.5.5 0 00.708 0l4-4a.5.5 0 000-.708z"
+        fill="currentColor">
+        </path>
+      </svg>
+    </div>
+  </div>
+
+{% elsif block.settings.field_style == 'date' %}
+  <style>
+    .custom.form__label {
+      margin-bottom: 0.6rem;
+    }
+    .field.custom {
+      margin-top: 0;
+    }
+    .custom .field__input {
+      padding-top: 0.8rem;
+      font-family: var(--font-body-family);
+      color: rgba(var(--color-forluminround), 0.75);
+    }
+  </style>
+  <div class="block-{{ block.id }}-padding" {{ block.shopify_attributes }}>
+    <label
+      class="form__label form__label-{{block.id}}{% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %} custom"
+      for="your-text--{{ block.id }}"
+    >
+      {{- block.settings.text_lable -}}
+    </label>
+    <div class="select field custom">
+      <input
+        class="field__input"
+        type="date"
+        form="{{ product_form_id }}"
+        id="your-text--{{ block.id }}"
+        name="properties[{{ block.settings.checkbox_pro | default: product.title | truncatewords: 3 }}]"
+      >
+    </div>
+  </div>
+{% endif %}

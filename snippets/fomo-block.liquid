@@ -1,0 +1,96 @@
+<script>
+  // Function to generate a random number between a given range (min and max)
+  function getRandomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // Function to update the random number in the HTML
+  function updateRandomNumber() {
+      var randomNumberSpan = document.getElementById("randomNumber");
+      var randomNumber = getRandomNumber({{ block.settings.fomo_min }}, {{ block.settings.fomo_max }}); // Change the range as needed
+      randomNumberSpan.textContent = randomNumber;
+  }
+
+  // Update the random number every 3 seconds (adjust the interval as needed)
+  setInterval(updateRandomNumber, {{ block.settings.fomo_speed | append: "000" }});
+</script>
+{% assign scheme1 = settings.color_schemes | first %}
+{% assign before_text = block.settings.fomo_text_before %}
+{% assign randomNumber = block.settings.fomo_min | plus: 2 | prepend: '<span id="randomNumber">' | append: '</span>' %}
+<div
+  class="lk-fomo-buys"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.fomo_icon_style == 'pill' %}
+  <span
+    class="live-circle live-circle-{{block.id}} hs-pill hs-pill-{{block.id}}"
+    style="--pill-color:{{ block.settings.pill_color.red }}, {{ block.settings.pill_color.green }}, {{ block.settings.pill_color.blue }};display:block;"
+  ></span>
+  {% elsif block.settings.fomo_icon_style == 'image' %}
+  <img src="{{ block.settings.fomo_icon | img_url: 'master' }}" alt="FOMO Icon" class="fomo-icon">
+  {% endif %}
+  <span class="message-buys{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}">
+    {{
+      before_text
+      | replace: '(x)', randomNumber
+    }}
+  </span>
+</div>
+
+{% assign icon_size = block.settings.text_size | plus: 6 | append: 'px' %}
+{% assign icon_margin = block.settings.text_size | divided_by: 4 | append: 'px' %}
+
+<style>
+      .hs-pill-{{block.id}} {
+          background-color: rgb(var(--pill-color), 1);
+          color: rgb(var(--pill-color), .5);
+          border: 1px solid rgb(var(--color-background), 1);
+      }
+      .live-circle-{{block.id}}  {
+          box-shadow: 0 0 0 0 rgba(var(--pill-color), 0.7);
+          transform: scale(1);
+          animation: 1.5s infinite pulsluminin;
+          transition: opacity .35s ease-in-out;
+          background-color: rgba(var(--pill-color), 1);
+      }
+   @keyframes pulsluminin {
+        0% {
+            transform: scale(.95);
+            box-shadow: 0 0 0 0 rgba(var(--pill-color), 0.6);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 3px rgba(236,0,140,0);
+        }
+
+        100% {
+            transform: scale(.95);
+            box-shadow: 0 0 0 0 rgba(236,0,140,0);
+        }
+  }
+      .lk-fomo-buys {
+          display: flex;
+          align-items: center;
+          justify-content: {{block.settings.fomo_text_alignment}};
+          color: {{ block.settings.fomo_text_color }};
+          background-color: {{ block.settings.fomo_bg_color }};
+          padding: {{block.settings.padding_top}}px {{block.settings.padding_bottom}}px;
+          margin: {{block.settings.margin_top}}px 0 {{block.settings.margin_bottom}}px 0;
+          width: fit-content;
+          {% if block.settings.fomo_border_activate %} border:1px solid {{ block.settings.fomo_border_color }}; {% endif %}
+          border-radius:{{ block.settings.fomo_border }}px;
+      }
+      .lk-fomo-buys img {
+          width: {{icon_size}};
+          margin-right: {{icon_margin}}; 
+      }
+        .lk-fomo-buys p {
+          margin-top: 0;
+          margin-bottom: 0;
+      }
+      .message-buys {
+          line-height:1.2;
+          font-size: {{block.settings.text_size}}px;
+      }
+</style>

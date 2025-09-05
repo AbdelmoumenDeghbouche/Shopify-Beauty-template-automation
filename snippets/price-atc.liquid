@@ -1,0 +1,118 @@
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  elsif placeholder
+    assign target = null
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign price_min = product.price_min
+  assign price_max = product.price_max
+  assign available = target.available | default: false
+  assign money_price = price | money
+  assign money_price_min = price_min | money
+  assign money_price_max = price_max | money
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+    assign money_price_min = price_min | money_with_currency
+    assign money_price_max = price_max | money_with_currency
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+-%}
+
+{%- unless target == null and placeholder == null -%}
+  <div
+    class="
+      price
+      {%- if price_class %} {{ price_class }}{% endif -%}
+      {%- if available == false %} price--sold-out{% endif -%}
+      {%- if compare_at_price > price and product.quantity_price_breaks_configured? != true %} price--on-sale{% endif -%}
+      {%- if compare_at_price > price and product.quantity_price_breaks_configured? %} volume-pricing--sale-badge{% endif -%}
+      {%- if product.price_varies == false and product.compare_at_price_varies %} price--no-compare{% endif -%}
+      {%- if show_badges %} price--show-badge{% endif -%}
+    "
+  >
+    <div class="price__container">
+      <div class="price__regular">
+        {%- if product.quantity_price_breaks_configured? -%}
+          {%- if show_compare_at_price and compare_at_price -%}
+            <span class="visually-hidden visually-hidden--inline">
+              {{- 'products.product.price.regular_price' | t -}}
+            </span>
+            <span>
+              <s class="price-item price-item--regular variant-item__old-price">
+                {% if settings.currency_code_enabled %}
+                  {{ compare_at_price | times: quantity | money_with_currency }}
+                {% else %}
+                  {{ compare_at_price | times: quantity | money }}
+                {% endif %}
+              </s>
+            </span>
+          {%- endif -%}
+          <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+          <span class="price-item price-item--regular">
+            {{-
+              'products.product.volume_pricing.price_range'
+              | t: minimum: money_price_min, maximum: money_price_max
+            -}}
+          </span>
+        {%- else -%}
+          <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+          <span class="price-item price-item--regular">
+            <span id="total-price">
+              {{ price | times: quantity | money }}
+            </span>
+          </span>
+        {%- endif -%}
+      </div>
+      <div class="price__sale">
+        {%- unless product.price_varies == false and product.compare_at_price_varies %}
+          <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+          <span>
+            <s class="price-item price-item--regular">
+              {% if settings.currency_code_enabled %}
+                {{ compare_at_price | times: quantity | money_with_currency }}
+              {% else %}
+                {{ compare_at_price | times: quantity | money }}
+              {% endif %}
+            </s>
+          </span>
+        {%- endunless -%}
+        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
+        <span class="price-item price-item--sale price-item--last">
+          <span id="discounted-price">
+            {{ price | times: quantity | money }}
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var quantityInput = document.querySelector('input[name="quantity"]');
+      var totalPriceElement = document.getElementById('total-price');
+      var discountedPriceElement = document.getElementById('discounted-price');
+      var basePrice = {{ price }};
+      var baseCompareAtPrice = {{ compare_at_price }};
+
+      if (quantityInput) {
+        quantityInput.addEventListener('input', function() {
+          var quantity = parseInt(quantityInput.value) || 1;
+          var newTotalPrice = basePrice * quantity;
+          var newDiscountedPrice = baseCompareAtPrice * quantity;
+
+          totalPriceElement.innerHTML = Shopify.formatMoney(newTotalPrice, "{{ shop.money_format }}");
+          discountedPriceElement.innerHTML = Shopify.formatMoney(newDiscountedPrice, "{{ shop.money_format }}");
+        });
+      }
+    });
+  </script>
+
+{% endunless %}

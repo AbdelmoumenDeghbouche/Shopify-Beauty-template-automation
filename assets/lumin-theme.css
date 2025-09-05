@@ -1,0 +1,98 @@
+@media screen and (min-width: 750px) {
+  .desktop-hidden {
+      display: none !important;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .mobile-hidden {
+      display: none !important;
+  }
+}
+.discounts__discount {
+    max-width: fit-content;
+    padding: 0 8px 0px 7px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.discounts__discount > .icon {
+    color: currentColor !important;
+}
+
+.price--end > span {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.cart-item__discounted-prices .cart-item__old-price {
+  color: #5e5e5e;
+  opacity: 1;
+}
+.cart-drawer .price s {
+  color: var(--single-item-compare);
+}
+.product-option s {
+  color: var(--total-item-compare);
+}
+.cart__ctas button {
+    gap: 4px;
+}
+.cart-drawer .cart-item__image {
+     border-radius: var(--media-radius);
+}
+.drawer__close {
+    background-color: var(--drawer-close-bg) !important;
+    color: var(--drawer-close) !important;
+    border-radius: 20px;
+    line-height: 0;
+}
+.live-circle {
+  border-radius: 50%;
+  display: inline-block;
+  padding: 0;
+  width: 11px;
+  min-width: 11px;
+  height: 11px;
+  margin-right: 0.7rem;
+  box-shadow: 0 0 0 0 var(--color-button);
+  transform: scale(1);
+  animation: 2.5s infinite pulsegentle;
+  transition: opacity .35s ease-in-out;
+  background-color: var(--color-button);
+}
+.hs-pill {
+  position: relative;
+  pointer-events: none;
+  padding: 0;
+  border-radius: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* min-width: max-content; */
+  background-color: #F05D5E;
+  color: #c57171;
+  border: 1px solid #fa8787;
+  z-index: 1;
+  font-weight: 500;
+  line-height: 1;
+  font-size: 1rem;
+}
+@keyframes pulsegentle {
+  0% {
+      transform: scale(.95);
+      box-shadow: 0 0 0 0 rgba(236,0,140,.6)
+  }
+
+  70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 3px rgba(236,0,140,0)
+  }
+
+  100% {
+      transform: scale(.95);
+      box-shadow: 0 0 0 0 rgba(236,0,140,0)
+  }
+}

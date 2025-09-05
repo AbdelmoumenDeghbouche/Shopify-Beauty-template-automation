@@ -1,0 +1,74 @@
+<div class="circle-progress-wrapper-{{ block.id }}" style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px;">
+  <div class="circle-progress-{{ block.id }}" style="width: {{ block.settings.size }}px; height: {{ block.settings.size }}px;">
+    <svg viewBox="0 0 36 36" class="circular-chart-{{ block.id }}">
+      <path class="circle-bg-{{ block.id }}"
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831" />
+      <path class="circle-{{ block.id }}"
+            stroke-dasharray="{{ block.settings.percent }}, 100"
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831" />
+      <text x="18" y="20.35" class="percentage-{{ block.id }}">{{ block.settings.percent }}%</text>
+    </svg>
+  </div>
+  
+  <div class="text-content-{{ block.id }}">
+    {% if block.settings.heading != blank %}
+      <h3 class="heading-{{ block.id }}" style="font-size: {{ block.settings.heading_font_size }}px;">{{ block.settings.heading }}</h3>
+    {% endif %}
+    {% if block.settings.text != blank %}
+      <div class="text-{{ block.id }}" style="font-size: {{ block.settings.text_font_size }}px;">{{ block.settings.text }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+.circle-progress-wrapper-{{ block.id }} {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.circle-progress-wrapper-{{ block.id }} p {
+  margin: 0;
+}
+.circle-progress-{{ block.id }} {
+  display: flex;
+  align-items: center;
+}
+.circular-chart-{{ block.id }} {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+.circle-bg-{{ block.id }} {
+  fill: none;
+  stroke: {{ block.settings.background_color }};
+  stroke-width: {{ block.settings.progress_stroke_width }};
+}
+.circle-{{ block.id }} {
+  fill: none;
+  stroke: {{ block.settings.progress_color }};
+  stroke-width: {{ block.settings.progress_stroke_width }};
+  {% if block.settings.round_edge %} stroke-linecap: round;{% endif %}
+  transition: stroke-dasharray 0.6s ease;
+}
+.percentage-{{ block.id }} {
+  fill: {{ block.settings.text_color }};
+  font-size: 0.5em;
+  text-anchor: middle;
+}
+.text-content-{{ block.id }} {
+  margin-left: calc({{block.settings.size}}px / 5);
+  text-align: left;
+}
+.heading-{{ block.id }} {
+  margin: 0 0 3px;
+  color: {{ block.settings.text_color }};
+}
+.text-{{ block.id }} {
+  color: {{ block.settings.text_color }};
+}
+</style> 

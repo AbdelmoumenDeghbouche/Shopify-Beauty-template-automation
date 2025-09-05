@@ -1,0 +1,156 @@
+{% assign margin_right_1 = block.settings.icon_size_1 | divided_by: 4 | append: 'px' %}
+{% assign margin_right_2 = block.settings.icon_size_2 | divided_by: 4 | append: 'px' %}
+<style>
+  .lumin-trust-feature-{{ block.id }} {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: {{block.settings.padding_top}}px 0px {{block.settings.padding_bottom}}px 0px;
+  }
+  .lumin-feature-{{ block.id }} {
+      display: flex;
+      align-items: flex-start;
+  }
+  {% if block.settings.show_background_1 %}
+  .lumin-feature-{{ block.id }} {
+    background-color: {{block.settings.background_1}};
+    padding: 10px 14px;
+    border: 1px solid {{block.settings.border_color_1}};
+    border-radius: {{block.settings.border_radius_1}}px;
+  }
+  {% endif %}
+  .lumin-feature-{{ block.id }} h4 {
+        font-size: {{block.settings.heading_size_1}}px;
+        margin: 0px;
+        line-height: 1.2;
+    }
+  .lumin-feature-{{ block.id }} p {
+        font-size: {{block.settings.text_size_1}}px;
+        margin: 0px;
+        line-height: 1.2;
+    }
+  .lumin-feature-{{ block.id }} img {
+        width: {{block.settings.icon_size_1}}px !important;
+        height: auto;
+        margin-right: {{margin_right_1}};
+        border: none;
+        border-radius: 0;
+    }
+  .lumin-feature-{{ block.id }} svg {
+        width: {{block.settings.icon_size_1}}px !important;
+        height: auto;
+        margin-right: {{margin_right_1}};
+        border: none;
+        border-radius: 0px;
+    }
+  .lumin-feature-2-{{ block.id }} {
+      display: flex;
+      align-items: flex-start;
+  }
+  {% if block.settings.show_background_2 %}
+  .lumin-feature-2-{{ block.id }} {
+    background-color: {{block.settings.background_2}};
+    padding: 10px 14px;
+    border: 1px solid {{block.settings.border_color_2}};
+    border-radius: {{block.settings.border_radius_2}}px;
+  }
+  {% endif %}
+  .lumin-feature-2-{{ block.id }} h4 {
+        font-size: {{block.settings.heading_size_2}}px;
+        margin: 0px;
+        line-height: 1.2;
+    }
+  .lumin-feature-2-{{ block.id }} p {
+        font-size: {{block.settings.text_size_2}}px;
+        margin: 0px;
+        line-height: 1.2;
+    }
+  .lumin-feature-2-{{ block.id }} img {
+        width: {{block.settings.icon_size_2}}px !important;
+        height: auto;
+        margin-right: {{margin_right_2}};
+        border: none;
+    }
+  .lumin-feature-2-{{ block.id }} svg {
+        width: {{block.settings.icon_size_2}}px !important;
+        height: auto;
+        margin-right: {{margin_right_2}};
+        border: none;
+    }
+</style>
+<div class="lumin-trust-feature-{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="lumin-feature-{{ block.id }}"
+     style="align-items: {{ block.settings.trust_alignment }};"{{ block.shopify_attributes }}>
+    {%- if block.settings.icon_1 != blank -%}
+      <img src="{{ block.settings.icon_1 | img_url: '100x' }}" width="100" height="100">
+    {%- else -%}
+      <svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="m12 22.75c-5.93 0-10.75-4.82-10.75-10.75s4.82-10.75 10.75-10.75 10.75 4.82 10.75 10.75-4.82 10.75-10.75 10.75zm0-20c-5.1 0-9.25 4.15-9.25 9.25s4.15 9.25 9.25 9.25 9.25-4.15 9.25-9.25-4.15-9.25-9.25-9.25z" style="fill: currentColor;"></path>
+        <path d="m10.58 15.58c-0.2 0-0.39-0.08-0.53-0.22l-2.83-2.83c-0.29-0.29-0.29-0.77 0-1.06s0.77-0.29 1.06 0l2.3 2.3 5.14-5.14c0.29-0.29 0.77-0.29 1.06 0s0.29 0.77 0 1.06l-5.67 5.67c-0.14 0.14-0.33 0.22-0.53 0.22z" style="fill: currentColor;"></path>
+      </svg>
+    {%- endif -%}
+    <div style="width: calc(100% - {{block.settings.icon_size_1}}px + {{margin_right_1}});text-align: left; row-gap: 5px;">
+      {% if block.settings.heading_1 != blank %}
+        <h4>
+          {{
+            block.settings.heading_1
+            | replace: '[', '<span class="lumin-text__fancy1">'
+            | replace: ']', '</span>'
+            | replace: '!-', '<span class="lumin-text__fancyalt">'
+            | replace: '-!', '</span>'
+            | replace: '((', '<span class="lumin-text__fancy2">'
+            | replace: '))', '</span>'
+          }}
+        </h4>
+      {% endif %}
+      {% if block.settings.text_1 != blank %}
+        {{
+          block.settings.text_1
+          | replace: '[', '<span class="lumin-text__fancy1">'
+          | replace: ']', '</span>'
+          | replace: '!-', '<span class="lumin-text__fancyalt">'
+          | replace: '-!', '</span>'
+          | replace: '((', '<span class="lumin-text__fancy2">'
+          | replace: '))', '</span>'
+        }}
+      {% endif %}
+    </div>
+  </div>
+  <div class="lumin-feature-2-{{ block.id }}"
+    style=" align-items: {{ block.settings.trust_alignment }};" {{ block.shopify_attributes }}>
+    {%- if block.settings.icon_2 != blank -%}
+      <img src="{{ block.settings.icon_2 | img_url: '100x' }}" width="100" height="100">
+    {%- else -%}
+      <svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="m12 22.75c-5.93 0-10.75-4.82-10.75-10.75s4.82-10.75 10.75-10.75 10.75 4.82 10.75 10.75-4.82 10.75-10.75 10.75zm0-20c-5.1 0-9.25 4.15-9.25 9.25s4.15 9.25 9.25 9.25 9.25-4.15 9.25-9.25-4.15-9.25-9.25-9.25z" style="fill: currentColor;"></path>
+        <path d="m10.58 15.58c-0.2 0-0.39-0.08-0.53-0.22l-2.83-2.83c-0.29-0.29-0.29-0.77 0-1.06s0.77-0.29 1.06 0l2.3 2.3 5.14-5.14c0.29-0.29 0.77-0.29 1.06 0s0.29 0.77 0 1.06l-5.67 5.67c-0.14 0.14-0.33 0.22-0.53 0.22z" style="fill: currentColor;"></path>
+      </svg>
+    {%- endif -%}
+    <div style="width: calc(100% - {{block.settings.icon_size_2}}px + {{margin_right_2}});text-align: left; row-gap: 5px">
+      {% if block.settings.heading_2 != blank %}
+        <h4>
+          {{
+            block.settings.heading_2
+            | replace: '[', '<span class="lumin-text__fancy1">'
+            | replace: ']', '</span>'
+            | replace: '!-', '<span class="lumin-text__fancyalt">'
+            | replace: '-!', '</span>'
+            | replace: '((', '<span class="lumin-text__fancy2">'
+            | replace: '))', '</span>'
+          }}
+        </h4>
+      {% endif %}
+      {% if block.settings.text_2 != blank %}
+        {{
+          block.settings.text_2
+          | replace: '[', '<span class="lumin-text__fancy1">'
+          | replace: ']', '</span>'
+          | replace: '!-', '<span class="lumin-text__fancyalt">'
+          | replace: '-!', '</span>'
+          | replace: '((', '<span class="lumin-text__fancy2">'
+          | replace: '))', '</span>'
+        }}
+      {% endif %}
+    </div>
+  </div>
+</div>

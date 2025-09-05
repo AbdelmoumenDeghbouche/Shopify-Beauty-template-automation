@@ -1,0 +1,162 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement_bar_scrolling_GA6XLc": {
+      "type": "announcement-bar-scrolling",
+      "blocks": {
+        "announcement_EBQ7FN": {
+          "type": "announcement",
+          "settings": {
+            "text": "✦ Midseason Sale: Shop Now",
+            "link": "",
+            "font_family": "heading",
+            "text_size": 14,
+            "text_size_mobile": 14,
+            "text_color": "#ff7e8d",
+            "use_gradient": true,
+            "gradient_color_1": "#ff7e8d",
+            "gradient_color_2": "#ff354c",
+            "gradient_angle": 52,
+            "margin": 20,
+            "letter_spacing": 0,
+            "letter_spacing_mobile": 0,
+            "icon": "none",
+            "custom_image_height": 20
+          }
+        },
+        "announcement_mGrYVE": {
+          "type": "announcement",
+          "settings": {
+            "text": "Fast worldwide shipping on every order",
+            "link": "",
+            "font_family": "heading",
+            "text_size": 14,
+            "text_size_mobile": 14,
+            "text_color": "#ff7e8d",
+            "use_gradient": true,
+            "gradient_color_1": "#ff7e8d",
+            "gradient_color_2": "#ff354c",
+            "gradient_angle": 52,
+            "margin": 20,
+            "letter_spacing": 0,
+            "letter_spacing_mobile": 0,
+            "icon": "truck",
+            "custom_image_height": 20
+          }
+        },
+        "button_P6kpBq": {
+          "type": "button",
+          "settings": {
+            "text": "Shop Now",
+            "link": "shopify://collections/all",
+            "show_arrow": true,
+            "text_size": 14,
+            "text_color": "#ffffff",
+            "background_color": "#ff7e8d",
+            "hover_text_color": "#ff7e8d",
+            "hover_background_color": "#ffe7ec",
+            "border_radius": 50,
+            "padding_vertical": 2,
+            "padding_horizontal": 20,
+            "margin": 20
+          }
+        }
+      },
+      "block_order": [
+        "announcement_EBQ7FN",
+        "announcement_mGrYVE",
+        "button_P6kpBq"
+      ],
+      "name": "t:sections.announcement-bar.presets.name-scrolling",
+      "settings": {
+        "background_color": "#ffffff",
+        "background_gradient": "",
+        "show_line_separator": false,
+        "scroll_speed": 136,
+        "scroll_direction": "1",
+        "mobile_height": 40,
+        "desktop_height": 40
+      }
+    },
+    "announcement_bar_TAkNPE": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_dNzJ9G": {
+          "type": "announcement",
+          "settings": {
+            "text": "Mid Seasons Sale - Up to 40% Off",
+            "font_family": "body",
+            "font_size": 14,
+            "use_custom_color": false,
+            "text_color": "#000000",
+            "link": ""
+          }
+        },
+        "announcement_kYbfHA": {
+          "type": "announcement",
+          "settings": {
+            "text": "Save 30% use code: <strong>OLIVIA30</strong>",
+            "font_family": "body",
+            "font_size": 14,
+            "use_custom_color": false,
+            "text_color": "#000000",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_dNzJ9G",
+        "announcement_kYbfHA"
+      ],
+      "settings": {
+        "color_scheme": "scheme-89a1eca2-c127-4444-bd1e-59754d4f1308",
+        "show_line_separator": false,
+        "show_social": true,
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "enable_country_selector": true,
+        "enable_language_selector": true
+      }
+    },
+    "header": {
+      "type": "header",
+      "custom_css": [],
+      "settings": {
+        "enable_transparent-header": true,
+        "enable_hover_animation": true,
+        "color-transparent": "#000000",
+        "color-hover-background": "#ffffff",
+        "color-hover-text": "#212121",
+        "logo_position": "middle-left",
+        "menu": "main-menu",
+        "menu_type_desktop": "mega",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": false,
+        "color_scheme": "background-1",
+        "menu_color_scheme": "background-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_customer_avatar": true,
+        "mobile_logo_position": "center",
+        "margin_bottom": 0,
+        "padding_top": 4,
+        "padding_bottom": 4
+      }
+    }
+  },
+  "order": [
+    "announcement_bar_scrolling_GA6XLc",
+    "announcement_bar_TAkNPE",
+    "header"
+  ]
+}

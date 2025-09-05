@@ -1,0 +1,225 @@
+{% comment %}
+  Renders product variant-picker
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - product_form_id: {String} Id of the product form to which the variant picker is associated.
+  Usage:
+  {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+{% endcomment %}
+{%- unless product.has_only_default_variant -%}
+  <variant-selects
+    id="variant-selects-{{ section.id }}"
+    data-section="{{ section.id }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign swatch_count = option.values | map: 'swatch' | compact | size
+        assign picker_type = block.settings.picker_type
+
+
+        if swatch_count > 0 and block.settings.swatch_shape != 'none'
+          if block.settings.picker_type == 'dropdown'
+            assign picker_type = 'swatch_dropdown'
+          elsif swatch_type == 'variant_image' and product.variants[forloop.index0].image == blank
+            assign picker_type = 'swatch'
+          elsif swatch_type == 'color'
+            assign picker_type = 'swatch'
+          endif
+        endif
+      -%}
+      {%- capture size_chart_title -%}
+        {{ block.settings.chart_id }}
+      {%- endcapture -%}
+      {%- liquid
+        assign is_size = false
+        assign size_trigger = block.settings.size_trigger | downcase | replace: ' ', '-'
+        assign downcased_option = option.name | downcase | replace: ' ', '-'
+      
+        if downcased_option == size_trigger
+          assign is_size = true
+        endif
+      -%}
+      {%- if picker_type == 'swatch' -%}
+        <fieldset class="js product-form__input product-form__input--swatch">
+          <legend class="form__label {% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}">
+            {{ option.name }}:
+            <span data-selected-value>
+              {{- option.selected_value -}}
+            </span>
+          </legend>
+          
+          {% render 'product-variant-options', 
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- elsif picker_type == 'button' -%}
+        <fieldset class="js product-form__input product-form__input--pill">
+          {% if is_size %} <div style="display: flex;align-items: center;width:100%;{% if block.settings.spaced_size %}justify-content: space-between;{% endif %}"> {% endif %}
+          <legend class="form__label{% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}">{{ option.name }}: <span data-selected-value>
+              {{- option.selected_value -}}
+            </span></legend>
+          {% if is_size %}
+            {% unless block.settings.spaced_size %}
+          <span style="padding: 0 4px 0 10px;">—</span>
+            {% endunless %}
+          <span>
+            <modal-opener
+                class="product-popup-modal__opener no-js-hidden quick-add-hidden"
+                data-modal="#PopupModal-{{ block.id }}"
+               style="display:flex;gap:0.5rem;align-items: center;"
+              >
+              {% render 'size-icons', block:block, size_icons: block.settings.size_icon %}
+                <button
+                  id="ProductPopup-{{ block.id }}"
+                  class="form__label form__label-variant_picker product-popup-modal__button link lumin-popup {% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}"
+                  type="button"
+                  style="padding: 0;text-decoration: none;border-bottom: 1px solid;"
+                  aria-haspopup="dialog"
+                >
+                  {{ size_chart_title }}
+                </button>
+              </modal-opener>
+              <a href="{{ block.settings.size_page.url }}" class="product-popup-modal__button link no-js">
+                {{- block.settings.text -}}
+              </a>
+                <modal-dialog id="PopupModal-{{ block.id }}" class="product-popup-modal" {{ block.shopify_attributes }}>
+                    <div
+                      role="dialog"
+                      aria-label="{{ block.settings.text }}"
+                      aria-modal="true"
+                      class="product-popup-modal__content"
+                      tabindex="-1"
+                    >
+                      <button
+                        id="ModalClose-{{ block.id }}"
+                        type="button"
+                        class="product-popup-modal__toggle"
+                        aria-label="{{ 'accessibility.close' | t }}"
+                      >
+                        {% render 'icon-close' %}
+                      </button>
+                      <div class="product-popup-modal__content-info">
+                        <h1 class="h2">{{ block.settings.chart_id }}</h1>
+                        {{ block.settings.size_page.content }}
+                      </div>
+                    </div>
+                  </modal-dialog>
+          </span>
+            {% endif %}
+            {%- if is_size -%}</div>{%- endif -%}
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- else -%}
+        <div class="product-form__input product-form__input--dropdown">
+        {% if is_size %} <div style="display: flex;align-items: center;width:100%;{% if block.settings.spaced_size %}justify-content: space-between;{% endif %}"> {% endif %}
+          <label class="form__label{% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            {{ option.name }}
+          </label>
+          {% if is_size %}
+            {% unless block.settings.spaced_size %}
+          <span style="padding: 0 4px 0 10px;">—</span>
+            {% endunless %}
+          <span>
+            <modal-opener
+                class="product-popup-modal__opener no-js-hidden quick-add-hidden"
+                data-modal="#PopupModal-{{ block.id }}"
+               style="display:flex;gap:0.5rem;align-items: center;"
+              >
+              {% render 'size-icons', block:block, size_icons: block.settings.size_icon %}
+                <button
+                  id="ProductPopup-{{ block.id }}"
+                  class="form__label form__label-variant_picker product-popup-modal__button link lumin-popup {% if block.settings.label_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.label_style == 'subtitle' %} subtitle{% endif %}"
+                  type="button"
+                  style="padding: 0;text-decoration: none;border-bottom: 1px solid;"
+                  aria-haspopup="dialog"
+                >
+                  {{ size_chart_title }}
+                </button>
+              </modal-opener>
+              <a href="{{ block.settings.size_page.url }}" class="product-popup-modal__button link no-js">
+                {{- block.settings.text -}}
+              </a>
+                <modal-dialog id="PopupModal-{{ block.id }}" class="product-popup-modal" {{ block.shopify_attributes }}>
+                    <div
+                      role="dialog"
+                      aria-label="{{ block.settings.text }}"
+                      aria-modal="true"
+                      class="product-popup-modal__content"
+                      tabindex="-1"
+                    >
+                      <button
+                        id="ModalClose-{{ block.id }}"
+                        type="button"
+                        class="product-popup-modal__toggle"
+                        aria-label="{{ 'accessibility.close' | t }}"
+                      >
+                        {% render 'icon-close' %}
+                      </button>
+                      <div class="product-popup-modal__content-info">
+                        <h1 class="h2">{{ block.settings.chart_id }}</h1>
+                        {{ block.settings.size_page.content }}
+                      </div>
+                    </div>
+                  </modal-dialog>
+          </span>
+            {% endif %}
+          {% if is_size %} </div> {% endif %}
+          <div class="select">
+            {%- if picker_type == 'swatch_dropdown' -%}
+              <span
+                data-selected-value
+                class="dropdown-swatch"
+              >
+                {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
+              </span>
+            {%- endif -%}
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+              form="{{ product_form_id }}"
+            >
+              {% render 'product-variant-options',
+                product: product,
+                option: option,
+                block: block,
+                picker_type: picker_type
+              %}
+            </select>
+            <span class="svg-wrapper">
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </span>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <script type="application/json" data-selected-variant>
+      {{ product.selected_or_first_available_variant | json }}
+    </script>
+  </variant-selects>
+{%- endunless -%}
+
+<style>
+.variant-image-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.product-form__input--variant-image {
+  margin-bottom: 1.5rem;
+}
+</style>

@@ -1,0 +1,73 @@
+{% if settings.enable_recently_viewed %}
+ 
+  <style>
+    .drawer {
+      visibility: hidden;
+    }
+  </style>
+  <lumin-recently-viewed-drawer class="drawer lumin-drawer">
+    <div class="lumin-recently-viewed-drawer">
+      <div class="drawer__overlay"></div>
+      <lumin-recently-viewed-container
+        class="lumin-recently-viewed-container"
+        data-img-ratio="ratio-1x1"
+        data-limit="{{ settings.recently_viewed_limit | default: 10 }}"
+        data-img-border="{{ settings.recently_viewed_img_border | default: '' }}"
+      >
+        <div
+          class="drawer__inner gradient color-{{ settings.cart_color_scheme }}"
+          role="dialog"
+          aria-modal="true"
+          aria-label="{{ 'lumintheme.recently_viewed.title' | t }}"
+          tabindex="-1"
+        >
+          <div class="drawer__inner-empty lumin-recently-viewed-empty" hidden>
+            <div class="drawer__empty-content">
+              <h2 class="title">
+                {{ 'lumintheme.recently_viewed.empty' | t }}
+              </h2>
+              <button
+                class="drawer__close"
+                type="button"
+                onclick="this.closest('lumin-recently-viewed-drawer').close()"
+                aria-label="{{ 'accessibility.close' | t }}"
+              >
+                <span class="svg-wrapper">
+                  {{- 'icon-close.svg' | inline_asset_content -}}
+                </span>
+              </button>
+              <a href="{{ routes.all_products_collection_url }}" class="button">
+                {{ 'general.continue_shopping' | t }}
+              </a>
+            </div>
+          </div>
+          <div class="lumin-recently-viewed-drawer-product-list-wrapper" hidden>
+            <div class="drawer__header">
+              <h2 class="drawer__heading">{{ 'lumintheme.recently_viewed.title' | t }}</h2>
+              <button
+                class="drawer__close"
+                type="button"
+                onclick="this.closest('lumin-recently-viewed-drawer').close()"
+                aria-label="{{ 'accessibility.close' | t }}"
+              >
+                <span class="svg-wrapper">
+                  {{- 'icon-close.svg' | inline_asset_content -}}
+                </span>
+              </button>
+            </div>
+            <div class="lumin-recently-viewed-drawer-product-list lumin-grid-product-list" role="list">
+              {% comment %} Injected dynamically {% endcomment %}
+            </div>
+            <button
+              class="lumin-recently-viewed-btm-remove-all button button--secondary button--full-width"
+              type="button"
+              onclick="this.closest('lumin-recently-viewed-drawer').close()"
+            >
+              {{ 'lumintheme.recently_viewed.remove_all' | t }}
+            </button>
+          </div>
+        </div>
+      </lumin-recently-viewed-container>
+    </div>
+  </lumin-recently-viewed-drawer>
+{% endif %}

@@ -1,0 +1,268 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "newsletter_wBpfkb": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_zCy6RG": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "heading_size": "h2",
+            "subheading": "Be the first to know about new collections and exclusive offers."
+          }
+        },
+        "email_form_aE6AJY": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_zCy6RG",
+        "email_form_aE6AJY"
+      ],
+      "settings": {
+        "background_style": "normal",
+        "overlay_opacity": 0,
+        "layout": "horizontal",
+        "text_alignment": "left",
+        "text_alignment_mobile": "center",
+        "color_scheme_main": "background-1",
+        "color_scheme": "accent-1",
+        "full_width": false,
+        "border_radius": 12,
+        "padding_top": 74,
+        "padding_bottom": 74,
+        "padding_top_inner": 40,
+        "padding_bottom_inner": 40,
+        "padding_side_inner": 32,
+        "padding_side_inner_mobile": 20
+      }
+    },
+    "announcement_bar_scrolling_RMtYzk": {
+      "type": "announcement-bar-scrolling",
+      "blocks": {
+        "announcement_XtJHwN": {
+          "type": "announcement",
+          "settings": {
+            "text": "<strong>Theme Created </strong><em>by</em><strong> Lumintheme</strong>",
+            "link": "",
+            "font_family": "body",
+            "text_size": 34,
+            "text_size_mobile": 28,
+            "text_color": "#ff8989",
+            "use_gradient": false,
+            "gradient_color_1": "#000000",
+            "gradient_color_2": "#747474",
+            "gradient_angle": 90,
+            "margin": 20,
+            "letter_spacing": 0,
+            "letter_spacing_mobile": 0,
+            "icon": "none",
+            "custom_image_height": 20
+          }
+        }
+      },
+      "block_order": [
+        "announcement_XtJHwN"
+      ],
+      "name": "t:sections.announcement-bar.presets.name-scrolling",
+      "settings": {
+        "background_color": "#ffffff",
+        "background_gradient": "linear-gradient(122deg, rgba(255, 255, 255, 1) 13%, rgba(244, 223, 223, 1) 44%, rgba(253, 198, 198, 1) 54%, rgba(255, 255, 255, 1) 91%)",
+        "show_line_separator": false,
+        "scroll_speed": 80,
+        "scroll_direction": "1",
+        "mobile_height": 40,
+        "desktop_height": 70
+      }
+    },
+    "trust_badges_FHUXaB": {
+      "type": "trust-badges",
+      "blocks": {
+        "image_fjBiUW": {
+          "type": "image",
+          "settings": {
+            "feature_title": "<strong>Fast Shipping</strong>",
+            "feature_text": "<p>Doorstep delivery to most of the US.</p>",
+            "feature_url": "",
+            "hide_image": false
+          }
+        },
+        "image_Kig7Lp": {
+          "type": "image",
+          "settings": {
+            "feature_title": "<strong>Price-match guarantee</strong>",
+            "feature_text": "<p>Safe money when ordering with us</p>",
+            "feature_url": "",
+            "hide_image": false
+          }
+        },
+        "image_NcbnLf": {
+          "type": "image",
+          "settings": {
+            "feature_title": "<strong>Hassle-free exchange</strong>",
+            "feature_text": "<p>No questions ask</p>",
+            "feature_url": "",
+            "hide_image": false
+          }
+        },
+        "image_aPngVT": {
+          "type": "image",
+          "settings": {
+            "feature_title": "<strong>5 Star Reviews</strong>",
+            "feature_text": "<p>Customer satisfaction No.1 priority</p>",
+            "feature_url": "",
+            "hide_image": false
+          }
+        }
+      },
+      "block_order": [
+        "image_fjBiUW",
+        "image_Kig7Lp",
+        "image_NcbnLf",
+        "image_aPngVT"
+      ],
+      "name": "Feature Blocks",
+      "settings": {
+        "feature_row": 4,
+        "feature_row_mobile": 2,
+        "feature_gap": 20,
+        "feature_gap_mobile": 20,
+        "feature_padding_horizontal": 0,
+        "feature_padding_vertical": 0,
+        "feature_radius": 16,
+        "feature_border_thickness": 0,
+        "feature_shadow": false,
+        "feature_heading_size": 14,
+        "feature_heading_size_mobile": 12,
+        "feature_heading_height": 130,
+        "feature_heading_mt": 8,
+        "feature_text_size": 12,
+        "feature_text_size_mobile": 12,
+        "feature_text_height": 130,
+        "feature_text_mt": 20,
+        "feature_icon_size": 42,
+        "feature_icon_size_mobile": 42,
+        "feature_bg": "#ffffff",
+        "feature_border_color": "#000000",
+        "feature_shadow_color": "#000000",
+        "feature_heading_color": "#000000",
+        "feature_text_color": "#000000",
+        "feature_icon_color": "#000000",
+        "background_color": "#ffffff",
+        "background_gradient": "",
+        "border_color": "#000000",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top": 16,
+        "padding_bottom": 16,
+        "padding_horizontal": 5,
+        "padding_horizontal_mobile": 1.5,
+        "full_width": false,
+        "content_width": 120,
+        "border_thickness": 0,
+        "lazy": true
+      }
+    },
+    "section_divider_RzyyxR": {
+      "type": "section-divider",
+      "name": "Section divider",
+      "settings": {
+        "visibility": "always-display",
+        "shape": "waves_3",
+        "flip_horizontal": false,
+        "flip_vertical": false,
+        "shape_color": "accent-1",
+        "use_custom_shape_color": false,
+        "custom_shape_color": "#cad8f8",
+        "background_color": "background-1",
+        "use_custom_background_color": false,
+        "custom_background_color": "#eaede6",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand_information_Br4bBK": {
+          "type": "brand_information",
+          "settings": {
+            "show_social": true
+          }
+        },
+        "link_list_JWiGYM": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Information",
+            "menu": "footer"
+          }
+        },
+        "link_list_JinYBi": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "text_UxTGHt": {
+          "type": "text",
+          "settings": {
+            "heading": "Need To Get In Touch?",
+            "subtext": "<p>Questions or comments? Drop us a line, we'd love to hear from you. <a href=\"/pages/contact\" title=\"Contact\">Contact Us</a></p><p>support@lumintheme.com luminlabinfo@gmail.com</p>"
+          }
+        }
+      },
+      "block_order": [
+        "brand_information_Br4bBK",
+        "link_list_JWiGYM",
+        "link_list_JinYBi",
+        "text_UxTGHt"
+      ],
+      "settings": {
+        "color_scheme": "accent-1",
+        "newsletter_enable": false,
+        "show_collapse": true,
+        "collapse_mode": "menu_only",
+        "newsletter_heading": "Subscribe to our emails",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "payment_enable": true,
+        "custom_icon_1_width": 34,
+        "custom_icon_2_width": 34,
+        "custom_icon_3_width": 34,
+        "show_policy": true,
+        "hide_shopify": false,
+        "copyright": "- Theme by <a href=\"https://lumintheme.com/\" target=\"_blank\" title=\"https://lumintheme.com/\">Lumin<em>Theme</em></a> © 2025",
+        "show_bottom_text": false,
+        "bottom_text_align": "center",
+        "bottom_text": "Some text",
+        "bottom_text_font_size": 10,
+        "color_bottom_text": "#868686",
+        "margin_top": 0,
+        "padding_top": 60,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "newsletter_wBpfkb",
+    "announcement_bar_scrolling_RMtYzk",
+    "trust_badges_FHUXaB",
+    "section_divider_RzyyxR",
+    "footer"
+  ]
+}

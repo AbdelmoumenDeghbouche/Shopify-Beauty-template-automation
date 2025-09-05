@@ -1,0 +1,616 @@
+{% assign lm_code_id = block.id | replace: '_', '' | downcase %}
+{% for collection in product.collections %}
+  {% assign currect_collection = collection.id %}
+{% endfor %}
+
+{% assign selected_product = block.settings.selected_product %}
+{% assign selected_collection = block.settings.selected_collection %}
+{% assign all_products_true = block.settings.show_on_all_products %}
+
+{% if selected_product != blank or selected_collection != blank or all_products_true != blank %}
+  {% assign show_block = false %}
+
+  {% comment %}
+    Check if the current product matches any of the selected products in the list
+  {% endcomment %}
+  {% if selected_product != blank %}
+    {% for selected_item in selected_product %}
+      {% if product.id == selected_item.id %}
+        {% assign show_block = true %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% comment %}
+    Check if the current collection matches the selected collection
+  {% endcomment %}
+  {% if selected_collection != blank and currect_collection == selected_collection.id %}
+    {% assign show_block = true %}
+  {% endif %}
+
+  {% comment %}
+    Check if all products is selected
+  {% endcomment %}
+
+  {% if all_products_true %}
+    {% assign show_block = true %}
+  {% endif %}
+
+  {% if show_block %}
+    {% style %}
+          .lumin-upsell-product-{{ lm_code_id }} {
+            padding: 16px  10px 10px 34px;
+            border-radius: {{ block.settings.border_radius }}px;
+            border: 1px solid {{ block.settings.border_color }};
+            background-color: {{ block.settings.background_color }};
+            margin-bottom: 20px;
+            position: relative;
+          }
+
+          .lumin-upsell-header-{{ lm_code_id }} {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            line-height: 1.1;
+          }
+          .lumin-upsell-checkbox {
+          position: absolute;
+          top: 25px;
+          left: 18px;
+          transform: translate(-50%, -50%);
+          border-radius: 40px;
+          background-color: #fff;
+      }
+
+          .lumin-upsell-checkbox-{{ lm_code_id }}  {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid {{ block.settings.checkbox_border_color }};
+            cursor: pointer;
+            flex-shrink: 0;
+          }
+
+          .lumin-upsell-checkbox-{{ lm_code_id }}:checked {
+            background-color: {{ block.settings.checkbox_checked_color }};
+            border-color: {{ block.settings.checkbox_checked_color }};
+          }
+
+          .lumin-upsell-checkbox-{{ lm_code_id }}:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+          }
+
+          .lumin-upsell-title-{{ lm_code_id }} {
+            font-weight: 500;
+            font-size: 16px;
+            margin: 0;
+            color: {{ block.settings.title_color }};
+          }
+
+          .lumin-upsell-content-{{ lm_code_id }} {
+            display: flex;
+            align-items: center;
+            column-gap: 15px;
+            flex-wrap: wrap;
+          }
+
+          .lumin-upsell-image-container-{{ lm_code_id }} {
+            width: 50px;
+            height: auto;
+            flex-shrink: 0;
+            border-radius: var(--media-radius);
+            overflow: hidden;
+          }
+
+          .lumin-upsell-image-{{ lm_code_id }} {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--media-radius);
+          }
+
+          .lumin-upsell-image-container-{{ lm_code_id }} svg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #f4f4f4;
+          }
+
+          .lumin-upsell-details-{{ lm_code_id }} {
+            flex: 1;
+            min-width: 130px;
+          }
+
+          .lumin-upsell-product-title-{{ lm_code_id }} {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 5px 0;
+            color: {{ block.settings.product_title_color }};
+          }
+
+          .lumin-upsell-price-wrapper-{{ lm_code_id }} {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            line-height: 1.1;
+          }
+
+          .lumin-upsell-product-price-{{ lm_code_id }} {
+            font-size: 14px;
+            font-weight: 500;
+            color: {{ block.settings.price_color }};
+          }
+
+          .lumin-upsell-compare-price-{{ lm_code_id }} {
+            font-size: 14px;
+            text-decoration: line-through;
+            color: {{ block.settings.compare_price_color }};
+          }
+
+          .lumin-upsell-variant-selector-{{ lm_code_id }} {
+            display:none;
+            width: 100%;
+            max-width: 200px;
+            padding: 6px 20px 6px 10px;
+            border-radius: 4px;
+            border: 1px solid {{ block.settings.variant_selector_border_color }};
+            background-color: {{ block.settings.variant_selector_background }};
+            font-size: 14px;
+            margin-top: 5px;
+            cursor: pointer;
+          }
+         .lumin-upsell-description-{{ lm_code_id }} {
+            opacity: 0.6; 
+            line-height: 1.2;
+      }
+      .lumin-upsell-description-{{ lm_code_id }} a{
+            color: currentColor;
+            text-underline-offset: 2px;
+      }
+
+          @media screen and (max-width: 749px) {
+            .lumin-upsell-content-{{ lm_code_id }} {
+              align-items: center;
+              {% if block.settings.mobile_layout == 'column' %}
+                flex-direction: column;
+              {% else %}
+                flex-direction: row;
+              {% endif %}
+            }
+
+            .lumin-upsell-image-container-{{ lm_code_id }} {
+              {% if block.settings.mobile_layout == 'column' %}
+                width: 120px;
+                height: 120px;{% endif %}
+            }
+          }
+
+
+      /* Badges */
+      .ribbon-upsell {
+        font-size: {{block.settings.badge_font_size}}rem;
+        color: {{block.settings.badge_font_color}};
+      }
+      .ribbon-upsell {
+        --r: 0.4em; /* control the ribbon shape (the radius) */
+        --c:{{block.settings.badge_bg_color}};
+        --g:{{block.settings.badge_background_gradient}};
+        position: absolute;
+        line-height: 1.8;
+        z-index: 2;
+      }
+      .top-short-upsell {
+        background-color:{{block.settings.badge_bg_color}};
+        background-image:{{block.settings.badge_background_gradient}};
+        right: 5%;
+        line-height: 1.2;
+      }
+      .top-short-upsell {
+        position: absolute;
+        top: -1px;
+        right: 18px;
+        transform: translateY(-7px);
+        z-index: 1;
+        padding: 4px 11px;
+        line-height: 1.2;
+        border-radius: 0 0 4px 4px;
+      }
+
+      .top-short-upsell::before {
+        content: "";
+        position: absolute;
+        border-style: solid;
+        border-width: 0 0 8px 6px;
+        border-color: transparent transparent var(--c, #d7445b) transparent;
+        top: 0px;
+        left: 0px;
+        transform: translateX(-100%);
+        filter: brightness(0.8);
+      }
+
+      .top-short-upsell::after {
+        content: "";
+        position: absolute;
+        border-style: solid;
+        border-width: 0 6px 8px 0;
+        border-color: transparent transparent var(--c, #d7445b) transparent;
+        top: 0px;
+        right: 0px;
+        transform: translateX(100%);
+        filter: brightness(0.8);
+      }
+
+      .ribbon-upsell-top-right {
+        top: -11px;
+        right: calc(-1 * var(--r));
+        padding: 0 1em calc(2 * var(--r));
+        border-radius: 0 var(--r) var(--r) 0;
+        background: radial-gradient(100% 50% at right, var(--c) 98%, #0000 101%) 0 0/0.5lh
+            calc(100% - 2 * var(--r)),
+          radial-gradient(100% 50% at left, #0005 98%, #0000 101%) 100% 100% /
+            var(--r) calc(2 * var(--r)),
+          conic-gradient(
+              from 180deg at calc(100% - var(--r)) calc(100% - 2 * var(--r)),
+              #0000 25%,
+              var(--c) 0
+            )
+            100% 0 / calc(101% - 0.5lh) 100%;
+        background-repeat: no-repeat;
+      }
+      .ribbon-upsell-bottom-left {
+        bottom: -9px;
+        left: calc(-1 * var(--r));
+        padding: calc(2 * var(--r)) 1em 0;
+        border-radius: var(--r) 0 0 var(--r);
+        background: radial-gradient(100% 50% at left, var(--c) 98%, #0000 101%) 100%
+            100%/0.5lh calc(100% - 2 * var(--r)),
+          radial-gradient(100% 50% at right, #0005 98%, #0000 101%) 0 0 / var(--r)
+            calc(2 * var(--r)),
+          conic-gradient(at var(--r) calc(2 * var(--r)), #0000 25%, var(--c) 0) 0 0 /
+            calc(101% - 0.5lh) 100%;
+        background-repeat: no-repeat;
+        z-index: 2;
+      }
+      .ribbon-upsell-long {
+        --d: .8em; /* the depth */
+        text-align: center;
+        position: absolute;
+        top: -10px;
+        border-top-right-radius: 4px;
+        border-top-left-radius: 4px;
+        inset-inline: calc(-1*var(--d));
+        border-bottom: var(--d) solid #0008;
+        line-height: 1.8;
+        clip-path: polygon(0 0,100% 0,100% calc(100% - var(--d)),calc(100% - var(--d)) 100%,calc(100% - var(--d)) calc(100% - var(--d)),var(--d) calc(100% - var(--d)),var(--d) 100%,0 calc(100% - var(--d)));
+        background-color: var(--c);
+        background-image: var(--badge-background-gradient);
+      }
+
+      .badge-upsell {
+          background-color: {{ block.settings.badge_bg_color }};
+          background-image: {{ block.settings.badge_background_gradient }};
+          color: {{ block.settings.badge_font_color }};
+          font-size: {{block.settings.badge_font_size}};
+          line-height: 1.1;
+          position: absolute;
+          width: auto;
+          top: -10px;
+          right: -10px;
+          transform: rotate(5deg);
+          display: inline-block;
+          font-weight: 700;
+          text-align: center;
+          white-space: nowrap;
+          padding: .3em .5em;
+          border-radius: 3px;
+          z-index: 2;
+      }
+
+      .badge-upsell::before {
+          content: "";
+          display: block;
+          position: absolute;
+          top: 0;
+          height: 100%;
+          width: 2em;
+          left: calc(-2em + 1px);
+          background: linear-gradient(to bottom right, transparent 49.4%, var(--badge-upsell-1) 50%) top, linear-gradient(to top right, transparent 49.4%, var(--badge-upsell-1) 50%) bottom;
+          background: conic-gradient(transparent 45deg, var(--badge-upsell-1) 45deg 135deg, transparent 125deg 360deg);
+          background: linear-gradient(to bottom right, transparent 50%, var(--badge-upsell-1) 50%) top, linear-gradient(to top right, transparent 50%, var(--badge-upsell-1) 50%) bottom;
+          background: conic-gradient(transparent 45deg, var(--badge-upsell-1) 45deg 135deg, transparent 125deg 360deg);
+          background-size: 100% 51%;
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+      }
+    {% endstyle %}
+
+    <upsell-product-{{ lm_code_id }} {{ block.shopify_attributes }}>
+      <div class="lumin-upsell-product-{{ lm_code_id }}" {{ block.shopify_attributes }}>
+        {% if block.settings.badge_enable %}
+          <div class="{{ block.settings.badge_style }}">{{ block.settings.badge_text }}</div>
+        {% endif %}
+        <div class="lumin-upsell-header-{{ lm_code_id }}">
+          <input
+            type="checkbox"
+            id="lumin-upsell-checkbox-{{ lm_code_id }}"
+            class="lumin-upsell-checkbox-{{ lm_code_id }} lumin-upsell-checkbox"
+            style="width:20px; height:20px; margin: 0;z-index: 2;"
+            data-product-id="{{ block.settings.upsell_product.id }}"
+            {% if block.settings.checked_by_default %}
+              checked
+            {% endif %}
+          >
+          <label for="lumin-upsell-checkbox-{{ lm_code_id }}" class="lumin-upsell-title-{{ lm_code_id }}"> </label>
+        </div>
+
+        <div class="lumin-upsell-content-{{ lm_code_id }}">
+          <div class="lumin-upsell-image-container-{{ lm_code_id }}" data-variant-image-container>
+            {% if block.settings.upsell_product.featured_image %}
+              <img
+                src="{{ block.settings.upsell_product.featured_image | image_url: width: 160 }}"
+                alt="{{ block.settings.upsell_product.featured_image.alt | escape }}"
+                width="80"
+                height="80"
+                loading="lazy"
+                class="lumin-upsell-image-{{ lm_code_id }}"
+                data-variant-image
+              >
+            {% else %}
+              {{ 'product-apparel-1' | placeholder_svg_tag }}
+            {% endif %}
+          </div>
+          <div class="lumin-upsell-details-{{ lm_code_id }}">
+            <h4 class="lumin-upsell-product-title-{{ lm_code_id }}">{{ block.settings.upsell_product.title }}</h4>
+
+            <div class="lumin-upsell-price-wrapper-{{ lm_code_id }}">
+              <div class="lumin-upsell-product-price-{{ lm_code_id }}" data-variant-price>
+                {% if block.settings.upsell_product.price_varies %}
+                  {{ block.settings.upsell_product.price_min | money }}
+                {% else %}
+                  {{ block.settings.upsell_product.price | money }}
+                {% endif %}
+              </div>
+              <div class="lumin-upsell-compare-price-{{ lm_code_id }}" data-variant-compare-price>
+                {% if block.settings.upsell_product.compare_at_price > block.settings.upsell_product.price %}
+                  {{ block.settings.upsell_product.compare_at_price | money }}
+                {% endif %}
+              </div>
+            </div>
+
+            {% if block.settings.upsell_product.has_only_default_variant == false %}
+              <select class="lumin-upsell-variant-selector-{{ lm_code_id }}" data-variant-selector>
+                {% for variant in block.settings.upsell_product.variants %}
+                  <option
+                    value="{{ variant.id }}"
+                    {% if variant.available == false %}
+                      disabled
+                    {% endif %}
+                    data-variant-price="{{ variant.price | money }}"
+                    data-variant-compare-price="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}"
+                    data-variant-image-id="{{ variant.image.id }}"
+                    data-variant-image-url="{% if variant.image %}{{ variant.image | image_url: width: 160 }}{% elsif block.settings.upsell_product.featured_image %}{{ block.settings.upsell_product.featured_image | image_url: width: 160 }}{% endif %}"
+                    data-variant-image-alt="{% if variant.image %}{{ variant.image.alt | escape }}{% elsif block.settings.upsell_product.featured_image %}{{ block.settings.upsell_product.featured_image.alt | escape }}{% endif %}"
+                  >
+                    {{ variant.title }}
+                    {% if variant.available == false %}(Sold out){% endif %}
+                  </option>
+                {% endfor %}
+              </select>
+            {% endif %}
+          </div>
+    {% if block.settings.description != blank %}
+              <div
+                class="lumin-upsell-description-{{ lm_code_id }}"
+                style="font-size: {{ block.settings.description_font_size }}px;"
+              >
+                {{ block.settings.description }}
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </upsell-product-{{ lm_code_id }}>
+
+    <script>
+      (function() {
+        class UpsellProduct extends HTMLElement {
+          constructor() {
+            super();
+            this.init();
+          }
+
+          init() {
+            this.checkbox = this.querySelector('.lumin-upsell-checkbox-{{ lm_code_id }}');
+            this.variantSelector = this.querySelector('[data-variant-selector]');
+            this.variantImage = this.querySelector('[data-variant-image]');
+            this.variantImageContainer = this.querySelector('[data-variant-image-container]');
+            this.variantPrice = this.querySelector('[data-variant-price]');
+            this.variantComparePrice = this.querySelector('[data-variant-compare-price]');
+            this.productId = this.checkbox ? this.checkbox.dataset.productId : null;
+            this.selectedVariantId = this.variantSelector ? this.variantSelector.value : null;
+            this.blockId = '{{ lm_code_id }}';
+
+            if (this.checkbox) {
+              this.checkbox.addEventListener('change', this.handleCheckboxChange.bind(this));
+
+              // If checked by default, add to cart on page load
+              if (this.checkbox.checked) {
+                this.addUpsellToCart();
+              }
+            }
+
+            if (this.variantSelector) {
+              this.variantSelector.addEventListener('change', this.handleVariantChange.bind(this));
+              // Initialize with the first variant's data
+              if (this.variantSelector.options.length > 0) {
+                this.updateVariantDetails(this.variantSelector.options[0]);
+              }
+            }
+
+            // Listen for cart drawer open event
+            document.addEventListener('cart:open', () => {
+              if (this.checkbox) {
+                this.checkbox.checked = false;
+              }
+            });
+          }
+
+          handleCheckboxChange(event) {
+            const isChecked = event.target.checked;
+
+            if (isChecked) {
+              this.addUpsellToCart();
+            } else {
+              this.removeUpsellFromCart();
+            }
+          }
+
+          handleVariantChange(event) {
+            this.selectedVariantId = event.target.value;
+            const selectedOption = event.target.options[event.target.selectedIndex];
+
+            // Update UI first
+            this.updateVariantDetails(selectedOption);
+
+            // If checkbox is checked, update the cart with new variant
+            if (this.checkbox && this.checkbox.checked) {
+              // Disable the checkbox temporarily to prevent multiple updates
+              this.checkbox.disabled = true;
+
+              // First remove the old variant
+              this.removeUpsellFromCart()
+                .then(() => {
+                  // Then add the new variant
+                  return this.addUpsellToCart();
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Failed to add variant to cart');
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log('Variant updated in cart:', data);
+                  // Re-enable the checkbox after successful update
+                  this.checkbox.disabled = false;
+                })
+                .catch(error => {
+                  console.error('Error updating variant:', error);
+                  // Re-enable the checkbox even if there's an error
+                  this.checkbox.disabled = false;
+                  // Uncheck the checkbox to indicate failure
+                  this.checkbox.checked = false;
+                });
+            }
+          }
+
+          updateVariantDetails(optionElement) {
+            try {
+              // Update price
+              if (this.variantPrice && optionElement.dataset.variantPrice) {
+                const price = optionElement.dataset.variantPrice;
+                this.variantPrice.innerHTML = price;
+              }
+
+              // Update compare price
+              if (this.variantComparePrice) {
+                const comparePrice = optionElement.dataset.variantComparePrice || '';
+                this.variantComparePrice.innerHTML = comparePrice;
+              }
+
+              // Update image
+              if (this.variantImage && optionElement.dataset.variantImageUrl) {
+                // Create a new image to preload
+                const newImage = new Image();
+                newImage.onload = () => {
+                  this.variantImage.src = optionElement.dataset.variantImageUrl;
+                  if (optionElement.dataset.variantImageAlt) {
+                    this.variantImage.alt = optionElement.dataset.variantImageAlt;
+                  }
+                };
+                newImage.src = optionElement.dataset.variantImageUrl;
+              }
+            } catch (error) {
+              console.error('Error updating variant details:', error);
+            }
+          }
+
+          removeUpsellFromCart() {
+            const variantId = this.selectedVariantId || this.getDefaultVariantId();
+
+            if (!variantId) return Promise.resolve();
+
+            return fetch(window.Shopify.routes.root + 'cart.js')
+              .then(response => response.json())
+              .then(cart => {
+                // Find the specific upsell item to remove
+                const upsellItem = cart.items.find(item =>
+                  item.properties &&
+                  item.properties.Upsell === 'true' &&
+                  item.properties.BlockId === this.blockId
+                );
+
+                if (upsellItem) {
+                  return fetch(window.Shopify.routes.root + 'cart/update.js', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      updates: {
+                        [upsellItem.key]: 0
+                      }
+                    })
+                  });
+                }
+                return Promise.resolve();
+              });
+          }
+
+          addUpsellToCart() {
+            const variantId = this.selectedVariantId || this.getDefaultVariantId();
+
+            if (!variantId) return Promise.resolve();
+
+            const formData = {
+              'items': [{
+                'id': variantId,
+                'quantity': 1,
+                'properties': {
+                }
+              }]
+            };
+
+            return fetch(window.Shopify.routes.root + 'cart/add.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(formData)
+            });
+          }
+
+          getDefaultVariantId() {
+            // If no variant selector, use the first available variant
+            {% if block.settings.upsell_product.variants.first.id %}
+              return '{{ block.settings.upsell_product.variants.first.id }}';
+            {% else %}
+              return null;
+            {% endif %}
+          }
+        }
+
+        customElements.define('upsell-product-{{ lm_code_id }}', UpsellProduct);
+      })();
+    </script>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,55 @@
+.product-form-swatch__variants {
+    display: flex;
+    flex-wrap: wrap;
+}
+  
+.product-form__swatch {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.product-form__swatch input {
+    display: none;
+}
+
+.product-form__swatch label {
+    display: block;
+    width: var(--swatch-size);
+    height: var(--swatch-size);
+    border: .1rem solid rgba(var(--color-foreground),.15) !important;
+    border-radius: var(--swatch-border-radius) !important;
+    background-size: cover;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    padding: 1rem !important;
+}
+.swatch-input__input:active+.swatch-input__label, .swatch-input__input:checked+.swatch-input__label {
+    outline: .1rem solid rgb(var(--color-foreground));
+}
+
+.product-form__swatch label:hover {
+    border-color: #333 !important;
+}
+
+
+.product-form__swatch input:checked + label {
+    background-color: rgb(var(--color-foreground));
+    color: rgb(var(--color-background));
+    outline: .1rem solid rgb(var(--color-foreground)); 
+}  
+
+.product-form__swatch input.disabled + label {
+    opacity: 0.5;
+}
+
+.product-form__swatch input.disabled + label::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to bottom right, transparent 45%, rgba(255, 0, 0, 0.6) 50%, transparent 55%);
+    pointer-events: none;
+}
+

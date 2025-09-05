@@ -1,0 +1,132 @@
+{% if settings.show_timer and cart != empty %}
+{% assign lumin_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .lumin-cart-countdown-{{ lumin_id }} {
+    display: block;
+    color: {{ settings.text_color }};
+    padding: {{settings.padding_top_bottom}}px {{settings.padding_left_right}}px;
+    background-color: {{settings.background_color}};
+    text-align: {{settings.text_align}};
+    font-size:{{settings.font_size}}px;
+    font-weight:{{settings.font_weight}};
+    line-height: 1.2;
+    margin:{{settings.margin_top}}px {{settings.margin_left_right}}px {{settings.margin_bottom}}px;
+    border-radius: {{settings.border_radius}}px;
+  }
+
+  .lumin-cart-countdown-timer-{{ lumin_id }} {
+    font-weight: 600;
+    margin-left: 3px;
+    color: {{ settings.timer_color }};
+  }
+
+  .lumin-cart-countdown-expired-{{ lumin_id }} {
+    color: {{ settings.expired_color }};
+  }
+
+  .lumin-cart-countdown-hidden-{{ lumin_id }} {
+    display: none;
+  }
+{% endstyle %}
+
+<div class="timer-wrapper">
+<cart-countdown-{{ lumin_id }}
+  class="lumin-cart-countdown-{{ lumin_id }}"
+  data-duration="{{ settings.countdown_minutes }}"
+  data-expire-action="{{ settings.expire_action }}"
+  {{ block.shopify_attributes }}
+>
+  <span class="lumin-cart-countdown-message-{{ lumin_id }}">
+    {{ settings.message_text }}<span class="lumin-cart-countdown-timer-{{ lumin_id }}">{{ settings.countdown_minutes }}:00</span>
+  </span>
+  <span class="lumin-cart-countdown-expired-{{ lumin_id }} lumin-cart-countdown-hidden-{{ lumin_id }}">
+    {{ settings.expired_message }}
+  </span>
+</cart-countdown-{{ lumin_id }}>
+</div>
+
+<script>
+  (function() {
+    class CartCountdown{{ lumin_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.duration = parseInt(this.dataset.duration) * 60;
+        this.expireAction = this.dataset.expireAction;
+        this.timer = null;
+        this.startTime = null;
+      }
+
+      connectedCallback() {
+        this.messageElement = this.querySelector('.lumin-cart-countdown-message-{{ lumin_id }}');
+        this.timerElement = this.querySelector('.lumin-cart-countdown-timer-{{ lumin_id }}');
+        this.expiredElement = this.querySelector('.lumin-cart-countdown-expired-{{ lumin_id }}');
+        
+        this.startCountdown();
+      }
+
+      disconnectedCallback() {
+        if (this.timer) {
+          clearInterval(this.timer);
+        }
+      }
+
+      startCountdown() {
+        const storageKey = 'cart-countdown-{{ lumin_id }}';
+        const savedStartTime = localStorage.getItem(storageKey);
+        
+        if (savedStartTime) {
+          this.startTime = parseInt(savedStartTime);
+        } else {
+          this.startTime = Date.now();
+          localStorage.setItem(storageKey, this.startTime.toString());
+        }
+
+        this.updateTimer();
+        this.timer = setInterval(() => {
+          this.updateTimer();
+        }, 1000);
+      }
+
+      updateTimer() {
+        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+        const remaining = Math.max(0, this.duration - elapsed);
+
+        if (remaining > 0) {
+          const minutes = Math.floor(remaining / 60);
+          const seconds = remaining % 60;
+          const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+          this.timerElement.textContent = timeString;
+        } else {
+          this.handleExpiry();
+        }
+      }
+
+      handleExpiry() {
+        if (this.timer) {
+          clearInterval(this.timer);
+        }
+
+        const storageKey = 'cart-countdown-{{ lumin_id }}';
+
+        switch (this.expireAction) {
+          case 'repeat':
+            localStorage.removeItem(storageKey);
+            this.startTime = Date.now();
+            localStorage.setItem(storageKey, this.startTime.toString());
+            this.startCountdown();
+            break;
+          
+          case 'show_message':
+            this.messageElement.classList.add('lumin-cart-countdown-hidden-{{ lumin_id }}');
+            this.expiredElement.classList.remove('lumin-cart-countdown-hidden-{{ lumin_id }}');
+            localStorage.removeItem(storageKey);
+            break;
+        }
+      }
+    }
+
+    customElements.define('cart-countdown-{{ lumin_id }}', CartCountdown{{ lumin_id }});
+  })();
+</script>
+{% endif %}

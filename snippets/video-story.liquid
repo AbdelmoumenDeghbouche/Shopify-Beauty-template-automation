@@ -1,0 +1,643 @@
+{% assign block_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .lumin-video-story-{{ block_id }} {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .lumin-video-story-container-{{ block_id }} {
+    display: flex;
+    width: calc(100% / {{ block.settings.videos_per_view_desktop }} - (10px * ({{ block.settings.videos_per_view_desktop }} - 1)) / {{ block.settings.videos_per_view_desktop }});
+    transition: transform 0.5s ease;
+    height: 100%;
+    gap: 10px;
+  }
+
+  .lumin-video-story-slide-{{ block_id }} {
+    flex: 0 0 100%;
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: {{ block.settings.aspect_ratio }}%;
+    background-color: #000;
+    border-radius: {{ block.settings.video_border_radius }}px;
+  }
+
+  .lumin-video-story-video-wrapper-{{ block_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .lumin-video-story-video-{{ block_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ block.settings.video_border_radius }}px;
+  }
+
+  .lumin-video-story-caption-{{ block_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 4px;
+    border-bottom-left-radius: {{ block.settings.video_border_radius }}px;
+    border-bottom-right-radius: {{ block.settings.video_border_radius }}px;
+    background: {{ block.settings.caption_background | color_modify: 'alpha', block.settings.caption_opacity }};
+    color: #fff;
+    text-align: center;
+    z-index: 2;
+  }
+
+  .lumin-video-story-caption-title-{{ block_id }} {
+    font-size: {{ block.settings.caption_title_size }}px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+
+  .lumin-video-story-caption-text-{{ block_id }} {
+    font-size: {{ block.settings.caption_text_size }}px;
+    line-height: 1.2;
+  }
+
+  .lumin-video-story-nav-{{ block_id }} {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 10px;
+  }
+
+  .lumin-video-story-dot-{{ block_id }} {
+    display: block !important;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: {{ block.settings.dot_color }};
+    opacity: 0.3;
+    cursor: pointer;transition: opacity 0.3s ease;
+  }
+
+  .lumin-video-story-dot-{{ block_id }}.active {
+    opacity: 1;
+  }
+
+  .lumin-video-story-arrow-{{ block_id }} {
+    position: absolute;
+    top: calc(50% - 10px);
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: {{ block.settings.arrow_background }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+
+  .lumin-video-story-arrow-{{ block_id }}:hover {
+    opacity: 1;
+  }
+
+  .lumin-video-story-prev-{{ block_id }} {
+    left: 0px;
+  }
+
+  .lumin-video-story-next-{{ block_id }} {
+    right: 0px;
+  }
+
+  .lumin-video-story-arrow-icon-{{ block_id }} {
+    width: 24px;
+    height: 24px;
+    fill: {{ block.settings.arrow_color }};
+  }
+
+  .lumin-video-story-placeholder-{{ block_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;}
+
+  .lumin-video-story-placeholder-{{ block_id }} svg {
+    width: 50px;
+    height: 50px;
+    opacity: 0.5;
+  }
+
+  /* Modal Styles */
+  .lumin-video-story-modal-{{ block_id }} {
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; right: 0; bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.7);
+  }
+  .lumin-video-story-modal-{{ block_id }}[style*="display: flex"] {
+    display: flex !important;
+  }
+  .lumin-video-story-modal-overlay-{{ block_id }} {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1;
+  }
+  .lumin-video-story-modal-content-{{ block_id }} {
+    position: relative;
+    z-index: 2;
+    max-width: 90vw;
+    max-height: 90vh;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0px;
+  }
+  .lumin-video-story-modal-close-{{ block_id }} {
+    background: #fff;
+    border: 1px solid;
+    border-radius: 50%;
+    font-size: 3rem;
+    width: 40px;
+    height: 40px;
+    color: #000;
+    cursor: pointer;
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 3;
+    opacity: 0.45;
+    transition: background 0.2s;
+  }
+  .lumin-video-story-modal-prev-{{ block_id }},
+  .lumin-video-story-modal-next-{{ block_id }} {
+    background: #fff;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    opacity: 0.45;
+    transition: background 0.2s;
+  }
+  .lumin-video-story-modal-prev-{{ block_id }}:hover,
+  .lumin-video-story-modal-next-{{ block_id }}:hover {
+    background: #f0f0f0;
+  }
+  .lumin-video-story-modal-prev-{{ block_id }} {
+    left: 0.5rem;
+  }
+  .lumin-video-story-modal-prev-{{ block_id }} .icon {
+    transform: rotate(180deg) !important;
+  }
+  .lumin-video-story-modal-next-{{ block_id }} {
+    right: 0.5rem;
+  }
+  .lumin-video-story-modal-video-container-{{ block_id }} {
+    width: 80vw;
+    max-width: 650px;
+    max-height: 90vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lumin-video-story-modal-video-container-{{ block_id }} video {
+    width: 100%;
+    height: auto;
+    background: #000;
+    border-radius: 12px;
+  }
+  @media (max-width: 600px) {
+    .lumin-video-story-modal-content-{{ block_id }} {
+      max-width: 98vw;
+    }
+    .lumin-video-story-modal-video-container-{{ block_id }} {
+      width: 98vw;
+      max-width: 87vw;
+    }
+    .lumin-video-story-modal-prev-{{ block_id }} {
+      left: 0.2rem;
+    }
+    .lumin-video-story-modal-next-{{ block_id }} {
+      right: 0.2rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .lumin-video-story-container-{{ block_id }} {
+    width: calc(100% / {{ block.settings.videos_per_view_mobile }} - (10px * ({{ block.settings.videos_per_view_mobile }} - 1)) / {{ block.settings.videos_per_view_mobile }});
+  }
+  }
+{% endstyle %}
+
+<div class="lumin-video-story-heading-{{ block_id }}" style="margin-bottom: 5px;">{{ block.settings.heading }}</div>
+<video-story-slider-{{ block_id }} class="lumin-video-story-{{ block_id }}" {{ block.shopify_attributes }}>
+  <div class="lumin-video-story-container-{{ block_id }}">
+    {% for i in (1..10) %}
+      {% assign video_key = 'video_' | append: i %}
+      {% assign title_key = 'title_' | append: i %}
+      {% assign caption_key = 'caption_' | append: i %}
+      {% assign hide_key = 'hide_video_' | append: i %}
+
+      {% if block.settings[video_key] != blank and block.settings[hide_key] != true %}
+        <div class="lumin-video-story-slide-{{ block_id }}" data-index="{{ forloop.index0 }}">
+          <div class="lumin-video-story-video-wrapper-{{ block_id }}">
+            {% assign video_class = 'lumin-video-story-video-' | append: block_id %}
+            {% assign poster = block.settings[video_key] | img_url: 'master' %}
+            {% if block.settings.autoplay %}
+              {{
+                block.settings[video_key]
+                | video_tag:
+                  class: video_class,
+                  playsinline: true,
+                  autoplay: true,
+                  loop: block.settings.loop,
+                  muted: 'muted',
+                  controls: block.settings.controls,
+                  preload: 'metadata',
+                  poster: poster
+              }}
+            {% else %}
+              {{
+                block.settings[video_key]
+                | video_tag:
+                  class: video_class,
+                  playsinline: true,
+                  loop: block.settings.loop,
+                  muted: 'muted',
+                  controls: block.settings.controls,
+                  preload: 'metadata',
+                  poster: poster
+              }}
+            {% endif %}
+          </div>
+          {% if block.settings[title_key] != blank or block.settings[caption_key] != blank %}
+            <div class="lumin-video-story-caption-{{ block_id }}">
+              {% if block.settings[title_key] != blank %}
+                <div class="lumin-video-story-caption-title-{{ block_id }}">{{ block.settings[title_key] }}</div>
+              {% endif %}
+              {% if block.settings[caption_key] != blank %}
+                <div class="lumin-video-story-caption-text-{{ block_id }}">{{ block.settings[caption_key] }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% elsif block.settings[hide_key] != true %}
+        <div class="lumin-video-story-slide-{{ block_id }}" data-index="{{ forloop.index0 }}">
+          <div class="lumin-video-story-placeholder-{{ block_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+          {% if block.settings[title_key] != blank or block.settings[caption_key] != blank %}
+            <div class="lumin-video-story-caption-{{ block_id }}">
+              {% if block.settings[title_key] != blank %}
+                <div class="lumin-video-story-caption-title-{{ block_id }}">{{ block.settings[title_key] }}</div>
+              {% endif %}
+              {% if block.settings[caption_key] != blank %}
+                <div class="lumin-video-story-caption-text-{{ block_id }}">{{ block.settings[caption_key] }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="lumin-video-story-arrow-{{ block_id }} lumin-video-story-prev-{{ block_id }}" aria-label="Previous video">
+    <svg class="lumin-video-story-arrow-icon-{{ block_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+    </svg>
+  </div>
+  <div class="lumin-video-story-arrow-{{ block_id }} lumin-video-story-next-{{ block_id }}" aria-label="Next video">
+    <svg class="lumin-video-story-arrow-icon-{{ block_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+    </svg>
+  </div>
+  <div class="lumin-video-story-nav-{{ block_id }}">
+    {% assign visible_count = 0 %}
+    {% for i in (1..10) %}
+      {% assign video_key = 'video_' | append: i %}
+      {% assign hide_key = 'hide_video_' | append: i %}
+      {% if block.settings[video_key] != blank and block.settings[hide_key] != true %}
+        {% assign visible_count = visible_count | plus: 1 %}
+        <div
+          class="lumin-video-story-dot-{{ block_id }}{% if visible_count == 1 %} active{% endif %}"
+          data-index="{{ forloop.index0 }}"
+          aria-label="Go to video {{ forloop.index }}"
+        ></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</video-story-slider-{{ block_id }}>
+
+<!-- Video Modal Popup -->
+<div id="lumin-video-story-modal-{{ block_id }}" class="lumin-video-story-modal-{{ block_id }}" style="display:none;">
+  <div class="lumin-video-story-modal-overlay-{{ block_id }}"></div>
+  <div class="lumin-video-story-modal-content-{{ block_id }}">
+    <button class="lumin-video-story-modal-close-{{ block_id }}" aria-label="Close">&times;</button>
+    <button class="lumin-video-story-modal-prev-{{ block_id }}" aria-label="Previous" style="display:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </button>
+    <button class="lumin-video-story-modal-next-{{ block_id }}" aria-label="Next" style="display:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+      </svg>
+    </button>
+    <div class="lumin-video-story-modal-video-container-{{ block_id }}"></div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    class VideoStorySlider{{block_id}} extends HTMLElement {
+      constructor() {
+        super();
+        this.container = this.querySelector('.lumin-video-story-container-{{ block_id }}');
+        this.slides = this.querySelectorAll('.lumin-video-story-slide-{{ block_id }}');
+        this.dots = this.querySelectorAll('.lumin-video-story-dot-{{ block_id }}');
+        this.prevBtn = this.querySelector('.lumin-video-story-prev-{{ block_id }}');
+        this.nextBtn = this.querySelector('.lumin-video-story-next-{{ block_id }}');
+        this.videos = this.querySelectorAll('.lumin-video-story-video-{{ block_id }}');
+        this.videoWrappers = this.querySelectorAll('.lumin-video-story-video-wrapper-{{ block_id }}');
+        this.currentIndex = 0;
+        this.slideCount = this.slides.length;
+        this.autoplayInterval = null;
+        
+        // Modal elements
+        this.modal = document.getElementById("lumin-video-story-modal-{{ block_id }}");
+        this.modalVideoContainer = this.modal ? this.modal.querySelector('.lumin-video-story-modal-video-container-{{ block_id }}') : null;
+        this.modalPrevBtn = this.modal ? this.modal.querySelector('.lumin-video-story-modal-prev-{{ block_id }}') : null;
+        this.modalNextBtn = this.modal ? this.modal.querySelector('.lumin-video-story-modal-next-{{ block_id }}') : null;
+        this.currentModalVideoIndex = null;
+      }
+      
+      connectedCallback() {
+        // Filter out hidden slides and update data-index values
+        this.filterHiddenSlides();
+        
+        if (this.slideCount <= 1) {
+          this.prevBtn.style.display = 'none';
+          this.nextBtn.style.display = 'none';
+        }
+        
+        this.setupEventListeners();
+        this.setupModalEventListeners();
+        this.updateSlidePosition();
+        
+        if ({{ block.settings.autoplay_between_slides | json }}) {
+          this.startAutoplay();
+        }
+      }
+      
+      filterHiddenSlides() {
+        // Update data-index values to be sequential (0, 1, 2, etc.)
+        this.slides.forEach((slide, index) => {
+          slide.dataset.index = index;
+        });
+        
+        // Update dots data-index values to match
+        this.dots.forEach((dot, index) => {
+          dot.dataset.index = index;
+        });
+      }
+      
+      setupEventListeners() {
+        this.prevBtn.addEventListener('click', () => this.goToSlide(this.currentIndex - 1));
+        this.nextBtn.addEventListener('click', () => this.goToSlide(this.currentIndex + 1));
+        
+        this.dots.forEach(dot => {
+          dot.addEventListener('click', () => {
+            const index = parseInt(dot.dataset.index);
+            this.goToSlide(index);
+          });
+        });
+
+        // Add video wrapper click handlers for popup modal
+        this.videoWrappers.forEach((wrapper, index) => {
+          wrapper.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const video = this.videos[index];
+            if (video) {
+              // Open modal instead of playing/pausing
+              this.openModal(index);
+            }
+          });
+        });
+
+        // Handle video play/pause events for autoplay
+        this.videos.forEach((video, index) => {
+          // Stop auto-advance when video ends if loop is disabled
+          video.addEventListener('ended', () => {
+            if (!{{ block.settings.loop | json }}) {
+              if ({{ block.settings.autoplay_between_slides | json }}) {
+                this.stopAutoplay();
+              }
+            }
+          });
+        });
+
+        // Pause autoplay when user interacts with the slider
+        this.addEventListener('click', () => {
+          if ({{ block.settings.autoplay_between_slides | json }}) {
+            this.stopAutoplay();
+            this.startAutoplay();
+          }
+        });
+      }
+
+      setupModalEventListeners() {
+        if (!this.modal) return;
+
+        // Close on overlay click
+        this.modal.querySelector('.lumin-video-story-modal-overlay-{{ block_id }}').onclick = () => this.closeModal();
+        
+        // Close on close button click
+        this.modal.querySelector('.lumin-video-story-modal-close-{{ block_id }}').onclick = () => this.closeModal();
+        
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') this.closeModal();
+        });
+        
+        // Close on click outside modal content
+        this.modal.addEventListener('click', (e) => {
+          if (e.target === this.modal) this.closeModal();
+        });
+
+        // Modal navigation
+        if (this.modalPrevBtn) {
+          this.modalPrevBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.navigateModal(-1);
+          };
+        }
+
+        if (this.modalNextBtn) {
+          this.modalNextBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.navigateModal(1);
+          };
+        }
+      }
+
+      openModal(index) {
+        this.currentModalVideoIndex = index;
+        this.showModalVideo(index);
+        this.modal.style.display = 'flex';
+        this.updateModalNavButtons();
+      }
+
+      showModalVideo(index) {
+        if (!this.modalVideoContainer) return;
+        
+        this.modalVideoContainer.innerHTML = '';
+        const origVideo = this.videos[index];
+        if (!origVideo) return;
+        
+        const modalVideo = origVideo.cloneNode(true);
+        modalVideo.controls = true;
+        modalVideo.muted = false;
+        modalVideo.autoplay = true;
+        modalVideo.style.width = '100%';
+        modalVideo.style.height = 'auto';
+        this.modalVideoContainer.appendChild(modalVideo);
+        setTimeout(() => { modalVideo.play(); }, 100);
+      }
+
+      updateModalNavButtons() {
+        if (!this.modalPrevBtn || !this.modalNextBtn) return;
+        
+        if (this.videos.length <= 1) {
+          this.modalPrevBtn.style.display = 'none';
+          this.modalNextBtn.style.display = 'none';
+          return;
+        }
+        this.modalPrevBtn.style.display = 'block';
+        this.modalNextBtn.style.display = 'block';
+      }
+
+      navigateModal(direction) {
+        if (this.videos.length < 2) return;
+        this.currentModalVideoIndex = (this.currentModalVideoIndex + direction + this.videos.length) % this.videos.length;
+        this.showModalVideo(this.currentModalVideoIndex);
+      }
+
+      closeModal() {
+        if (!this.modal) return;
+        
+        const modalVideo = this.modal.querySelector('video');
+        if (modalVideo) {
+          modalVideo.pause();
+          modalVideo.currentTime = 0;
+        }
+        
+        this.modal.style.display = 'none';
+        if (this.modalVideoContainer) {
+          this.modalVideoContainer.innerHTML = '';
+        }
+        this.currentModalVideoIndex = null;
+      }
+      
+      updateSlidePosition() {
+        this.container.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+        // Update active dot
+        this.dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === this.currentIndex);
+        });
+        
+        // Handle video autoplay for current slide
+        this.videos.forEach((video, index) => {
+          if (index === this.currentIndex) {
+            if ({{ block.settings.autoplay | json }}) {
+              video.play().catch(e => {
+                console.log('Video play error:', e);
+                // Try playing muted if autoplay fails
+                video.muted = true;
+                video.play().then(() => {
+                  console.log('Video is playing muted due to browser autoplay policy');
+                }).catch(err => {
+                  console.log('Still cannot play video:', err);
+                });
+              });
+            }
+          } else {
+            video.pause();
+          }
+        });
+      }
+      
+      goToSlide(index) {
+        if (this.slideCount <= 1) return;
+        
+        // Handle circular navigation
+        if (index < 0) {
+          index = this.slideCount - 1;
+        } else if (index >= this.slideCount) {
+          index = 0;
+        }
+        
+        this.currentIndex = index;
+        this.updateSlidePosition();
+        
+        if ({{ block.settings.autoplay_between_slides | json }}) {
+          this.stopAutoplay();
+          this.startAutoplay();
+        }
+      }
+      
+      startAutoplay() {
+        this.stopAutoplay();
+        this.autoplayInterval = setInterval(() => {
+          const video = this.videos[this.currentIndex];
+          if (video && (video.ended || video.paused)) {
+            this.goToSlide(this.currentIndex + 1);
+          }
+        }, {{ block.settings.autoplay_delay | times: 1000 }});
+      }
+      
+      stopAutoplay() {
+        if (this.autoplayInterval) {
+          clearInterval(this.autoplayInterval);
+          this.autoplayInterval = null;
+        }
+      }
+      
+      disconnectedCallback() {
+        this.stopAutoplay();
+      }
+    }
+    
+    customElements.define('video-story-slider-{{ block_id }}', VideoStorySlider{{block_id}});
+  })();
+</script>

@@ -1,0 +1,40 @@
+{% case icon %}
+  {% when 'wishlist' %}
+    {% if settings.enable_wishlist %}
+      <a 
+        href="#lumin-wishlist-drawer" 
+        class="header__icon header__icon--wishlist link focus-inset" 
+        id="wishlist-icon-bubble" 
+        role="button" 
+        style="position: relative;"
+        aria-haspopup="dialog">
+        <span class="svg-wrapper">
+          {% render 'lumin-svg-icons', icon: 'heart', size: 24, stroke_width: var(--icon-stroke-width), class: 'icon' %}
+        </span>
+        <span class="visually-hidden">
+          {{ 'lumintheme.wishlist.title' | t }}
+        </span>
+        <div class="wishlist-count-bubble cart-count-bubble" hidden>
+          <span aria-hidden="true"></span>
+          <span class="visually-hidden"></span>
+        </div>
+      </a>
+    {% endif %}
+  {% when 'recently-viewed' %}
+    {% if settings.enable_recently_viewed %}
+      <a 
+        href="#lumin-recently-viewed-drawer" 
+        class="header__icon header__icon--recently-viewed link focus-inset" 
+        id="recently-viewed-icon-bubble" 
+        role="button" 
+        aria-haspopup="dialog"
+        style="position: relative;">
+        <span class="svg-wrapper">
+          {% render 'lumin-svg-icons', icon: 'recently-viewed', size: 24, stroke_width: var(--icon-stroke-width), class: 'icon' %}
+        </span>
+        <span class="visually-hidden">
+          {{ 'lumintheme.recently_viewed.title' | t }}
+        </span>
+      </a>
+    {% endif %}
+{% endcase %}

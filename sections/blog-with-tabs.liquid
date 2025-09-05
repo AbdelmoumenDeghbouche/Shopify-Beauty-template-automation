@@ -1,0 +1,913 @@
+{{ 'component-accordion.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-blog-with-tabs.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  
+  /* Custom font sizes */
+  .blog-with-tabs-{{ section.id }} .blog-with-tabs__sidebar-title {
+    font-size: {{ section.settings.sidebar_title_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-category__heading {
+    font-size: {{ section.settings.category_heading_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-category__article-title {
+    font-size: {{ section.settings.article_title_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-with-tabs__content-title {
+    font-size: {{ section.settings.content_title_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-with-tabs__content-subtitle {
+    font-size: {{ section.settings.content_subtitle_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-with-tabs__article-title {
+    font-size: {{ section.settings.article_content_title_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-with-tabs__article-content {
+    font-size: {{ section.settings.article_content_size }}px;
+  }
+  
+  .blog-with-tabs-{{ section.id }} .blog-with-tabs__nav-button {
+    font-size: {{ section.settings.nav_button_text_size }}px;
+  }
+{%- endstyle -%}
+
+<div class="blog-with-tabs blog-with-tabs-{{ section.id }} page-width section-{{ section.id }}-padding">
+  <div class="blog-with-tabs__container">
+    <!-- Left Sidebar with Collapsible Tabs -->
+    <div class="blog-with-tabs__sidebar">
+      <div class="blog-with-tabs__sidebar-header">
+        <h2 class="blog-with-tabs__sidebar-title">{{ section.settings.sidebar_title | default: 'Blog Categories' }}</h2>
+      </div>
+      
+      <!-- Search Box -->
+      <div class="blog-with-tabs__search">
+        <form class="blog-with-tabs__search-form" id="BlogSearchForm-{{ section.id }}">
+          <div class="blog-with-tabs__search-input-wrapper">
+            <input 
+              type="text" 
+              class="blog-with-tabs__search-input" 
+              id="BlogSearchInput-{{ section.id }}"
+              placeholder="{{ section.settings.search_placeholder | default: 'Search articles...' }}"
+              aria-label="Search blog articles"
+            >
+            <button type="submit" class="blog-with-tabs__search-button" aria-label="Search">
+              {{- 'icon-search.svg' | inline_asset_content -}}
+            </button>
+          </div>
+        </form>
+        <div class="blog-with-tabs__search-results" id="BlogSearchResults-{{ section.id }}" style="display: none;">
+          <div class="blog-with-tabs__search-results-header">
+            <h3 class="blog-with-tabs__search-results-title">Search Results</h3>
+            <button class="blog-with-tabs__search-clear" id="BlogSearchClear-{{ section.id }}" aria-label="Clear search">
+              {{- 'icon-close.svg' | inline_asset_content -}}
+            </button>
+          </div>
+          <div class="blog-with-tabs__search-results-list" id="BlogSearchResultsList-{{ section.id }}">
+            <!-- Search results will be populated here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="blog-with-tabs__categories">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'blog_category' -%}
+            {%- assign blog_handle = block.settings.blog -%}
+            {%- assign blog = blogs[blog_handle] -%}
+            
+            {%- if blog and blog.articles.size > 0 -%}
+              <div class="blog-category" {{ block.shopify_attributes }}>
+                <details class="blog-category__details" id="Category-{{ block.id }}-{{ section.id }}"{% if forloop.first %} open{% endif %}>
+                  <summary class="blog-category__summary">
+                    <div class="blog-category__title">
+                      {% render 'icon-accordion', icon: block.settings.icon %}
+                      <h3 class="blog-category__heading">{{ block.settings.title | default: blog.title }}</h3>
+                    </div>
+                    {%- if section.settings.show_count -%}
+                      <span class="blog-category__count">({{ blog.articles.size }})</span>
+                    {%- endif -%}
+                    {{- 'icon-caret.svg' | inline_asset_content -}}
+                  </summary>
+                  
+                  <div class="blog-category__articles">
+                    {%- for article in blog.articles limit: block.settings.article_limit -%}
+                      <div class="blog-category__article">
+                        <a 
+                          href="{{ article.url }}" 
+                          class="blog-category__article-link"
+                          data-article-id="{{ article.id }}"
+                          data-blog-handle="{{ blog.handle }}"
+                        >
+                        <svg class="icon icon-file_text icon-sm shrink-0" viewBox="0 0 20 20" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; min-width: 20px;height: 20px;">
+                        <path d="M11.6666 2.08334V3.4667C11.6666 4.5868 11.6666 5.14685 11.8846 5.57468C12.0763 5.951 12.3823 6.25696 12.7586 6.44871C13.1864 6.6667 13.7465 6.6667 14.8666 6.6667H16.2499M7.49992 10H12.4999M7.49992 13.3333H10.8333M16.6666 8.15293V12.7333C16.6666 14.6935 16.6666 15.6736 16.2851 16.4223C15.9496 17.0809 15.4141 17.6163 14.7556 17.9519C14.0069 18.3333 13.0268 18.3333 11.0666 18.3333H8.93325C6.97307 18.3333 5.99298 18.3333 5.24429 17.9519C4.58572 17.6163 4.05029 17.0809 3.71473 16.4223C3.33325 15.6736 3.33325 14.6935 3.33325 12.7333V7.26667C3.33325 5.30649 3.33325 4.3264 3.71473 3.5777C4.05029 2.91914 4.58572 2.38371 5.24429 2.04815C5.99298 1.66667 6.97307 1.66667 8.93325 1.66667H10.1803C11.0364 1.66667 11.4644 1.66667 11.8672 1.76338C12.2244 1.84912 12.5658 1.99053 12.8789 2.18243C13.2321 2.39888 13.5348 2.70154 14.1401 3.30687L15.0264 4.19314C15.6317 4.79847 15.9344 5.10113 16.1508 5.45434C16.3427 5.76749 16.4841 6.1089 16.5699 6.46603C16.6666 6.86883 16.6666 7.29687 16.6666 8.15293Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <div class="" style="display: flex;flex-direction: column;">
+                          <span class="blog-category__article-title">{{ article.title }}</span>
+                          {%- if block.settings.show_date -%}
+                            <span class="blog-category__article-date">{{ article.published_at | date: '%b %d, %Y' }}</span>
+                          {%- endif -%}
+                        </div>
+                        </a>
+                      </div>
+                    {%- endfor -%}
+                    
+                    {%- if blog.articles.size > block.settings.article_limit -%}
+                      <div class="blog-category__view-all">
+                        <a href="{{ blog.url }}" class="blog-category__view-all-link">
+                          View all ({{ blog.articles.size }})
+                        </a>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </details>
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Right Content Area -->
+    <div class="blog-with-tabs__content">
+      <div class="blog-with-tabs__content-header">
+        {%- if section.settings.content_title != blank -%}
+        <h1 class="blog-with-tabs__content-title">{{ section.settings.content_title }}</h1>
+        {%- endif -%}
+        {%- if section.settings.content_subtitle != blank -%}
+        <p class="blog-with-tabs__content-subtitle">{{ section.settings.content_subtitle }}</p>
+        {%- endif -%}
+      </div>
+      <div class="blog-with-tabs__content-area" id="BlogContent-{{ section.id }}">
+        <!-- Content will be loaded here via JavaScript -->
+        <div class="blog-with-tabs__placeholder">
+          <div class="blog-with-tabs__placeholder-icon">
+            {{- 'icon-article.svg' | inline_asset_content -}}
+          </div>
+          <p class="blog-with-tabs__placeholder-text">{{ section.settings.placeholder_text | default: 'Select a blog post from the sidebar to start reading' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const articleLinks = document.querySelectorAll('.blog-category__article-link');
+  const contentArea = document.getElementById('BlogContent-{{ section.id }}');
+  const searchForm = document.getElementById('BlogSearchForm-{{ section.id }}');
+  const searchInput = document.getElementById('BlogSearchInput-{{ section.id }}');
+  const searchResults = document.getElementById('BlogSearchResults-{{ section.id }}');
+  const searchResultsList = document.getElementById('BlogSearchResultsList-{{ section.id }}');
+  const searchClear = document.getElementById('BlogSearchClear-{{ section.id }}');
+  const categoriesContainer = document.querySelector('.blog-with-tabs__categories');
+  
+  // Track current article
+  let currentArticleUrl = null;
+  
+  // Store all articles for search
+  const allArticles = [];
+  articleLinks.forEach(link => {
+    allArticles.push({
+      title: link.querySelector('.blog-category__article-title').textContent,
+      date: link.querySelector('.blog-category__article-date')?.textContent || '',
+      url: link.href,
+      element: link
+    });
+  });
+  
+  // Helper function to truncate title to max 6 words
+  function truncateTitle(title, maxWords = 6) {
+    const words = title.split(' ');
+    if (words.length <= maxWords) {
+      return title;
+    }
+    return words.slice(0, maxWords).join(' ') + '...';
+  }
+  
+  // Search functionality
+  function performSearch(query) {
+    if (!query.trim()) {
+      hideSearchResults();
+      return;
+    }
+    
+    const searchTerm = query.toLowerCase();
+    const results = allArticles.filter(article => 
+      article.title.toLowerCase().includes(searchTerm) ||
+      article.date.toLowerCase().includes(searchTerm)
+    );
+    
+    displaySearchResults(results, query);
+  }
+  
+  function displaySearchResults(results, query) {
+    if (results.length === 0) {
+      searchResultsList.innerHTML = `
+        <div class="blog-with-tabs__search-no-results">
+          <p>No articles found for "${query}"</p>
+        </div>
+      `;
+    } else {
+      searchResultsList.innerHTML = results.map(article => `
+        <div class="blog-with-tabs__search-result-item">
+          <a href="${article.url}" class="blog-with-tabs__search-result-link" data-article-url="${article.url}">
+            <div class="blog-with-tabs__search-result-title">${highlightSearchTerm(article.title, query)}</div>
+            ${article.date ? `<div class="blog-with-tabs__search-result-date">${article.date}</div>` : ''}
+          </a>
+        </div>
+      `).join('');
+    }
+    
+    searchResults.style.display = 'block';
+    categoriesContainer.style.display = 'none';
+    
+    // Add click handlers to search results
+    const searchResultLinks = searchResultsList.querySelectorAll('.blog-with-tabs__search-result-link');
+    searchResultLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        loadArticle(this.dataset.articleUrl);
+        
+        // Update active states
+        articleLinks.forEach(l => l.classList.remove('active'));
+        searchResultLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  }
+  
+  function highlightSearchTerm(text, query) {
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+  
+  function hideSearchResults() {
+    searchResults.style.display = 'none';
+    categoriesContainer.style.display = 'block';
+  }
+  
+    function loadArticle(articleUrl, articleId = null, blogHandle = null) {
+    // Update current article URL
+    currentArticleUrl = articleUrl;
+    
+    // Scroll to top of the page with a small delay for better UX
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+    
+    // Show loading state
+    contentArea.innerHTML = `
+      <div class="blog-with-tabs__loading">
+        <div class="blog-with-tabs__loading-spinner"></div>
+        <p>Loading article...</p>
+      </div>
+    `;
+    
+    // Fetch article content
+    fetch(articleUrl)
+      .then(response => response.text())
+      .then(html => {
+        // Extract the main content from the response
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const articleContent = doc.querySelector('.article-template__content') || doc.querySelector('.main-article') || doc.querySelector('.article-template');
+        
+        if (articleContent) {
+          // Get the full article title
+          const articleTitle = doc.querySelector('.article-template__title') || doc.querySelector('h1') || doc.querySelector('.title--primary');
+          
+          // Get article meta information
+          const articleDate = doc.querySelector('.article-template__date') || doc.querySelector('.circle-divider') || doc.querySelector('.caption-with-letter-spacing');
+          const articleAuthor = doc.querySelector('.article-template__author') || doc.querySelector('.caption-with-letter-spacing:last-child');
+          
+          // Generate a unique ID if not provided
+          const uniqueId = articleId || 'article-' + Date.now();
+          
+          contentArea.innerHTML = `
+            <article class="blog-with-tabs__article">
+              <header class="blog-with-tabs__article-header">
+                    <div class="blog-with-tabs__article-meta">
+                    ${articleDate ? `<svg class="" viewBox="0 0 16 16" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 14px;min-width: 14px;height: 14px;">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5.33325 0.666668V3.40544M10.6666 0.666668V3.40544M14.4999 6.33333H1.49994M6.93325 14.6667H9.06659C11.0268 14.6667 12.0069 14.6667 12.7556 14.2852C13.4141 13.9496 13.9496 13.4142 14.2851 12.7556C14.6666 12.0069 14.6666 11.0269 14.6666 9.06667V7.93334C14.6666 5.97315 14.6666 4.99306 14.2851 4.24437C13.9496 3.5858 13.4141 3.05037 12.7556 2.71481C12.0069 2.33333 11.0268 2.33333 9.06659 2.33333H6.93325C4.97307 2.33333 3.99298 2.33333 3.24429 2.71481C2.58572 3.05037 2.05029 3.5858 1.71473 4.24437C1.33325 4.99306 1.33325 5.97315 1.33325 7.93333V9.06667C1.33325 11.0269 1.33325 12.0069 1.71473 12.7556C2.05029 13.4142 2.58572 13.9496 3.24429 14.2852C3.99298 14.6667 4.97307 14.6667 6.93325 14.6667Z"></path>
+    </svg><span class="blog-with-tabs__article-date">${articleDate.textContent}</span>` : ''}
+                  </div>
+                <h2 class="blog-with-tabs__article-title">${articleTitle?.textContent || 'Article Title'}</h2>
+                            
+              </header>
+              <div class="blog-with-tabs__article-content">
+                ${articleContent.innerHTML}
+              </div>
+              <footer class="blog-with-tabs__article-navigation">
+                <div class="blog-with-tabs__nav-buttons">
+                  <button class="blog-with-tabs__nav-button blog-with-tabs__nav-prev" id="nav-prev-${uniqueId}" disabled>
+                    <span class="blog-with-tabs__nav-icon">
+                      {{- 'icon-arrow.svg' | inline_asset_content -}}
+                    </span>
+                    <span class="blog-with-tabs__nav-text">Previous Article</span>
+                  </button>
+                  <button class="blog-with-tabs__nav-button blog-with-tabs__nav-next" id="nav-next-${uniqueId}" disabled>
+                    <span class="blog-with-tabs__nav-text">Next Article</span>
+                    <span class="blog-with-tabs__nav-icon">
+                      {{- 'icon-arrow.svg' | inline_asset_content -}}
+                    </span>
+                  </button>
+                </div>
+              </footer>
+            </article>
+          `;
+          
+          // Setup navigation after content is loaded
+          if (blogHandle) {
+            setupArticleNavigation(uniqueId, blogHandle);
+          }
+        } else {
+          // Fallback: redirect to the full article page
+          window.location.href = articleUrl;
+        }
+      })
+      .catch(error => {
+        console.error('Error loading article:', error);
+        contentArea.innerHTML = `
+          <div class="blog-with-tabs__error">
+            <p>Error loading article. Please try again.</p>
+            <a href="${articleUrl}" class="button">View full article</a>
+          </div>
+        `;
+      });
+  }
+  
+  // Event listeners
+  searchForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    performSearch(searchInput.value);
+  });
+  
+  searchInput.addEventListener('input', function() {
+    if (this.value.trim()) {
+      performSearch(this.value);
+    } else {
+      hideSearchResults();
+    }
+  });
+  
+  searchClear.addEventListener('click', function() {
+    searchInput.value = '';
+    hideSearchResults();
+    searchInput.focus();
+  });
+  
+  // Setup navigation for an article
+  function setupArticleNavigation(articleId, blogHandle) {
+    const prevButton = document.getElementById(`nav-prev-${articleId}`);
+    const nextButton = document.getElementById(`nav-next-${articleId}`);
+    
+    if (!prevButton || !nextButton) return;
+    
+    // Get all articles from the same blog
+    const blogArticles = allArticles.filter(article => {
+      const linkElement = article.element;
+      return linkElement && linkElement.dataset.blogHandle === blogHandle;
+    });
+    
+    // Find current article index using the tracked current article URL
+    const currentIndex = blogArticles.findIndex(article => article.url === currentArticleUrl);
+    
+    // Setup previous button
+    if (currentIndex > 0) {
+      const prevArticle = blogArticles[currentIndex - 1];
+      prevButton.disabled = false;
+      
+      // Update button text with truncated title
+      const prevButtonText = prevButton.querySelector('.blog-with-tabs__nav-text');
+      if (prevButtonText) {
+        prevButtonText.textContent = `Previous: ${truncateTitle(prevArticle.title)}`;
+      }
+      
+      prevButton.addEventListener('click', function() {
+        loadArticle(prevArticle.url, prevArticle.element.dataset.articleId, blogHandle);
+        
+        // Update active states
+        articleLinks.forEach(l => l.classList.remove('active'));
+        prevArticle.element.classList.add('active');
+      });
+    }
+    
+    // Setup next button
+    if (currentIndex < blogArticles.length - 1) {
+      const nextArticle = blogArticles[currentIndex + 1];
+      nextButton.disabled = false;
+      
+      // Update button text with truncated title
+      const nextButtonText = nextButton.querySelector('.blog-with-tabs__nav-text');
+      if (nextButtonText) {
+        nextButtonText.textContent = `Next: ${truncateTitle(nextArticle.title)}`;
+      }
+      
+      nextButton.addEventListener('click', function() {
+        loadArticle(nextArticle.url, nextArticle.element.dataset.articleId, blogHandle);
+        
+        // Update active states
+        articleLinks.forEach(l => l.classList.remove('active'));
+        nextArticle.element.classList.add('active');
+      });
+    }
+  }
+  
+  // Original article link functionality
+  articleLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Update active state
+      articleLinks.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+      
+      loadArticle(this.href, this.dataset.articleId, this.dataset.blogHandle);
+    });
+  });
+  
+  // Auto-select first article on page load
+  function autoSelectFirstArticle() {
+    if (articleLinks.length > 0) {
+      const firstArticleLink = articleLinks[0];
+      
+      // Set active state
+      articleLinks.forEach(l => l.classList.remove('active'));
+      firstArticleLink.classList.add('active');
+      
+      // Load the first article
+      loadArticle(firstArticleLink.href, firstArticleLink.dataset.articleId, firstArticleLink.dataset.blogHandle);
+    }
+  }
+  
+  // Initialize first article selection
+  autoSelectFirstArticle();
+  
+  // Smooth collapsible animation
+  function setupSmoothCollapsible() {
+    const detailsElements = document.querySelectorAll('.blog-category__details');
+    
+    detailsElements.forEach(details => {
+      const summary = details.querySelector('.blog-category__summary');
+      const articles = details.querySelector('.blog-category__articles');
+      
+      if (!summary || !articles) return;
+      
+      // Set initial state
+      if (!details.hasAttribute('open')) {
+        articles.style.maxHeight = '0px';
+        articles.style.opacity = '0';
+      }
+      
+      summary.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const isOpen = details.hasAttribute('open');
+        
+        if (isOpen) {
+          // Closing animation
+          articles.style.maxHeight = articles.scrollHeight + 'px';
+          articles.style.opacity = '1';
+          
+          // Force reflow
+          articles.offsetHeight;
+          
+          articles.style.maxHeight = '0px';
+          articles.style.opacity = '0';
+          
+          setTimeout(() => {
+            details.removeAttribute('open');
+          }, 300);
+        } else {
+          // Opening animation
+          details.setAttribute('open', '');
+          articles.style.maxHeight = '0px';
+          articles.style.opacity = '0';
+          
+          // Force reflow
+          articles.offsetHeight;
+          
+          articles.style.maxHeight = articles.scrollHeight + 'px';
+          articles.style.opacity = '1';
+          
+          setTimeout(() => {
+            articles.style.maxHeight = 'none';
+          }, 300);
+        }
+      });
+    });
+  }
+  
+  // Initialize smooth collapsible
+  setupSmoothCollapsible();
+});
+</script>
+
+{% schema %}
+{
+  "name": "Blog with Tabs",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.popup"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar Settings"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_title",
+      "label": "Sidebar Title",
+      "default": "Blog Categories"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search Placeholder Text",
+      "default": "Search articles..."
+    },
+    {
+      "type": "header",
+      "content": "Content Area Settings"
+    },
+    {
+      "type": "text",
+      "id": "content_title",
+      "label": "Content Title",
+      "default": "Blog Articles"
+    },
+    {
+      "type": "text",
+      "id": "content_subtitle",
+      "label": "Content Subtitle",
+      "default": "Select a blog post from the sidebar to read"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_text",
+      "label": "Placeholder Text",
+      "default": "Select a blog post from the sidebar to start reading"
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_title_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Sidebar Title Font Size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "category_heading_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Category Heading Font Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "article_title_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Sidebar Article Title Font Size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "content_title_size",
+      "min": 20,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Content Title Font Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "content_subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Content Subtitle Font Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "article_content_title_size",
+      "min": 20,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Article Content Title Font Size",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "article_content_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Article Content Font Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "nav_button_text_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Navigation Button Text Size",
+      "default": 13
+    }
+  ],
+  "blocks": [
+    {
+      "type": "blog_category",
+      "name": "Blog Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Title",
+          "info": "Leave blank to use blog title"
+        },
+        {
+          "type": "blog",
+          "id": "blog",
+          "label": "Blog"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "apple",
+              "label": "Apple"
+            },
+            {
+              "value": "banana",
+              "label": "Banana"
+            },
+            {
+              "value": "bottle",
+              "label": "Bottle"
+            },
+            {
+              "value": "box",
+              "label": "Box"
+            },
+            {
+              "value": "carrot",
+              "label": "Carrot"
+            },
+            {
+              "value": "chat_bubble",
+              "label": "Chat Bubble"
+            },
+            {
+              "value": "check_mark",
+              "label": "Check Mark"
+            },
+            {
+              "value": "clipboard",
+              "label": "Clipboard"
+            },
+            {
+              "value": "dairy_free",
+              "label": "Dairy Free"
+            },
+            {
+              "value": "dairy",
+              "label": "Dairy"
+            },
+            {
+              "value": "dryer",
+              "label": "Dryer"
+            },
+            {
+              "value": "eye",
+              "label": "Eye"
+            },
+            {
+              "value": "fire",
+              "label": "Fire"
+            },
+            {
+              "value": "gluten_free",
+              "label": "Gluten Free"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "iron",
+              "label": "Iron"
+            },
+            {
+              "value": "leaf",
+              "label": "Leaf"
+            },
+            {
+              "value": "leather",
+              "label": "Leather"
+            },
+            {
+              "value": "lightning_bolt",
+              "label": "Lightning Bolt"
+            },
+            {
+              "value": "lock",
+              "label": "Lock"
+            },
+            {
+              "value": "map_pin",
+              "label": "Map Pin"
+            },
+            {
+              "value": "nut_free",
+              "label": "Nut Free"
+            },
+            {
+              "value": "pants",
+              "label": "Pants"
+            },
+            {
+              "value": "paw_print",
+              "label": "Paw Print"
+            },
+            {
+              "value": "pepper",
+              "label": "Pepper"
+            },
+            {
+              "value": "perfume",
+              "label": "Perfume"
+            },
+            {
+              "value": "plane",
+              "label": "Plane"
+            },
+            {
+              "value": "plant",
+              "label": "Plant"
+            },
+            {
+              "value": "price_tag",
+              "label": "Price Tag"
+            },
+            {
+              "value": "question_mark",
+              "label": "Question Mark"
+            },
+            {
+              "value": "recycle",
+              "label": "Recycle"
+            },
+            {
+              "value": "return",
+              "label": "Return"
+            },
+            {
+              "value": "ruler",
+              "label": "Ruler"
+            },
+            {
+              "value": "serving_dish",
+              "label": "Serving Dish"
+            },
+            {
+              "value": "shirt",
+              "label": "Shirt"
+            },
+            {
+              "value": "shoe",
+              "label": "Shoe"
+            },
+            {
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "value": "stopwatch",
+              "label": "Stopwatch"
+            },
+            {
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "value": "washing",
+              "label": "Washing"
+            },
+            {
+              "value": "water",
+              "label": "Water"
+            }
+          ],
+          "default": "none",
+          "label": "Icon"
+        },
+        {
+          "type": "range",
+          "id": "article_limit",
+          "min": 3,
+          "max": 20,
+          "step": 1,
+          "default": 10,
+          "label": "Number of articles to show"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_date",
+          "default": true,
+          "label": "Show article date"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_count",
+          "default": true,
+          "label": "Show article count"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog with Tabs",
+      "blocks": [
+        {
+          "type": "blog_category"
+        },
+        {
+          "type": "blog_category"
+        },
+        {
+          "type": "blog_category"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} 

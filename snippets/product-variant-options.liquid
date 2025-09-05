@@ -1,0 +1,226 @@
+{% comment %}
+  Renders product variant options
+
+  Accepts:
+  - product: {Object} product object.
+  - option: {Object} current product_option object.
+  - block: {Object} block object.
+  - picker_type: {String} type of picker to dispay
+
+
+  Usage:
+  {% render 'product-variant-options',
+    product: product,
+    option: option,
+    block: block
+    picker_type: picker_type
+  %}
+{% endcomment %}
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id
+-%}
+
+{%- for value in option.values -%}
+  {%- liquid
+    assign option_names = settings.option_names | downcase | split: ','
+  assign cleaned_option_names_string = ''
+  
+  for option_name in option_names
+    assign trimmed = option_name | strip
+    assign cleaned_option_names_string = cleaned_option_names_string | append: trimmed | append: ','
+  endfor
+
+  assign cleaned_option_names = cleaned_option_names_string | split: ','
+
+  assign use_swatch = false
+
+  for option_name in cleaned_option_names
+    assign option_name_product = option.name | downcase
+    if option_name == option_name_product and block.settings.swatch_shape != 'none'
+      assign use_swatch = true
+      break
+    endif
+  endfor
+
+    assign swatch_focal_point = null
+    if value.swatch.image
+      assign image_url = value.swatch.image | image_url: width: 50
+      assign swatch_value = 'url(' | append: image_url | append: ')'
+      assign swatch_focal_point = value.swatch.image.presentation.focal_point
+    elsif value.swatch.color
+      assign swatch_value = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+    else
+      assign swatch_value = null
+    endif
+
+    assign swatch_colors = settings.swatch_colors | newline_to_br | split: '<br />'
+
+    assign swatch_type = block.settings.swatch_type
+
+    assign option_disabled = true
+    if value.available
+      assign option_disabled = false
+    endif
+  -%}
+
+  {%- capture input_id -%}
+    {{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}
+  {%- endcapture -%}
+
+  {%- capture input_name -%}
+    {{ option.name }}-{{ option.position }}
+  {%- endcapture -%}
+
+  {%- capture input_dataset -%}
+    data-product-url="{{ value.product_url }}"
+    data-option-value-id="{{ value.id }}"
+  {%- endcapture -%}
+
+  {%- capture label_unavailable -%}
+    <span class="visually-hidden label-unavailable">
+      {{- 'products.product.variant_sold_out_or_unavailable' | t -}}
+    </span>
+  {%- endcapture -%}
+
+  {%- if picker_type == 'swatch' -%}
+    {%- capture help_text -%}
+      <span class="visually-hidden">{{ value | escape }}</span>
+      {{ label_unavailable }}
+    {%- endcapture -%}
+    {%
+      render 'swatch-input',
+      id: input_id,
+      name: input_name,
+      block: block,
+      value: value | escape,
+      swatch: value.swatch,
+      product_form_id: product_form_id,
+      checked: value.selected,
+      visually_disabled: option_disabled,
+      shape: block.settings.swatch_shape,
+      help_text: help_text,
+      additional_props: input_dataset
+    %}
+  {%- elsif picker_type == 'button' -%}
+    {%- capture help_text -%}
+      <span class="visually-hidden">{{ value | escape }}</span>
+      {{ label_unavailable }}
+    {%- endcapture -%}
+    <input
+      type="radio"
+      id="{{ input_id }}"
+      name="{{ input_name | escape }}"
+      value="{{ value | escape }}"
+      form="{{ product_form_id }}"
+      {% if value.selected %}
+        checked
+      {% endif %}
+      {% if option_disabled %}
+        class="disabled"
+      {% endif %}
+      {{ input_dataset }}
+    >
+    {% if use_swatch %}
+      {% if product.variants[forloop.index0].image != blank and swatch_type == 'variant_image' %}
+        {% assign image_size = block.settings.swatch_size | times: 30 %}
+        {% assign swatch_image_size = block.settings.swatch_size %}
+        {% assign swatch_image_width = product.variants[forloop.index0].image.width %}
+        {% assign swatch_image_height = product.variants[forloop.index0].image.height %}
+        {% assign swatch_image_ratio = swatch_image_height | divided_by: swatch_image_width %}
+        {% assign swatch_image_adapt_height = swatch_image_size | times: swatch_image_ratio | append: 'rem' %}
+        {% assign swatch_image_portrait_height = swatch_image_size | times: 1.3333 | append: 'rem' %}
+        <label
+          class="swatch-input__label lumin-lable swatch-image lumin-variant-image{% if block.settings.swatch_shape == 'square' %} swatch-input__label--square{% endif %}"
+          for="{{ input_id }}"
+          style="--swatch-input--size: {{ block.settings.swatch_size }}rem;
+            background-image:url(
+              {%- liquid
+                assign option_index = option.position | minus: 1
+                assign variant_image_url = ''
+                for variant in product.variants
+                    if variant.options[option_index] == value and variant.image != blank
+                      assign variant_image_url = variant.image | image_url: width: image_size
+                      break
+                    endif
+                endfor
+                echo variant_image_url
+            -%}
+               );{% if block.settings.swatch_image_height == 'portrait' %}height:{{swatch_image_portrait_height}};{% elsif block.settings.swatch_image_height == 'adapt' %}height:{{swatch_image_adapt_height}};{% else %}height:{{block.settings.swatch_size}}rem;{% endif %}width:{{block.settings.swatch_size}}rem;
+                   background-size: cover;background-position: center;border-radius: {{block.settings.swatch_image_custom_radius_value}}px;padding:0;
+          "
+        > 
+          {{- help_text -}}
+        </label>
+      {%- else -%}
+        {%- liquid
+          assign color_codes = null
+          assign color_number = 0
+          assign color_img = value | append: '.png'
+          for colorData in swatch_colors
+            assign color_data_arr = colorData | split: ':'
+            assign rule_name = color_data_arr[0] | strip
+            if value == rule_name and color_data_arr.size > 1
+              assign color_codes = color_data_arr[1] | strip | split: '#'
+              assign color_number = color_codes.size
+              break
+            endif
+          endfor
+        -%}
+
+        <label
+          for="{{ input_id }}"
+          data-{{ option.name | downcase | replace: ' ', '-' }}="{{value}}"
+          class="swatch-input__label lumin-label lumin-variant-image{% if block.settings.swatch_shape == 'square' %} swatch-input__label--square{% endif %}"
+          style="--swatch-input--size: {{ block.settings.swatch_size }}rem;
+            height:{{block.settings.swatch_size}}rem;width:{{block.settings.swatch_size}}rem;padding:0;
+            {% if block.settings.swatch_shape == 'circle' %} border-radius: 100px;
+            {% elsif block.settings.swatch_shape == 'slightly_round' %} border-radius: 2px;{% else %} border-radius: 0px;{% endif %}
+            background: {{ value }}; background-image:url({{ color_img | downcase | replace: ' ', '-' | file_img_url: '120x120' }});
+            {%- if color_codes != null and color_number > 0 -%}
+                {%- case color_number -%}
+                    {%- when 2 -%}
+                        background-color: #{{ color_codes[1] }};
+                    {%- when 3 -%}
+                        background: linear-gradient(135deg, #{{ color_codes[1] }} 50%, #{{ color_codes[2] }} 50%);
+                    {%- when 4 -%}
+                        background: linear-gradient(to right,#{{ color_codes[1] }} 33%,#{{ color_codes[2] }} 33%,#{{ color_codes[2] }} 66%, #{{ color_codes[3] }} 66%);
+                    {%- else -%}
+                        background-image:url({{ color_img | downcase | replace: ' ', '-' | file_img_url }});
+                {%- endcase -%}
+            {%- else -%}
+                background-image:url({{ color_img | downcase | replace: ' ', '-' | file_img_url }});
+            {%- endif -%}
+          "
+        >
+          {{- help_text -}}
+        </label>
+      {% endif %}
+    {% else %}
+      <label for="{{ input_id }}">
+        {{ value -}}
+        {{ label_unavailable }}
+      </label>
+    {% endif %}
+  {%- elsif picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
+    <option
+      id="{{ input_id }}"
+      value="{{ value | escape }}"
+      {% if value.selected %}
+        selected="selected"
+      {% endif %}
+      {% if swatch_value and picker_type == 'swatch_dropdown' %}
+        data-option-swatch-value="{{ swatch_value }}"
+        {% if swatch_focal_point %}
+          data-option-swatch-focal-point="{{ swatch_focal_point }}"
+        {% endif %}
+      {% endif %}
+      {{ input_dataset }}
+    >
+      {% if option_disabled -%}
+        {{- 'products.product.value_unavailable' | t: option_value: value -}}
+      {%- else -%}
+        {{- value -}}
+      {%- endif %}
+    </option>
+  {%- endif -%}
+{%- endfor -%}

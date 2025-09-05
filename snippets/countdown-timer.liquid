@@ -1,0 +1,36 @@
+<span id="countdown-timer">
+  <span id="beauty-timer">04:00</span>
+</span>
+
+<script>
+  function startCartCountdown(duration, display) {
+    var timer-2 = duration, minutes, seconds;
+    setInterval(function () {
+      minutes = parseInt(timer-2 / 60, 10);
+      seconds = parseInt(timer-2 % 60, 10);
+
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      if (display) {
+        display.textContent = minutes + ":" + seconds;
+      }
+
+      if (--timer-2 < 0) {
+        timer-2 = duration; // reset
+      }
+    }, 1000);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.body.addEventListener("cart:open", function () {
+      setTimeout(function () {
+        const display = document.querySelector('#countdown-timer #beauty-timer');
+        if (display && !display.dataset.started) {
+          startCartCountdown(60 * 4, display);
+          display.dataset.started = "true";
+        }
+      }, 300); 
+    });
+  });
+</script>
