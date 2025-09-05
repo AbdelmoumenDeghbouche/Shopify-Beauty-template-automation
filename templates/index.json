@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "slideshow_AnRhHV": {
@@ -15,20 +6,20 @@
         "slide_neHxNU": {
           "type": "slide",
           "settings": {
-            "caption": "<strong>[Olivia SkinCare</strong>]",
+            "caption": "NEW_BRAND_NAME_GENERATED_CONTENT",
             "block_cap_size": 30,
             "cap_color": "#fc9090",
-            "heading": "<strong>Smooth, Soft, Sensational</strong>",
+            "heading": "NEW_HERO_HEADING_GENERATED_CONTENT",
             "heading_font_size_desktop": 70,
             "heading_font_size_mobile": 42,
             "heading_line_height_desktop": 1,
             "heading_line_height_mobile": 1,
-            "subheading": "Say goodbye to irritation, razor burn, and salon appointments. Our advanced hair removal solutions are designed to give you silky-smooth skin from the comfort of your home—with results that last.",
+            "subheading": "NEW_HERO_SUBHEADING_GENERATED_CONTENT",
             "subheading_font_size_desktop": 16,
             "subheading_font_size_mobile": 16,
             "subheading_line_height_desktop": 1.4,
             "subheading_line_height_mobile": 1.4,
-            "button_label": "Shop Olivia",
+            "button_label": "NEW_SHOP_BUTTON_TRANSLATED_CONTENT",
             "link": "shopify://collections/all",
             "link-2": "",
             "button_style_secondary": false,
@@ -54,7 +45,7 @@
         "change_slides_speed": 5,
         "image_behavior": "none",
         "show_text_below": true,
-        "accessibility_info": "Slideshow about our brand"
+        "accessibility_info": "NEW_SLIDESHOW_ACCESSIBILITY_TRANSLATED_CONTENT"
       }
     },
     "rich_text_tzEhJ6": {
@@ -63,7 +54,7 @@
         "fancy_heading_6TxBCf": {
           "type": "fancy_heading",
           "settings": {
-            "title": "[AS SEEN ON]",
+            "title": "NEW_AS_SEEN_ON_TRANSLATED_CONTENT",
             "block_heading_color": "",
             "block_heading_size": 24,
             "highlight_text_color": "#ff7e8d",
@@ -122,7 +113,7 @@
         "image_nhgELt",
         "image_B8CPpH"
       ],
-      "name": "Brand Slider",
+      "name": "NEW_BRAND_SLIDER_TRANSLATED_CONTENT",
       "settings": {
         "scroll_speed": 15,
         "color_scheme": "",
@@ -190,7 +181,7 @@
       ],
       "name": "t:sections.collection-list.presets.name",
       "settings": {
-        "title": "Collections",
+        "title": "NEW_COLLECTIONS_TRANSLATED_CONTENT",
         "heading_size": "h1",
         "image_ratio": "square",
         "columns_desktop": 6,
@@ -208,7 +199,7 @@
         "heading_6NpdtR": {
           "type": "heading",
           "settings": {
-            "heading": "<strong>✨ Smooth Skin Starts Here — Summer Sale On Now!</strong>",
+            "heading": "NEW_SUMMER_SALE_HEADING_GENERATED_CONTENT",
             "heading_size": "h1"
           }
         }
@@ -231,7 +222,7 @@
         "tab_FhY6yk": {
           "type": "tab",
           "settings": {
-            "heading": "New Arrivals",
+            "heading": "NEW_NEW_ARRIVALS_TRANSLATED_CONTENT",
             "collection": "",
             "description": "",
             "collection_text_alignment": "left",
@@ -242,7 +233,7 @@
         "tab_Hadytp": {
           "type": "tab",
           "settings": {
-            "heading": "Best Seller",
+            "heading": "NEW_BEST_SELLER_TRANSLATED_CONTENT",
             "collection": "",
             "description": "",
             "collection_text_alignment": "left",
@@ -253,7 +244,7 @@
         "tab_Fahzwc": {
           "type": "tab",
           "settings": {
-            "heading": "New",
+            "heading": "NEW_NEW_TAB_TRANSLATED_CONTENT",
             "collection": "",
             "description": "",
             "collection_text_alignment": "left",
@@ -303,7 +294,7 @@
         "heading_RfE69V": {
           "type": "heading",
           "settings": {
-            "heading": "Say goodbye to harsh chemicals and empty promises. Our formulas are powered by science and inspired by nature—made to nourish, restore, and protect all skin types.",
+            "heading": "NEW_PRODUCT_PHILOSOPHY_GENERATED_CONTENT",
             "heading_size": "h2"
           }
         }
@@ -347,7 +338,7 @@
             "text_color": "#212121",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "button",
+            "button-text": "NEW_BUTTON_TRANSLATED_CONTENT",
             "button_link": "",
             "desktop_content_alignment": "center",
             "image_content_position": "bottom-center",
@@ -371,17 +362,17 @@
             "bg_color": "#ffffff",
             "icon_size": 25,
             "icon_corner": 0,
-            "head": "Glow from Within",
+            "head": "NEW_GLOW_FROM_WITHIN_GENERATED_CONTENT",
             "use_body_font": false,
             "head_color": "#212121",
             "head_size_d": 30,
             "head_size_m": 24,
             "margin_bottom": 15,
-            "subtitle": "<p>Elevate your skincare game and achieve radiant, healthy skin with a routine that’s as unique as you are.</p>",
+            "subtitle": "NEW_GLOW_DESCRIPTION_GENERATED_CONTENT",
             "text_color": "#212121",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "Shop Collection",
+            "button-text": "NEW_SHOP_COLLECTION_TRANSLATED_CONTENT",
             "show_secondary": false,
             "button_link": "",
             "image_content_position": "middle-center",
@@ -413,7 +404,7 @@
             "text_color": "#212121",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "button",
+            "button-text": "NEW_BUTTON_TRANSLATED_CONTENT",
             "button_link": "",
             "desktop_content_alignment": "center",
             "image_content_position": "bottom-center",
@@ -444,7 +435,7 @@
         "caption_GkpmiR": {
           "type": "caption",
           "settings": {
-            "caption": "OUR PRODUCT PHILOSOPHY",
+            "caption": "NEW_OUR_PRODUCT_PHILOSOPHY_TRANSLATED_CONTENT",
             "text_style": "caption-with-letter-spacing",
             "text_size": "large"
           }
@@ -452,7 +443,7 @@
         "fancy_heading_ygHbFk": {
           "type": "fancy_heading",
           "settings": {
-            "title": "We sustainably and ethically source — our ingredients, to create [clean and sustainable products] that are good for your skin — and good for the planet.",
+            "title": "NEW_SUSTAINABILITY_MESSAGE_GENERATED_CONTENT",
             "block_heading_color": "",
             "block_heading_size": 24,
             "highlight_text_color": "#ff7e8d",
@@ -467,7 +458,7 @@
         "text_eYnzmH": {
           "type": "text",
           "settings": {
-            "text": "<p><a href=\"/collections/all\" title=\"All products\">Learn More</a></p>"
+            "text": "<p><a href=\"/collections/all\" title=\"All products\">NEW_LEARN_MORE_TRANSLATED_CONTENT</a></p>"
           }
         }
       },
@@ -487,7 +478,7 @@
     },
     "line_section_divider_LNKEpw": {
       "type": "line-section-divider",
-      "name": "Line Divider",
+      "name": "NEW_LINE_DIVIDER_TRANSLATED_CONTENT",
       "settings": {
         "divider_width": 100,
         "divider_color": "#fc9090",
@@ -503,14 +494,14 @@
         "heading_DeVtEd": {
           "type": "heading",
           "settings": {
-            "heading": "<strong>See it in action</strong>",
+            "heading": "NEW_SEE_IT_IN_ACTION_TRANSLATED_CONTENT",
             "heading_size": "h0"
           }
         },
         "text_dLPQLC": {
           "type": "text",
           "settings": {
-            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
+            "text": "NEW_ACTION_DESCRIPTION_GENERATED_CONTENT"
           }
         }
       },
@@ -566,11 +557,11 @@
       "settings": {
         "content_alignment": "center",
         "layout": "1",
-        "heading": "<strong>Look At How Others Are [Loving Their Product!]</strong>",
-        "subheading": "Real Reviews From Real People",
-        "button_text": "CLAIM OFFER",
+        "heading": "NEW_REVIEWS_HEADING_GENERATED_CONTENT",
+        "subheading": "NEW_REVIEWS_SUBHEADING_GENERATED_CONTENT",
+        "button_text": "NEW_CLAIM_OFFER_TRANSLATED_CONTENT",
         "button_link": "",
-        "rating_text": "Rated 4.8/5 by 1,319+ Happy Customers",
+        "rating_text": "NEW_RATING_TEXT_GENERATED_CONTENT",
         "color_scheme": "accent-1",
         "button_color": "#212121",
         "star_color": "#ffd700",
@@ -601,7 +592,7 @@
     },
     "line_section_divider_Y9aQNP": {
       "type": "line-section-divider",
-      "name": "Line Divider",
+      "name": "NEW_LINE_DIVIDER_TRANSLATED_CONTENT",
       "settings": {
         "divider_width": 100,
         "divider_color": "#fd4f4f",
@@ -642,7 +633,7 @@
         "width": "full",
         "max_width": 1200,
         "container_alignment": "center",
-        "heading": "Lumin Bundle deals",
+        "heading": "NEW_BUNDLE_DEALS_HEADING_GENERATED_CONTENT",
         "heading_tag": "h2",
         "heading_size": "h1",
         "text": "",
@@ -650,8 +641,8 @@
         "layout": "horizontal-images-left",
         "content_alignment": "center",
         "enable_price_changes": true,
-        "total_price_label": "Total Price:",
-        "btn_label": "Add selected to cart",
+        "total_price_label": "NEW_TOTAL_PRICE_TRANSLATED_CONTENT",
+        "btn_label": "NEW_ADD_TO_CART_TRANSLATED_CONTENT",
         "bundle_deals_customisation": true,
         "bundle_deals_compare_price_color": "#fc9090",
         "bundle_deals_background_color": "#ffffff",
@@ -665,7 +656,7 @@
     },
     "section_divider_Gk3iC3": {
       "type": "section-divider",
-      "name": "Section divider",
+      "name": "NEW_SECTION_DIVIDER_TRANSLATED_CONTENT",
       "settings": {
         "visibility": "always-display",
         "shape": "diagonal_2",
@@ -687,14 +678,14 @@
         "heading_4TErYF": {
           "type": "heading",
           "settings": {
-            "heading": "What our customers say about us...",
+            "heading": "NEW_CUSTOMER_TESTIMONIALS_HEADING_GENERATED_CONTENT",
             "heading_size": "h1"
           }
         },
         "text_AXMrgV": {
           "type": "text",
           "settings": {
-            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
+            "text": "NEW_CUSTOMER_TESTIMONIALS_DESCRIPTION_GENERATED_CONTENT"
           }
         }
       },
@@ -717,8 +708,8 @@
         "column_zmGWam": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "NEW_TESTIMONIAL_1_TITLE_GENERATED_CONTENT",
+            "text": "NEW_TESTIMONIAL_1_TEXT_GENERATED_CONTENT",
             "link_label": "",
             "link": ""
           }
@@ -726,8 +717,8 @@
         "column_hD9n6T": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "NEW_TESTIMONIAL_2_TITLE_GENERATED_CONTENT",
+            "text": "NEW_TESTIMONIAL_2_TEXT_GENERATED_CONTENT",
             "link_label": "",
             "link": ""
           }
@@ -735,8 +726,8 @@
         "column_NDpyfY": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "NEW_TESTIMONIAL_3_TITLE_GENERATED_CONTENT",
+            "text": "NEW_TESTIMONIAL_3_TEXT_GENERATED_CONTENT",
             "link_label": "",
             "link": ""
           }
@@ -744,8 +735,8 @@
         "column_jMT4Ri": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "NEW_TESTIMONIAL_4_TITLE_GENERATED_CONTENT",
+            "text": "NEW_TESTIMONIAL_4_TEXT_GENERATED_CONTENT",
             "link_label": "",
             "link": ""
           }
@@ -753,8 +744,8 @@
         "column_tFxCLH": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "NEW_TESTIMONIAL_5_TITLE_GENERATED_CONTENT",
+            "text": "NEW_TESTIMONIAL_5_TEXT_GENERATED_CONTENT",
             "link_label": "",
             "link": ""
           }
@@ -794,7 +785,7 @@
         "announcement_Bf8d8G": {
           "type": "announcement",
           "settings": {
-            "text": "<strong>Where Beauty </strong><em>Meets</em><strong> Elegance</strong>",
+            "text": "NEW_BEAUTY_ELEGANCE_SLOGAN_GENERATED_CONTENT",
             "link": "",
             "font_family": "body",
             "text_size": 100,
@@ -814,7 +805,7 @@
         "announcement_JiDXcT": {
           "type": "announcement",
           "settings": {
-            "text": "<strong>Born</strong> <em>to</em> <strong>Shine</strong>",
+            "text": "NEW_BORN_TO_SHINE_SLOGAN_GENERATED_CONTENT",
             "link": "",
             "font_family": "body",
             "text_size": 100,
@@ -860,10 +851,10 @@
         "mobile_content_position": "bottom",
         "color_scheme": "background-2",
         "desktop_content_alignment": "center",
-        "heading": "<strong>Because Your Skin Deserves the Best.</strong>",
+        "heading": "NEW_VIDEO_OVERLAY_HEADING_GENERATED_CONTENT",
         "heading_size": "h1",
         "text": "",
-        "button_label_1": "Shop Now",
+        "button_label_1": "NEW_SHOP_NOW_TRANSLATED_CONTENT",
         "button_link_1": "shopify://collections/all",
         "button_style_secondary_1": false,
         "padding_top": 52,
@@ -873,7 +864,7 @@
     "featured_blog_KL9nNm": {
       "type": "featured-blog",
       "settings": {
-        "heading": "Blog posts",
+        "heading": "NEW_BLOG_POSTS_TRANSLATED_CONTENT",
         "heading_size": "h1",
         "blog": "",
         "post_limit": 3,
@@ -905,17 +896,17 @@
             "bg_color": "#fff4f3",
             "icon_size": 25,
             "icon_corner": 0,
-            "head": "Why You'll Love Us",
+            "head": "NEW_WHY_LOVE_US_HEADING_GENERATED_CONTENT",
             "use_head_font": true,
             "head_color": "#212121",
             "head_size_d": 30,
             "head_size_m": 24,
             "margin_bottom": 15,
-            "subtitle": "<p><strong>Clean Ingredients</strong> – No sulfates, parabens, or synthetic fragrances<br/><br/><strong>Derm-Tested</strong> – Safe for sensitive skin and clinically backed<br/></p>",
+            "subtitle": "NEW_WHY_LOVE_US_DESCRIPTION_GENERATED_CONTENT",
             "text_color": "#212121",
             "text_size_d": 13,
             "text_size_m": 14,
-            "button-text": "Learn More",
+            "button-text": "NEW_LEARN_MORE_TRANSLATED_CONTENT",
             "button_link": "shopify://collections/all",
             "image_content_position": "middle-center",
             "desktop_content_alignment": "left",
@@ -936,16 +927,16 @@
             "padding_size": 30,
             "padding_size_in": 10,
             "bg_color": "rgba(0,0,0,0)",
-            "head": "@oliviaskincare",
+            "head": "NEW_SOCIAL_HANDLE_GENERATED_CONTENT",
             "head_color": "#ffffff",
             "head_size_d": 24,
             "head_size_m": 20,
             "margin_bottom": 15,
-            "text": "FOLLOW US",
+            "text": "NEW_FOLLOW_US_TRANSLATED_CONTENT",
             "text_color": "#ffffff",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "button",
+            "button-text": "NEW_BUTTON_TRANSLATED_CONTENT",
             "button_link": "",
             "desktop_content_alignment": "center",
             "image_content_position": "bottom-center",
@@ -975,7 +966,7 @@
             "text_color": "#ffffff",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "button",
+            "button-text": "NEW_BUTTON_TRANSLATED_CONTENT",
             "button_link": "",
             "desktop_content_alignment": "center",
             "image_content_position": "bottom-center",
@@ -1005,7 +996,7 @@
             "text_color": "#ffffff",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "button",
+            "button-text": "NEW_BUTTON_TRANSLATED_CONTENT",
             "button_link": "",
             "desktop_content_alignment": "center",
             "image_content_position": "bottom-center",
@@ -1035,7 +1026,7 @@
             "text_color": "#ffffff",
             "text_size_d": 16,
             "text_size_m": 14,
-            "button-text": "button",
+            "button-text": "NEW_BUTTON_TRANSLATED_CONTENT",
             "button_link": "",
             "desktop_content_alignment": "center",
             "image_content_position": "bottom-center",
